@@ -1,0 +1,28 @@
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import axios, { isAxiosError } from "axios";
+import { toast } from "sonner";
+import type * as API from "@/types/api";
+
+export default function useDeleteStudentMutation(pk: API.Student["student_pk"]) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationKey: [`/api/student/${pk}`],
+    mutationFn: () => {
+      return axios.delete(`/api/student/${pk}`).then((res) => res.data);
+    },
+    onSuccess: async (data) => {
+      await queryClient.invalidateQueries({ queryKey: ["/api/students"] });
+      toast.success(data.message ?? "학생을 삭제했어요.");
+    },
+    onError: (error) => {
+      if (isAxiosError(error)) {
+        toast.error(error.response?.data?.message ?? "학생을 삭제하지 못했어요.");
+      } else if (error instanceof Error) {
+        toast.error("학생을 삭제하지 못했어요.", { description: `${error}` });
+      } else {
+        toast.error("학생을 삭제하지 못했어요.");
+      }
+    },
+  });
+}
