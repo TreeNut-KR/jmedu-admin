@@ -6,12 +6,16 @@ export default function useLogoutMutation() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationKey: ["/api/auth/logout"],
+    mutationKey: [`${process.env.NEXT_PUBLIC_BASE_PATH}/api/auth/logout`],
     mutationFn: () => {
-      return axios.post("/api/auth/logout").then((res) => res.data);
+      return axios
+        .post(`${process.env.NEXT_PUBLIC_BASE_PATH}/api/auth/logout`)
+        .then((res) => res.data);
     },
     onSuccess: async (data) => {
-      await queryClient.invalidateQueries({ queryKey: ["/api/auth/status"] });
+      await queryClient.invalidateQueries({
+        queryKey: [`${process.env.NEXT_PUBLIC_BASE_PATH}/api/auth/status`],
+      });
       toast.success(data.message ?? "로그아웃되었어요.");
     },
     onError: (error) => {

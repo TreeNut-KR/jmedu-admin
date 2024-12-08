@@ -6,7 +6,10 @@ import type * as API from "@/types/api";
 
 export default function useGetSchoolsQuery(query: z.infer<typeof GetSchoolsSchema>) {
   return useQuery<API.ListResponse<API.School>>({
-    queryKey: ["/api/schools", query],
-    queryFn: () => axios.get(`/api/schools`, { params: query }).then((res) => res.data),
+    queryKey: [`${process.env.NEXT_PUBLIC_BASE_PATH}/api/schools`, query],
+    queryFn: () =>
+      axios
+        .get(`${process.env.NEXT_PUBLIC_BASE_PATH}/api/schools`, { params: query })
+        .then((res) => res.data),
   });
 }

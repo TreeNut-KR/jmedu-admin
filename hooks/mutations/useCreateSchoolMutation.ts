@@ -10,12 +10,16 @@ export default function useCreateSchoolMutation() {
   const router = useRouter();
 
   return useMutation({
-    mutationKey: [`/api/school`],
+    mutationKey: [`${process.env.NEXT_PUBLIC_BASE_PATH}/api/school`],
     mutationFn: (data: z.infer<typeof SchoolSchema>) => {
-      return axios.post(`/api/school`, data).then((res) => res.data);
+      return axios
+        .post(`${process.env.NEXT_PUBLIC_BASE_PATH}/api/school`, data)
+        .then((res) => res.data);
     },
     onSuccess: async (data) => {
-      await queryClient.invalidateQueries({ queryKey: ["/api/schools"] });
+      await queryClient.invalidateQueries({
+        queryKey: [`${process.env.NEXT_PUBLIC_BASE_PATH}/api/schools`],
+      });
       toast.success(data.message ?? "학교를 추가했어요.");
       router.push("/school");
     },

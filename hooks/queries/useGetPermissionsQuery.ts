@@ -4,7 +4,8 @@ import type * as API from "@/types/api";
 
 export default function useGetPermissionsQuery() {
   return useQuery<API.ListResponse<API.Permission>>({
-    queryKey: ["/api/permissions"],
-    queryFn: () => axios.get("/api/permissions").then((res) => res.data),
+    queryKey: [`${process.env.NEXT_PUBLIC_BASE_PATH}/api/permissions`],
+    queryFn: () =>
+      axios.get(`${process.env.NEXT_PUBLIC_BASE_PATH}/api/permissions`).then((res) => res.data),
   });
 }

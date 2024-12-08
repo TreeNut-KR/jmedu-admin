@@ -10,12 +10,16 @@ export default function useCreateStudentMutation() {
   const router = useRouter();
 
   return useMutation({
-    mutationKey: [`/api/student`],
+    mutationKey: [`${process.env.NEXT_PUBLIC_BASE_PATH}/api/student`],
     mutationFn: (data: z.infer<typeof StudentSchema>) => {
-      return axios.post(`/api/student`, data).then((res) => res.data);
+      return axios
+        .post(`${process.env.NEXT_PUBLIC_BASE_PATH}/api/student`, data)
+        .then((res) => res.data);
     },
     onSuccess: async (data) => {
-      await queryClient.invalidateQueries({ queryKey: ["/api/students"] });
+      await queryClient.invalidateQueries({
+        queryKey: [`${process.env.NEXT_PUBLIC_BASE_PATH}/api/students`],
+      });
       toast.success(data.message ?? "학생을 추가했어요.");
       router.push("/student");
     },

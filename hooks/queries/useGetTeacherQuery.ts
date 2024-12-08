@@ -9,7 +9,10 @@ export default function useGetTeacherQuery(
   query?: z.infer<typeof GetTeacherSchema>,
 ) {
   return useQuery<API.Response<API.Teacher>>({
-    queryKey: [`/api/teacher/${pk}`, query],
-    queryFn: () => axios.get(`/api/teacher/${pk}`, { params: query }).then((res) => res.data),
+    queryKey: [`${process.env.NEXT_PUBLIC_BASE_PATH}/api/teacher/${pk}`, query],
+    queryFn: () =>
+      axios
+        .get(`${process.env.NEXT_PUBLIC_BASE_PATH}/api/teacher/${pk}`, { params: query })
+        .then((res) => res.data),
   });
 }

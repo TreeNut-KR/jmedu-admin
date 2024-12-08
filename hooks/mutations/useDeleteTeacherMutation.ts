@@ -7,12 +7,16 @@ export default function useDeleteTeacherMutation(pk: API.Teacher["teacher_pk"]) 
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationKey: [`/api/teacher/${pk}`],
+    mutationKey: [`${process.env.NEXT_PUBLIC_BASE_PATH}/api/teacher/${pk}`],
     mutationFn: () => {
-      return axios.delete(`/api/teacher/${pk}`).then((res) => res.data);
+      return axios
+        .delete(`${process.env.NEXT_PUBLIC_BASE_PATH}/api/teacher/${pk}`)
+        .then((res) => res.data);
     },
     onSuccess: async (data) => {
-      await queryClient.invalidateQueries({ queryKey: ["/api/teachers"] });
+      await queryClient.invalidateQueries({
+        queryKey: [`${process.env.NEXT_PUBLIC_BASE_PATH}/api/teachers`],
+      });
       toast.success(data.message ?? "교직원을 삭제했어요.");
     },
     onError: (error) => {

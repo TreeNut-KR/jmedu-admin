@@ -88,7 +88,12 @@ export default function UpdateTeacherLevelDialog(props: { pk: API.Teacher["teach
       <>
         <GlobalDialogHeader>
           <GlobalDialogTitle className="flex items-center gap-2">
-            <Image src="/tossface/u26A0.svg" width={20} height={20} alt="warning icon" />
+            <Image
+              src={`${process.env.NEXT_PUBLIC_BASE_PATH}/tossface/u26A0.svg`}
+              width={20}
+              height={20}
+              alt="warning icon"
+            />
             에러가 발생했어요.
           </GlobalDialogTitle>
           <GlobalDialogDescription>

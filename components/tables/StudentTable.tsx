@@ -39,7 +39,12 @@ export default function StudentTable() {
     return (
       <div className="flex flex-col gap-2">
         <div className="flex items-center gap-2">
-          <Image src="/tossface/u26A0.svg" width={20} height={20} alt="warning icon" />
+          <Image
+            src={`${process.env.NEXT_PUBLIC_BASE_PATH}/tossface/u26A0.svg`}
+            width={20}
+            height={20}
+            alt="warning icon"
+          />
           <span>에러가 발생했어요.</span>
         </div>
         <div className="text-sm text-adaptiveGray-700">

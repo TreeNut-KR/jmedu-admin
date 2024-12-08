@@ -15,7 +15,12 @@ export default function IndexPage() {
           {MENU_ITEMS.slice(1).map((item) => (
             <Link href={item.path} key={item.label}>
               <div className="flex items-center gap-2 rounded-md border p-4">
-                <Image src={item.icon} alt={`${item.label} icon`} width={36} height={36} />
+                <Image
+                  src={process.env.NEXT_PUBLIC_BASE_PATH + item.icon}
+                  alt={`${item.label} icon`}
+                  width={36}
+                  height={36}
+                />
                 <p className="text-md font-semibold">{item.label}</p>
               </div>
             </Link>

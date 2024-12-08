@@ -7,12 +7,16 @@ export default function useDeleteSchoolMutation(pk: API.School["school_pk"]) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationKey: [`/api/school/${pk}`],
+    mutationKey: [`${process.env.NEXT_PUBLIC_BASE_PATH}/api/school/${pk}`],
     mutationFn: () => {
-      return axios.delete(`/api/school/${pk}`).then((res) => res.data);
+      return axios
+        .delete(`${process.env.NEXT_PUBLIC_BASE_PATH}/api/school/${pk}`)
+        .then((res) => res.data);
     },
     onSuccess: async (data) => {
-      await queryClient.invalidateQueries({ queryKey: ["/api/schools"] });
+      await queryClient.invalidateQueries({
+        queryKey: [`${process.env.NEXT_PUBLIC_BASE_PATH}/api/schools`],
+      });
       toast.success(data.message ?? "학교를 삭제했어요.");
     },
     onError: (error) => {

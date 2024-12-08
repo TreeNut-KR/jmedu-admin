@@ -9,13 +9,19 @@ export default function useUpdateTeacherLevelMutation(pk: API.Teacher["teacher_p
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationKey: [`/api/teacher/${pk}/level`],
+    mutationKey: [`${process.env.NEXT_PUBLIC_BASE_PATH}/api/teacher/${pk}/level`],
     mutationFn: (data: z.infer<typeof TeacherLevelSchema>) => {
-      return axios.put(`/api/teacher/${pk}/level`, data).then((res) => res.data);
+      return axios
+        .put(`${process.env.NEXT_PUBLIC_BASE_PATH}/api/teacher/${pk}/level`, data)
+        .then((res) => res.data);
     },
     onSuccess: async (data) => {
-      await queryClient.invalidateQueries({ queryKey: [`/api/teacher/${pk}`] });
-      await queryClient.invalidateQueries({ queryKey: ["/api/teachers"] });
+      await queryClient.invalidateQueries({
+        queryKey: [`${process.env.NEXT_PUBLIC_BASE_PATH}/api/teacher/${pk}`],
+      });
+      await queryClient.invalidateQueries({
+        queryKey: [`${process.env.NEXT_PUBLIC_BASE_PATH}/api/teachers`],
+      });
       toast.success(data.message ?? "교직원의 권한을 수정했어요.");
     },
     onError: (error) => {

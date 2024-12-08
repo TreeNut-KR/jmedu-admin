@@ -11,12 +11,16 @@ export default function useUpdateTeacherMutation(pk: API.Teacher["teacher_pk"]) 
   const router = useRouter();
 
   return useMutation({
-    mutationKey: [`/api/teacher/${pk}`],
+    mutationKey: [`${process.env.NEXT_PUBLIC_BASE_PATH}/api/teacher/${pk}`],
     mutationFn: (data: z.infer<typeof TeacherSchema>) => {
-      return axios.put(`/api/teacher/${pk}`, data).then((res) => res.data);
+      return axios
+        .put(`${process.env.NEXT_PUBLIC_BASE_PATH}/api/teacher/${pk}`, data)
+        .then((res) => res.data);
     },
     onSuccess: async (data) => {
-      await queryClient.invalidateQueries({ queryKey: ["/api/teachers"] });
+      await queryClient.invalidateQueries({
+        queryKey: [`${process.env.NEXT_PUBLIC_BASE_PATH}/api/teachers`],
+      });
       toast.success(data.message ?? "교직원 정보를 수정했어요.");
       router.push("/teacher");
     },

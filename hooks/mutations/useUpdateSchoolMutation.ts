@@ -11,12 +11,16 @@ export default function useUpdateSchoolMutation(pk: API.School["school_pk"]) {
   const router = useRouter();
 
   return useMutation({
-    mutationKey: [`/api/school/${pk}`],
+    mutationKey: [`${process.env.NEXT_PUBLIC_BASE_PATH}/api/school/${pk}`],
     mutationFn: (data: z.infer<typeof SchoolSchema>) => {
-      return axios.put(`/api/school/${pk}`, data).then((res) => res.data);
+      return axios
+        .put(`${process.env.NEXT_PUBLIC_BASE_PATH}/api/school/${pk}`, data)
+        .then((res) => res.data);
     },
     onSuccess: async (data) => {
-      await queryClient.invalidateQueries({ queryKey: ["/api/schools"] });
+      await queryClient.invalidateQueries({
+        queryKey: [`${process.env.NEXT_PUBLIC_BASE_PATH}/api/schools`],
+      });
       toast.success(data.message ?? "학교 정보를 수정했어요.");
       router.push("/school");
     },

@@ -9,10 +9,10 @@ export default function useGetStudentQuery(
   query?: z.infer<typeof GetStudentSchema>,
 ) {
   return useQuery<API.Response<API.Student>>({
-    queryKey: [`/api/student/${pk}`, query],
+    queryKey: [`${process.env.NEXT_PUBLIC_BASE_PATH}/api/student/${pk}`, query],
     queryFn: () =>
       axios
-        .get(`/api/student/${pk}`, {
+        .get(`${process.env.NEXT_PUBLIC_BASE_PATH}/api/student/${pk}`, {
           params: query,
         })
         .then((res) => res.data),

@@ -6,7 +6,10 @@ export default function useGetStudentAttendanceQuery(
   query: API.ListQueryOptions<API.StudentAttendance>,
 ) {
   return useQuery<API.ListResponse<API.StudentAttendance>>({
-    queryKey: ["/api/student-attendance", query],
-    queryFn: () => axios.get(`/api/student-attendance`, { params: query }).then((res) => res.data),
+    queryKey: [`${process.env.NEXT_PUBLIC_BASE_PATH}/api/student-attendance`, query],
+    queryFn: () =>
+      axios
+        .get(`${process.env.NEXT_PUBLIC_BASE_PATH}/api/student-attendance`, { params: query })
+        .then((res) => res.data),
   });
 }

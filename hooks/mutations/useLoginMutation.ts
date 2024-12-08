@@ -10,12 +10,16 @@ export default function useLoginMutation() {
   const router = useRouter();
 
   return useMutation({
-    mutationKey: ["/api/auth/login"],
+    mutationKey: [`${process.env.NEXT_PUBLIC_BASE_PATH}/api/auth/login`],
     mutationFn: (data: z.infer<typeof LoginSchema>) => {
-      return axios.post("/api/auth/login", data).then((res) => res.data);
+      return axios
+        .post(`${process.env.NEXT_PUBLIC_BASE_PATH}/api/auth/login`, data)
+        .then((res) => res.data);
     },
     onSuccess: async (data) => {
-      await queryClient.invalidateQueries({ queryKey: ["/api/auth/status"] });
+      await queryClient.invalidateQueries({
+        queryKey: [`${process.env.NEXT_PUBLIC_BASE_PATH}/api/auth/status`],
+      });
       toast.success(data.message ?? "로그인되었어요.");
       router.push("/");
     },

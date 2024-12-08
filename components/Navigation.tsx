@@ -35,7 +35,7 @@ export default function Navigation(props: { className?: string }) {
               ])}
             >
               <Image
-                src={item.icon}
+                src={process.env.NEXT_PUBLIC_BASE_PATH + item.icon}
                 alt={`${item.label} icon`}
                 className="mr-1"
                 width={28}

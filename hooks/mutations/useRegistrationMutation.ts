@@ -10,12 +10,16 @@ export default function useRegistrationMutation() {
   const router = useRouter();
 
   return useMutation({
-    mutationKey: [`/api/auth/register`],
+    mutationKey: [`${process.env.NEXT_PUBLIC_BASE_PATH}/api/auth/register`],
     mutationFn: (data: z.infer<typeof RegistrationSchema>) => {
-      return axios.post(`/api/auth/register`, data).then((res) => res.data);
+      return axios
+        .post(`${process.env.NEXT_PUBLIC_BASE_PATH}/api/auth/register`, data)
+        .then((res) => res.data);
     },
     onSuccess: async (data) => {
-      await queryClient.invalidateQueries({ queryKey: ["/api/teachers"] });
+      await queryClient.invalidateQueries({
+        queryKey: [`${process.env.NEXT_PUBLIC_BASE_PATH}/api/teachers`],
+      });
       toast.success(data.message ?? "교직원을 등록했어요.");
       router.push("/");
     },

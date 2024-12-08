@@ -7,12 +7,16 @@ export default function useDeleteStudentMutation(pk: API.Student["student_pk"]) 
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationKey: [`/api/student/${pk}`],
+    mutationKey: [`${process.env.NEXT_PUBLIC_BASE_PATH}/api/student/${pk}`],
     mutationFn: () => {
-      return axios.delete(`/api/student/${pk}`).then((res) => res.data);
+      return axios
+        .delete(`${process.env.NEXT_PUBLIC_BASE_PATH}/api/student/${pk}`)
+        .then((res) => res.data);
     },
     onSuccess: async (data) => {
-      await queryClient.invalidateQueries({ queryKey: ["/api/students"] });
+      await queryClient.invalidateQueries({
+        queryKey: [`${process.env.NEXT_PUBLIC_BASE_PATH}/api/students`],
+      });
       toast.success(data.message ?? "학생을 삭제했어요.");
     },
     onError: (error) => {
