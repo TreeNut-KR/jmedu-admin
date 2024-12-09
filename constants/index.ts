@@ -83,7 +83,7 @@ export const PERMISSION_DESCRIPTIONS: { [key in API.Task]: string } = {
 
 export const PERMISSION_DEFAULT_LEVELS: { [key in API.Task]: number } = {
   // 권한 관련
-  permissions_view: 2,
+  permissions_view: 1,
   permission_edit: 3,
   // 학교 관련
   schools_view: 1,
