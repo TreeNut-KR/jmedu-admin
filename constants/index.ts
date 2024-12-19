@@ -35,22 +35,44 @@ export const THEME = {
   자동: "system",
 } as const;
 
-export const MENU_ITEMS = [
+export const MENU_ITEMS: {
+  path: string;
+  label: string;
+  icon: string;
+  permission?: API.Task | API.Task[];
+}[] = [
   { path: "/", label: "홈", icon: "/tossface/u1F3E0.svg" },
-  { path: "/student", label: "학생 관리", icon: "/tossface/u1F9D2_u1F3FB.svg" },
-  { path: "/school", label: "학교 관리", icon: "/tossface/u1F3EB.svg" },
+  {
+    path: "/student",
+    label: "학생 관리",
+    icon: "/tossface/u1F9D2_u1F3FB.svg",
+    permission: "students_view",
+  },
+  { path: "/school", label: "학교 관리", icon: "/tossface/u1F3EB.svg", permission: "schools_view" },
   {
     path: "/teacher",
     label: "교직원 관리",
     icon: "/tossface/u1F468_u1F3FB_u200D_u1F3EB.svg",
+    permission: "teachers_view",
   },
   {
     path: "/student-attendance",
     label: "등하원 기록",
     icon: "/tossface/u1F6B6_u1F3FB.svg",
+    permission: "students_attendance_view",
   },
-  { path: "/admin-log", label: "작업 기록", icon: "/tossface/u1F4CB.svg" },
-  { path: "/permission", label: "작업 권한 관리", icon: "/tossface/u1F6E1.svg" },
+  {
+    path: "/admin-log",
+    label: "작업 기록",
+    icon: "/tossface/u1F4CB.svg",
+    permission: "admin_log_view",
+  },
+  {
+    path: "/permission",
+    label: "작업 권한 관리",
+    icon: "/tossface/u1F6E1.svg",
+    permission: "permissions_view",
+  },
 ];
 
 export const PERMISSION_DESCRIPTIONS: { [key in API.Task]: string } = {

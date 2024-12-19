@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { ModeToggle } from "@/components/ModeToggle";
+import WithAuthorization from "@/components/WithAuthorization";
 import { cn } from "@/utils/shadcn";
 import { MENU_ITEMS } from "@/constants";
 
@@ -22,27 +23,28 @@ export default function Navigation(props: { className?: string }) {
           const isActive = `/${path.split("/")[1]}` === item.path;
 
           return (
-            <Link
-              key={item.label}
-              href={item.path}
-              className={cn([
-                "font-semibold text-adaptiveGray-700",
-                isActive && "font-bold text-adaptiveBlue-500",
-                "py-2",
-                "flex",
-                "items-center",
-                "gap-2",
-              ])}
-            >
-              <Image
-                src={process.env.NEXT_PUBLIC_BASE_PATH + item.icon}
-                alt={`${item.label} icon`}
-                className="mr-1"
-                width={28}
-                height={28}
-              />
-              <span className="text-md text-nowrap">{item.label}</span>
-            </Link>
+            <WithAuthorization key={item.label} requiredPermission={item.permission ?? []}>
+              <Link
+                href={item.path}
+                className={cn([
+                  "font-semibold text-adaptiveGray-700",
+                  isActive && "font-bold text-adaptiveBlue-500",
+                  "py-2",
+                  "flex",
+                  "items-center",
+                  "gap-2",
+                ])}
+              >
+                <Image
+                  src={process.env.NEXT_PUBLIC_BASE_PATH + item.icon}
+                  alt={`${item.label} icon`}
+                  className="mr-1"
+                  width={28}
+                  height={28}
+                />
+                <span className="text-md text-nowrap">{item.label}</span>
+              </Link>
+            </WithAuthorization>
           );
         })}
       </div>
