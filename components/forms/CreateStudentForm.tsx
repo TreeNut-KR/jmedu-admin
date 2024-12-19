@@ -21,7 +21,7 @@ export default function CreateStudentForm() {
       birthday: new Date().toISOString().split("T")[0],
       contact: "",
       contact_parent: "",
-      school: 0,
+      school: undefined,
       payday: 0,
       firstreg: new Date().toISOString().split("T")[0],
     },

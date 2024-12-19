@@ -134,7 +134,7 @@ const SchoolSelector = React.forwardRef<HTMLInputElement, SchoolSelectorProps>(
         <Dialog onOpenChange={handleChangeOpen}>
           <div className="flex items-center gap-2">
             <Input
-              className="pointer-events-none w-auto"
+              className={cn("pointer-events-none w-auto", !school?.name && "text-adaptiveGray-400")}
               value={school?.name ?? "학교를 선택해주세요"}
               readOnly
             />
