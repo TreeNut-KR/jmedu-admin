@@ -3,12 +3,14 @@ import axios, { isAxiosError } from "axios";
 import { useRouter } from "next/router";
 import { toast } from "sonner";
 import { z } from "zod";
+import useRedirectURLQuery from "@/hooks/useRedirectURLQuery";
 import { StudentSchema } from "@/schema";
 import type * as API from "@/types/api";
 
 export default function useUpdateStudentMutation(pk: API.Student["student_pk"]) {
   const queryClient = useQueryClient();
   const router = useRouter();
+  const { redirectURL } = useRedirectURLQuery("/student");
 
   return useMutation({
     mutationKey: [`${process.env.NEXT_PUBLIC_BASE_PATH}/api/student/${pk}`],
@@ -22,7 +24,7 @@ export default function useUpdateStudentMutation(pk: API.Student["student_pk"]) 
         queryKey: [`${process.env.NEXT_PUBLIC_BASE_PATH}/api/students`],
       });
       toast.success(data.message ?? "학생 정보를 수정했어요.");
-      router.push("/student");
+      router.push(redirectURL ?? "/student");
     },
     onError: (error) => {
       if (isAxiosError(error)) {
