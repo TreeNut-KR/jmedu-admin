@@ -14,7 +14,7 @@ export default async function deleteSchool(req: NextApiRequest, res: NextApiResp
     if (req.query.pk === "0") {
       return res.status(404).json({
         success: false,
-        message: "'학교 미지정'은 삭제할 수 없어요.",
+        message: "학교 기본값은 삭제할 수 없어요.",
       });
     }
 
@@ -57,6 +57,13 @@ export default async function deleteSchool(req: NextApiRequest, res: NextApiResp
       return res.status(404).json({
         success: false,
         message: "이미 삭제된 학교는 삭제할 수 없어요.",
+      });
+    }
+
+    if (preResults[0].name === "학교 미설정" || preResults[0].name === "학교 미지정") {
+      return res.status(404).json({
+        success: false,
+        message: `'${preResults[0].name}'은 삭제 할 수 없어요.`,
       });
     }
 

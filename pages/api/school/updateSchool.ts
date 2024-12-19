@@ -21,10 +21,10 @@ export default async function updateSchool(req: NextApiRequest, res: NextApiResp
     // 학교 수정 시작
     adminLog(`학교 수정 (school_pk: ${req.query.pk})`, req);
 
-    if (req.query.pk === "0") {
+    if (req.query.pk === "0" || body.name === "학교 미설정" || body.name === "학교 미지정") {
       return res.status(404).json({
         success: false,
-        message: "'학교 미지정'은 수정할 수 없어요.",
+        message: `'${body.name}'은 수정할 수 없어요.`,
       });
     }
 

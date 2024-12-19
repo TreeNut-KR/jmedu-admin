@@ -106,6 +106,50 @@ async function main() {
     }
   }
 
+  // 학교 기본값을 확인
+  console.log("학교 기본값을 확인합니다.");
+
+  const [checkNameResult] = await connection.query<RowDataPacket[]>(
+    `
+    SELECT *
+    FROM school
+    WHERE name = '학교 미설정' OR name = '학교 미지정'
+  `,
+  );
+
+  if (checkNameResult.length > 0) return;
+
+  const [checkZeroResult] = await connection.query<RowDataPacket[]>(
+    `
+    SELECT *
+    FROM school
+    WHERE school_pk = 0
+  `,
+  );
+
+  if (checkZeroResult.length === 0) {
+    await connection.query(
+      `
+      INSERT INTO school (
+        name, is_elementary, is_middle, is_high
+      ) VALUES (
+        ?, ?, ?, ?
+      )
+    `,
+      ["학교 미설정", false, false, false],
+    );
+
+    await connection.query(
+      `
+      UPDATE school 
+      SET school_pk = 0
+      WHERE name = '학교 미설정'
+      ORDER BY created_at DESC
+      LIMIT 1
+    `,
+    );
+  }
+
   await connection.end();
 }
 

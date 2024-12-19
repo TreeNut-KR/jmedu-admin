@@ -22,6 +22,13 @@ export default async function createSchool(req: NextApiRequest, res: NextApiResp
     // 학교 생성 시작
     adminLog(`학교 생성 (name: "${body.name}")`, req);
 
+    if (body.name === "학교 미설정" || body.name === "학교 미지정") {
+      return res.status(404).json({
+        success: false,
+        message: `'${body.name}'은 생성 할 수 없어요.`,
+      });
+    }
+
     const db = pool;
 
     const createQuery = `
@@ -35,7 +42,12 @@ export default async function createSchool(req: NextApiRequest, res: NextApiResp
     const getQuery = `
       SELECT *
       FROM school
-      WHERE deleted_at IS NULL AND school_pk != 0 AND school_pk = LAST_INSERT_ID();
+      WHERE 
+        deleted_at IS NULL 
+        AND school_pk != 0 
+        AND name != '학교 미설정' 
+        AND name != '학교 미지정' 
+        AND school_pk = LAST_INSERT_ID();
     `;
 
     // TODO: preQuery 실패 여부 확인 후 에러처리 필요

@@ -30,6 +30,8 @@ export default async function getSchool(req: NextApiRequest, res: NextApiRespons
 
     if (!params.includeDefault) {
       whereClause.push("school_pk != 0");
+      whereClause.push("name != '학교 미설정'");
+      whereClause.push("name != '학교 미지정'");
     }
 
     if (!params.includeDeleted) {
@@ -58,7 +60,11 @@ export default async function getSchool(req: NextApiRequest, res: NextApiRespons
       });
     }
 
-    if (results[0].school_pk === 0) {
+    if (
+      results[0].school_pk === 0 ||
+      results[0].name === "학교 미설정" ||
+      results[0].name === "학교 미지정"
+    ) {
       return res.status(200).json({
         success: false,
         message: "기본값으로 사용되는 학교에요.",

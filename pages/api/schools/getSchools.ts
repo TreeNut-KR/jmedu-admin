@@ -27,6 +27,8 @@ export default async function getSchools(req: NextApiRequest, res: NextApiRespon
 
     if (!params.includeDefault) {
       whereConditions.push("school_pk != 0");
+      whereConditions.push("name != '학교 미설정'");
+      whereConditions.push("name != '학교 미지정'");
     }
 
     if (!params.includeDeleted) {
