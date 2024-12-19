@@ -2,6 +2,7 @@ import Head from "next/head";
 import NextTopLoader from "nextjs-toploader";
 import { Toaster } from "sonner";
 import type { AppProps } from "next/app";
+import AuthorizationOverlay from "@/components/AuthorizationOverlay";
 import Header from "@/components/Header";
 import Navigation from "@/components/Navigation";
 import GlobalAlert from "@/components/alerts/GlobalAlert";
@@ -28,6 +29,7 @@ export default function App({ Component, pageProps }: AppProps) {
             <Component {...pageProps} />
           </div>
         </div>
+        <AuthorizationOverlay />
         <GlobalDialog />
         <GlobalAlert />
         <Toaster position="top-center" visibleToasts={1} richColors />
