@@ -19,8 +19,8 @@ async function main() {
 
   const targetTables = ["student", "teacher"];
 
-  // 컬럼 추가
-  console.log("컬럼을 추가합니다.");
+  // 컬럼 추가 및 마이그레이션
+  console.log("컬럼을 추가하고 마이그레이션합니다.");
 
   for (const table of targetTables) {
     const [checkResult] = await connection.query<RowDataPacket[]>(`
@@ -32,25 +32,20 @@ async function main() {
         ALTER TABLE ${table}
         ADD COLUMN sex TINYINT NOT NULL DEFAULT 0 AFTER name;
       `);
+
+      if (process.env.OLD_SEX_COLUMN && process.env.OLD_MALE_CODE && process.env.OLD_FEMALE_CODE) {
+        await connection.query(`
+          UPDATE ${table}
+          SET sex = CASE 
+            WHEN ${process.env.OLD_SEX_COLUMN} = ${process.env.OLD_MALE_CODE} THEN 1
+            WHEN ${process.env.OLD_SEX_COLUMN} = ${process.env.OLD_FEMALE_CODE} THEN 2
+            ELSE 0
+          END;
+        `);
+      } else {
+        console.error("컬럼 정보를 마이그레이션하는데 필요한 정보를 찾을 수 없습니다.");
+      }
     }
-  }
-
-  // 컬럼 마이그레이션
-  console.log("컬럼 정보를 마이그레이션합니다.");
-
-  if (!process.env.OLD_SEX_COLUMN || !process.env.OLD_MALE_CODE || !process.env.OLD_FEMALE_CODE) {
-    throw new Error("컬럼 정보를 마이그레이션하는데 필요한 정보를 찾을 수 없습니다.");
-  }
-
-  for (const table of targetTables) {
-    await connection.query(`
-      UPDATE ${table}
-      SET sex = CASE 
-        WHEN ${process.env.OLD_SEX_COLUMN} = ${process.env.OLD_MALE_CODE} THEN 1
-        WHEN ${process.env.OLD_SEX_COLUMN} = ${process.env.OLD_FEMALE_CODE} THEN 2
-        ELSE 0
-      END;
-    `);
   }
 
   // 작업 권한 추가
@@ -117,37 +112,37 @@ async function main() {
   `,
   );
 
-  if (checkNameResult.length > 0) return;
-
-  const [checkZeroResult] = await connection.query<RowDataPacket[]>(
-    `
-    SELECT *
-    FROM school
-    WHERE school_pk = 0
-  `,
-  );
-
-  if (checkZeroResult.length === 0) {
-    await connection.query(
+  if (checkNameResult.length === 0) {
+    const [checkZeroResult] = await connection.query<RowDataPacket[]>(
       `
-      INSERT INTO school (
-        name, is_elementary, is_middle, is_high
-      ) VALUES (
-        ?, ?, ?, ?
-      )
-    `,
-      ["학교 미설정", false, false, false],
-    );
-
-    await connection.query(
-      `
-      UPDATE school 
-      SET school_pk = 0
-      WHERE name = '학교 미설정'
-      ORDER BY created_at DESC
-      LIMIT 1
+      SELECT *
+      FROM school
+      WHERE school_pk = 0
     `,
     );
+
+    if (checkZeroResult.length === 0) {
+      await connection.query(
+        `
+        INSERT INTO school (
+          name, is_elementary, is_middle, is_high
+        ) VALUES (
+          ?, ?, ?, ?
+        )
+      `,
+        ["학교 미설정", false, false, false],
+      );
+
+      await connection.query(
+        `
+        UPDATE school 
+        SET school_pk = 0
+        WHERE name = '학교 미설정'
+        ORDER BY created_at DESC
+        LIMIT 1
+      `,
+      );
+    }
   }
 
   await connection.end();
