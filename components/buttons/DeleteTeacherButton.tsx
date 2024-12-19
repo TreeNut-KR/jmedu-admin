@@ -21,7 +21,7 @@ export default function DeleteTeacherButton(props: { pk: API.Teacher["teacher_pk
   }
 
   return (
-    <WithAuthorization requiredPermission={"student_delete"}>
+    <WithAuthorization requiredPermission={"teacher_delete"}>
       <Button variant="lightRed" size="sm" data-id={props.pk} onClick={handleDelete}>
         <Trash size={14} />
         삭제

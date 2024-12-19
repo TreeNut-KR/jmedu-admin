@@ -25,7 +25,7 @@ export default function UpdatePermissionButton(props: { name: API.Permission["ta
   }
 
   return (
-    <WithAuthorization requiredPermission={"student_delete"}>
+    <WithAuthorization requiredPermission={"permission_edit"}>
       <Button variant="lightGreen" size="sm" data-name={props.name} onClick={handleDelete}>
         <ShieldCheck size={14} />
         권한 수정

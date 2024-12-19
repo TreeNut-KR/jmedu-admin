@@ -9,7 +9,7 @@ export default function UpdateTeacherButton(props: { pk: API.Teacher["teacher_pk
   const { encodedCurrentURL } = useRedirectURLQuery("/teacher");
 
   return (
-    <WithAuthorization requiredPermission={"school_edit"}>
+    <WithAuthorization requiredPermission={"teacher_edit"}>
       <Button variant="lightBlue" size="sm" asChild>
         <Link
           href={{

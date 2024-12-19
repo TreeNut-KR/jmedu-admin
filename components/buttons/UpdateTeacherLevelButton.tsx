@@ -21,7 +21,7 @@ export default function UpdateTeacherLevelButton(props: { pk: API.Teacher["teach
   }
 
   return (
-    <WithAuthorization requiredPermission={"student_delete"}>
+    <WithAuthorization requiredPermission={"teacher_level_edit"}>
       <Button variant="lightGreen" size="sm" data-id={props.pk} onClick={handleDelete}>
         <ShieldCheck size={14} />
         권한 수정

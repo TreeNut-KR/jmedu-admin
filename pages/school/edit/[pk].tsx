@@ -21,7 +21,7 @@ export default function EditSchoolPage() {
       </Head>
       <div className="space-y-6 p-8">
         <h1 className="text-xl font-bold text-adaptiveGray-800">학교 수정</h1>
-        <WithAuthorization requiredPermission={"student_edit"} isFallback>
+        <WithAuthorization requiredPermission={"school_edit"} isFallback>
           {school_pk != undefined ? (
             <UpdateSchoolForm pk={school_pk} />
           ) : (
