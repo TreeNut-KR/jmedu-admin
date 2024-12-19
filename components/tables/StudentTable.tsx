@@ -24,7 +24,7 @@ import {
 import type * as API from "@/types/api";
 
 export default function StudentTable() {
-  const { query, handleChangeLimit, handleChangePage, handleChangeSortBy, handleChangeOrder } =
+  const { query, handleChangeLimit, handleChangeSortBy, handleChangeOrder } =
     useListQueryOptions<API.Student>({
       sortOptions: STUDENT_SORT_OPTIONS,
       initLimit: 10,
@@ -146,13 +146,7 @@ export default function StudentTable() {
           )}
         </TableBody>
       </Table>
-      <Pagination
-        total={students.data.meta.total}
-        limit={query.limit}
-        page={query.page}
-        size={3}
-        setPage={handleChangePage}
-      />
+      <Pagination total={students.data.meta.total} limit={query.limit} page={query.page} size={3} />
     </div>
   );
 }

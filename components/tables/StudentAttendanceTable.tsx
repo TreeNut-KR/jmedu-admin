@@ -22,7 +22,7 @@ import {
 import type * as API from "@/types/api";
 
 export default function StudentAttendanceTable() {
-  const { query, handleChangeLimit, handleChangePage, handleChangeSortBy, handleChangeOrder } =
+  const { query, handleChangeLimit, handleChangeSortBy, handleChangeOrder } =
     useListQueryOptions<API.StudentAttendance>({
       sortOptions: STUDENT_ATTENDANCE_SORT_OPTIONS,
       initLimit: 10,
@@ -138,13 +138,7 @@ export default function StudentAttendanceTable() {
           )}
         </TableBody>
       </Table>
-      <Pagination
-        total={logs.data.meta.total}
-        limit={query.limit}
-        page={query.page}
-        size={3}
-        setPage={handleChangePage}
-      />
+      <Pagination total={logs.data.meta.total} limit={query.limit} page={query.page} size={3} />
     </div>
   );
 }

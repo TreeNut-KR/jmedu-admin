@@ -24,7 +24,7 @@ import {
 import type * as API from "@/types/api";
 
 export default function SchoolTable() {
-  const { query, handleChangeLimit, handleChangePage, handleChangeSortBy, handleChangeOrder } =
+  const { query, handleChangeLimit, handleChangeSortBy, handleChangeOrder } =
     useListQueryOptions<API.School>({
       sortOptions: SCHOOL_SORT_OPTIONS,
       initLimit: 10,
@@ -146,13 +146,7 @@ export default function SchoolTable() {
           )}
         </TableBody>
       </Table>
-      <Pagination
-        total={schools.data.meta.total}
-        limit={query.limit}
-        page={query.page}
-        size={3}
-        setPage={handleChangePage}
-      />
+      <Pagination total={schools.data.meta.total} limit={query.limit} page={query.page} size={3} />
     </div>
   );
 }

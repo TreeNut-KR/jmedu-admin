@@ -22,7 +22,7 @@ import {
 import type * as API from "@/types/api";
 
 export default function TeacherTable() {
-  const { query, handleChangeLimit, handleChangePage, handleChangeSortBy, handleChangeOrder } =
+  const { query, handleChangeLimit, handleChangeSortBy, handleChangeOrder } =
     useListQueryOptions<API.Teacher>({
       sortOptions: TEACHER_SORT_OPTIONS,
       initLimit: 10,
@@ -138,13 +138,7 @@ export default function TeacherTable() {
           )}
         </TableBody>
       </Table>
-      <Pagination
-        total={teachers.data.meta.total}
-        limit={query.limit}
-        page={query.page}
-        size={3}
-        setPage={handleChangePage}
-      />
+      <Pagination total={teachers.data.meta.total} limit={query.limit} page={query.page} size={3} />
     </div>
   );
 }
