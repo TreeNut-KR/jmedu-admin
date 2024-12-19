@@ -1,5 +1,6 @@
 import { loadEnvConfig } from "@next/env";
 import mysql, { RowDataPacket } from "mysql2/promise";
+import * as API from "@/types/api";
 import { PERMISSION_DEFAULT_LEVELS, PERMISSIONS } from "@/constants";
 
 const projectDir = process.cwd();
@@ -74,6 +75,33 @@ async function main() {
           (?, ?, NOW(), NOW())
       `,
         [permission, PERMISSION_DEFAULT_LEVELS[permission]],
+      );
+    }
+  }
+
+  // 작업 권한 수정
+  console.log("작업 권한을 수정합니다.");
+
+  const targetPermissios: API.Task[] = ["permissions_view"];
+
+  for (const permission of targetPermissios) {
+    const [checkResult] = await connection.query<RowDataPacket[]>(
+      `
+      SELECT *
+      FROM permissions
+      WHERE task_name = ?
+    `,
+      [permission],
+    );
+
+    if (checkResult.length === 1) {
+      await connection.query(
+        `
+        UPDATE permissions 
+        SET level = ?
+        WHERE task_name = ?
+      `,
+        [PERMISSION_DEFAULT_LEVELS[permission], permission],
       );
     }
   }

@@ -71,7 +71,7 @@ export const MENU_ITEMS: {
     path: "/permission",
     label: "작업 권한 관리",
     icon: "/tossface/u1F6E1.svg",
-    permission: "permissions_view",
+    permission: "permission_edit",
   },
 ];
 
@@ -105,7 +105,7 @@ export const PERMISSION_DESCRIPTIONS: { [key in API.Task]: string } = {
 
 export const PERMISSION_DEFAULT_LEVELS: { [key in API.Task]: number } = {
   // 권한 관련
-  permissions_view: 1,
+  permissions_view: 0,
   permission_edit: 3,
   // 학교 관련
   schools_view: 1,

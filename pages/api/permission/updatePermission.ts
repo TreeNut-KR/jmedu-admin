@@ -21,6 +21,13 @@ export default async function updatePermission(req: NextApiRequest, res: NextApi
     // 관리자 권한 레벨 수정 시작
     adminLog(`관리자 권한 레벨 수정 (task_name: "${req.query.name}")`, req);
 
+    if (req.query.name === "permissions_view") {
+      return res.status(404).json({
+        success: false,
+        message: "해당 권한은 수정할 수 없어요.",
+      });
+    }
+
     const db = pool;
 
     const updateQuery = `
