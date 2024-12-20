@@ -54,6 +54,7 @@ export const STUDENT_ATTENDANCE_SORT_OPTIONS: Client.SelectorOption<keyof API.St
   ];
 
 export const ADMIN_LOG_SORT_OPTIONS: Client.SelectorOption<keyof API.AdminLog>[] = [
+  { value: "admin_log_pk", label: "색인" },
   { value: "time", label: "시간" },
   { value: "teacher", label: "교직원" },
 ];
