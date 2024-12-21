@@ -17,10 +17,16 @@ export default function useLoginMutation() {
         .then((res) => res.data);
     },
     onSuccess: async (data) => {
+      toast.success(data.message ?? "로그인되었어요.");
+
       await queryClient.invalidateQueries({
         queryKey: [`${process.env.NEXT_PUBLIC_BASE_PATH}/api/auth/status`],
       });
-      toast.success(data.message ?? "로그인되었어요.");
+
+      await queryClient.invalidateQueries({
+        queryKey: [`${process.env.NEXT_PUBLIC_BASE_PATH}/api/permissions`],
+      });
+
       router.push("/");
     },
     onError: (error) => {
