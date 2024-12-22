@@ -27,7 +27,9 @@ export default function useLoginMutation() {
         queryKey: [`${process.env.NEXT_PUBLIC_BASE_PATH}/api/permissions`],
       });
 
-      router.push("/");
+      if (router.pathname.startsWith("/authorization")) {
+        router.push("/");
+      }
     },
     onError: (error) => {
       if (isAxiosError(error)) {
