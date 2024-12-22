@@ -238,7 +238,7 @@ export const PERMISSION_COLUMN: ColumnDef<API.Permission> = [
 ];
 
 export const ADMIN_LOG_COLUMN: ColumnDef<API.AdminLog> = [
-  { accessor: "admin_log_pk", hidden: true },
+  { header: "색인", accessor: "admin_log_pk" },
   {
     header: "내용",
     accessor: "log",
