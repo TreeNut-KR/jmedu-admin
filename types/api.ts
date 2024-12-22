@@ -50,6 +50,7 @@ export interface Student {
   contact: string;
   contact_parent: string;
   school: number;
+  schoolObj: null | Pick<School, "name" | "deleted_at">;
   payday: number;
   firstreg: string; // ISO 8601 date string
   is_enable: number;
@@ -85,6 +86,7 @@ export interface Teacher {
 export interface StudentAttendance {
   attendance_log_pk: number;
   student: string;
+  studentObj: null | Pick<Student, "name" | "deleted_at">;
   is_attend: number;
   attend_time: string; // ISO 8601 date string
   leave_time: string; // ISO 8601 date string
@@ -95,6 +97,7 @@ export interface StudentAttendance {
 export interface AdminLog {
   admin_log_pk: number;
   teacher: string;
+  teacherObj: null | Pick<Teacher, "name" | "deleted_at">;
   time: string; // ISO 8601 date string
   log: string;
 }

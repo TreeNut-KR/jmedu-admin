@@ -23,10 +23,10 @@ export default async function getStudentAttendance(req: NextApiRequest, res: Nex
 
     const db = pool;
 
-    let whereClause = "WHERE 0=0";
+    const whereConditions = ["attendance_log_pk IS NOT NULL"];
 
     if (params.filter && params.search) {
-      whereClause += ` AND ${params.filter} LIKE '${params.search}'`;
+      whereConditions.push(`${params.filter} LIKE '${params.search}'`);
     }
 
     const limitClause = params.limit > 0 ? `LIMIT ${params.limit}` : ``;
@@ -34,9 +34,16 @@ export default async function getStudentAttendance(req: NextApiRequest, res: Nex
     const offsetClause = params.limit > 0 ? `OFFSET ${(params.page - 1) * params.limit}` : ``;
 
     const query = `
-      SELECT *
+      SELECT 
+        attendance_log.*,
+        IF(
+          student.student_pk IS NOT NULL, 
+          JSON_OBJECT('name', student.name, 'deleted_at', student.deleted_at), 
+          NULL
+        ) as studentObj
       FROM attendance_log
-      ${whereClause}
+      LEFT JOIN student ON attendance_log.student = student.student_pk
+      WHERE ${whereConditions.map((el) => `attendance_log.${el}`).join(" AND ")}
       ORDER BY ${params.sort} ${params.order.toUpperCase()}
       ${limitClause}
       ${offsetClause}
@@ -45,7 +52,7 @@ export default async function getStudentAttendance(req: NextApiRequest, res: Nex
     const metaQuery = `
       SELECT count(*) AS count
       FROM attendance_log
-      ${whereClause}
+      WHERE ${whereConditions.join(" AND ")}
     `;
 
     const [results] = await db.query<RowDataPacket[]>(query);

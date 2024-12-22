@@ -23,10 +23,10 @@ export default async function getAdminLog(req: NextApiRequest, res: NextApiRespo
 
     const db = pool;
 
-    let whereClause = "WHERE 0=0";
+    const whereConditions = ["admin_log_pk IS NOT NULL"];
 
     if (params.filter && params.search) {
-      whereClause += ` AND ${params.filter} LIKE '${params.search}'`;
+      whereConditions.push(`${params.filter} LIKE '${params.search}'`);
     }
 
     const limitClause = params.limit > 0 ? `LIMIT ${params.limit}` : ``;
@@ -34,9 +34,16 @@ export default async function getAdminLog(req: NextApiRequest, res: NextApiRespo
     const offsetClause = params.limit > 0 ? `OFFSET ${(params.page - 1) * params.limit}` : ``;
 
     const query = `
-      SELECT *
+      SELECT 
+        admin_log.*,
+        IF(
+          teacher.teacher_pk IS NOT NULL, 
+          JSON_OBJECT('name', teacher.name, 'deleted_at', teacher.deleted_at), 
+          NULL
+        ) as teacherObj
       FROM admin_log
-      ${whereClause}
+      LEFT JOIN teacher ON admin_log.teacher = teacher.teacher_pk
+      WHERE ${whereConditions.map((el) => `admin_log.${el}`).join(" AND ")}
       ORDER BY ${params.sort} ${params.order.toUpperCase()}
       ${limitClause}
       ${offsetClause}
@@ -45,7 +52,7 @@ export default async function getAdminLog(req: NextApiRequest, res: NextApiRespo
     const metaQuery = `
       SELECT count(*) AS count
       FROM admin_log
-      ${whereClause}
+      WHERE ${whereConditions.join(" AND ")}
     `;
 
     const [results] = await db.query<RowDataPacket[]>(query);

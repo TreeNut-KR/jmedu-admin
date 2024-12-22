@@ -26,17 +26,23 @@ export default async function getStudent(req: NextApiRequest, res: NextApiRespon
 
     const db = pool;
 
-    const whereClause = params.includeDeleted
-      ? "WHERE is_enable = 1 AND student_pk = ?"
-      : "WHERE deleted_at IS NULL AND is_enable = 1 AND student_pk = ?";
+    const whereConditions = params.includeDeleted
+      ? ["is_enable = 1", "student_pk = ?"]
+      : ["is_enable = 1", "student_pk = ?", "deleted_at IS NULL"];
 
     const query = `
       SELECT 
-        *, 
-        DATE_FORMAT(birthday, '%Y-%m-%d') AS birthday, 
-        DATE_FORMAT(firstreg, '%Y-%m-%d') as firstreg
+        student.*, 
+        DATE_FORMAT(student.birthday, '%Y-%m-%d') AS birthday, 
+        DATE_FORMAT(student.firstreg, '%Y-%m-%d') as firstreg,
+        IF(
+          school.school_pk IS NOT NULL, 
+          JSON_OBJECT('name', school.name, 'deleted_at', school.deleted_at), 
+          NULL
+        ) as schoolObj
       FROM student
-      ${whereClause};
+      LEFT JOIN school ON student.school = school.school_pk
+      WHERE ${whereConditions.map((el) => `student.${el}`).join(" AND ")};
     `;
 
     const [results] = await db.query<RowDataPacket[]>(query, [req.query.pk]);

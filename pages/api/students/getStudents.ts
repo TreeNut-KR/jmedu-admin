@@ -39,11 +39,17 @@ export default async function getStudents(req: NextApiRequest, res: NextApiRespo
 
     const query = `
       SELECT 
-        *, 
-        DATE_FORMAT(birthday, '%Y-%m-%d') AS birthday, 
-        DATE_FORMAT(firstreg, '%Y-%m-%d') as firstreg
+        student.*, 
+        DATE_FORMAT(student.birthday, '%Y-%m-%d') AS birthday, 
+        DATE_FORMAT(student.firstreg, '%Y-%m-%d') as firstreg,
+        IF(
+          school.school_pk IS NOT NULL, 
+          JSON_OBJECT('name', school.name, 'deleted_at', school.deleted_at), 
+          NULL
+        ) as schoolObj
       FROM student
-      WHERE ${whereConditions.join(" AND ")}
+      LEFT JOIN school ON student.school = school.school_pk
+      WHERE ${whereConditions.map((el) => `student.${el}`).join(" AND ")}
       ORDER BY ${params.sort} ${params.order.toUpperCase()}
       ${limitClause}
       ${offsetClause};
