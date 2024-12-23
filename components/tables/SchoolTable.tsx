@@ -108,7 +108,7 @@ export default function SchoolTable() {
             {SCHOOL_COLUMNS.map((column, columnIdx) => {
               if (column.hidden) return;
               return (
-                <TableHead key={`${column.accessor ?? `unknown-${columnIdx}`}-header`}>
+                <TableHead key={`school-header-${column.accessor ?? column.header ?? columnIdx}`}>
                   {column.header ?? column.accessor}
                 </TableHead>
               );
@@ -117,22 +117,26 @@ export default function SchoolTable() {
         </TableHeader>
         <TableBody>
           {schools.data.data ? (
-            schools.data.data.map((school, schoolIdx) => (
+            schools.data.data.map((school) => (
               <TableRow
                 key={
-                  SCHOOL_COLUMNS[0].accessor
-                    ? school[SCHOOL_COLUMNS[0].accessor]
-                    : `school-${schoolIdx}`
+                  typeof SCHOOL_COLUMNS[0].accessor === "object"
+                    ? JSON.stringify(school[SCHOOL_COLUMNS[0].accessor])
+                    : (school[SCHOOL_COLUMNS[0].accessor] as string | number)
                 }
               >
                 {SCHOOL_COLUMNS.map((column, columnIdx) => {
                   if (column.hidden) return;
                   return (
-                    <TableCell key={column.accessor ?? `school-column-${columnIdx}`}>
+                    <TableCell
+                      key={`school-column-${column.accessor ?? column.header ?? columnIdx}`}
+                    >
                       {column.renderer
                         ? column.renderer(school)
                         : column.accessor
-                          ? school[column.accessor]
+                          ? typeof school[column.accessor] === "object"
+                            ? JSON.stringify(school[column.accessor])
+                            : (school[column.accessor] as string | number)
                           : null}
                     </TableCell>
                   );

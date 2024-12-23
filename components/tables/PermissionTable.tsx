@@ -54,7 +54,9 @@ export default function PermissionTable() {
             {PERMISSION_COLUMN.map((column, columnIdx) => {
               if (column.hidden) return;
               return (
-                <TableHead key={`${column.accessor ?? `unknown-${columnIdx}`}-header`}>
+                <TableHead
+                  key={`permission-header-${column.accessor ?? column.header ?? columnIdx}`}
+                >
                   {column.header ?? column.accessor}
                 </TableHead>
               );
@@ -63,24 +65,28 @@ export default function PermissionTable() {
         </TableHeader>
         <TableBody>
           {permissions.data.data ? (
-            permissions.data.data.map((permission, permissionIdx) => {
+            permissions.data.data.map((permission) => {
               if (!PERMISSION_DESCRIPTIONS.hasOwnProperty(permission.task_name)) return;
               return (
                 <TableRow
                   key={
-                    PERMISSION_COLUMN[0].accessor
-                      ? permission[PERMISSION_COLUMN[0].accessor]
-                      : `school-${permissionIdx}`
+                    typeof PERMISSION_COLUMN[0].accessor === "object"
+                      ? JSON.stringify(permission[PERMISSION_COLUMN[0].accessor])
+                      : (permission[PERMISSION_COLUMN[0].accessor] as string | number)
                   }
                 >
                   {PERMISSION_COLUMN.map((column, columnIdx) => {
                     if (column.hidden) return;
                     return (
-                      <TableCell key={column.accessor ?? `school-column-${columnIdx}`}>
+                      <TableCell
+                        key={`permission-column-${column.accessor ?? column.header ?? columnIdx}`}
+                      >
                         {column.renderer
                           ? column.renderer(permission)
                           : column.accessor
-                            ? permission[column.accessor]
+                            ? typeof permission[column.accessor] === "object"
+                              ? JSON.stringify(permission[column.accessor])
+                              : (permission[column.accessor] as string | number)
                             : null}
                       </TableCell>
                     );

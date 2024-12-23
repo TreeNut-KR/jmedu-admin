@@ -100,7 +100,7 @@ export default function TeacherTable() {
             {TEACHER_COLUMN.map((column, columnIdx) => {
               if (column.hidden) return;
               return (
-                <TableHead key={`${column.accessor ?? `unknown-${columnIdx}`}-header`}>
+                <TableHead key={`teacher-header-${column.accessor ?? column.header ?? columnIdx}`}>
                   {column.header ?? column.accessor}
                 </TableHead>
               );
@@ -109,22 +109,26 @@ export default function TeacherTable() {
         </TableHeader>
         <TableBody>
           {teachers.data.data ? (
-            teachers.data.data.map((teacher, teacherIdx) => (
+            teachers.data.data.map((teacher) => (
               <TableRow
                 key={
-                  TEACHER_COLUMN[0].accessor
-                    ? teacher[TEACHER_COLUMN[0].accessor]
-                    : `school-${teacherIdx}`
+                  typeof TEACHER_COLUMN[0].accessor === "object"
+                    ? JSON.stringify(teacher[TEACHER_COLUMN[0].accessor])
+                    : (teacher[TEACHER_COLUMN[0].accessor] as string | number)
                 }
               >
                 {TEACHER_COLUMN.map((column, columnIdx) => {
                   if (column.hidden) return;
                   return (
-                    <TableCell key={column.accessor ?? `school-column-${columnIdx}`}>
+                    <TableCell
+                      key={`teacher-column-${column.accessor ?? column.header ?? columnIdx}`}
+                    >
                       {column.renderer
                         ? column.renderer(teacher)
                         : column.accessor
-                          ? teacher[column.accessor]
+                          ? typeof teacher[column.accessor] === "object"
+                            ? JSON.stringify(teacher[column.accessor])
+                            : (teacher[column.accessor] as string | number)
                           : null}
                     </TableCell>
                   );

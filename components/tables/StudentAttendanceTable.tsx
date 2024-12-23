@@ -100,7 +100,9 @@ export default function StudentAttendanceTable() {
             {STUDENT_ATTENDANCE_COLUMN.map((column, columnIdx) => {
               if (column.hidden) return;
               return (
-                <TableHead key={`${column.accessor ?? `unknown-${columnIdx}`}-header`}>
+                <TableHead
+                  key={`student-attendance-header-${column.accessor ?? column.header ?? columnIdx}`}
+                >
                   {column.header ?? column.accessor}
                 </TableHead>
               );
@@ -109,22 +111,26 @@ export default function StudentAttendanceTable() {
         </TableHeader>
         <TableBody>
           {logs.data.data ? (
-            logs.data.data.map((log, logIdx) => (
+            logs.data.data.map((log) => (
               <TableRow
                 key={
-                  STUDENT_ATTENDANCE_COLUMN[0].accessor
-                    ? log[STUDENT_ATTENDANCE_COLUMN[0].accessor]
-                    : `school-${logIdx}`
+                  typeof STUDENT_ATTENDANCE_COLUMN[0].accessor === "object"
+                    ? JSON.stringify(log[STUDENT_ATTENDANCE_COLUMN[0].accessor])
+                    : (log[STUDENT_ATTENDANCE_COLUMN[0].accessor] as string | number)
                 }
               >
                 {STUDENT_ATTENDANCE_COLUMN.map((column, columnIdx) => {
                   if (column.hidden) return;
                   return (
-                    <TableCell key={column.accessor ?? `school-column-${columnIdx}`}>
+                    <TableCell
+                      key={`student-attendance-column-${column.accessor ?? column.header ?? columnIdx}`}
+                    >
                       {column.renderer
                         ? column.renderer(log)
                         : column.accessor
-                          ? log[column.accessor]
+                          ? typeof log[column.accessor] === "object"
+                            ? JSON.stringify(log[column.accessor])
+                            : (log[column.accessor] as string | number)
                           : null}
                     </TableCell>
                   );

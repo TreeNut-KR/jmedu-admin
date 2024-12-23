@@ -20,12 +20,20 @@ export interface SelectorOption<T> {
   label: string;
 }
 
-export type ColumnDef<T> = {
-  header?: string;
-  accessor?: keyof T;
-  renderer?: (data: T) => ReactNode;
-  hidden?: boolean;
-}[];
+export type ColumnDef<T> = [
+  {
+    header?: string;
+    accessor: keyof T;
+    renderer?: (data: T) => ReactNode;
+    hidden?: boolean;
+  },
+  ...{
+    header?: string;
+    accessor?: keyof T;
+    renderer?: (data: T) => ReactNode;
+    hidden?: boolean;
+  }[],
+];
 
 export type FormDef<T extends z.ZodObject<any>> = {
   type: HTMLInputTypeAttribute;
