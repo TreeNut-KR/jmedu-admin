@@ -20,6 +20,8 @@ export interface SelectorOption<T> {
   label: string;
 }
 
+export type SelectorOptions<T> = [SelectorOption<T>, ...SelectorOption<T>[]];
+
 export type ColumnDef<T> = [
   {
     header?: string;

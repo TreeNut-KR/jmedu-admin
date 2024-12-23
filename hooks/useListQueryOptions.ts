@@ -1,5 +1,6 @@
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { z } from "zod";
 import { getItem, setItem } from "@/utils/localStorage";
 import { COMMON_LIMIT_OPTIONS, COMMON_ORDER_OPTIONS } from "@/constants/options";
 import type * as API from "@/types/api";
@@ -7,55 +8,63 @@ import type * as API from "@/types/api";
 export default function useListQueryOptions<T>(option: API.InitListQueryOptions<T>) {
   const router = useRouter();
 
-  const queryParams = useMemo(() => {
-    let obj: Partial<API.ListQueryOptions<T>> = {};
-
-    if (
-      router.query.page &&
-      typeof Number(router.query.page) === "number" &&
-      !isNaN(Number(router.query.page))
-    ) {
-      obj = { ...obj, page: Number(router.query.page) };
-    }
-
-    if (
-      router.query.limit &&
-      typeof Number(router.query.limit) === "number" &&
-      !isNaN(Number(router.query.limit))
-    ) {
-      obj = { ...obj, limit: Number(router.query.limit) };
-    }
-
-    if (router.query.sort && option.sortOptions.find((opt) => opt.value === router.query.sort)) {
-      obj = { ...obj, sort: router.query.sort as keyof T };
-    }
-
-    if (router.query.order && (router.query.order === "asc" || router.query.order === "desc")) {
-      obj = { ...obj, order: router.query.order };
-    }
-
-    return obj;
-  }, [router.query, option.sortOptions]);
-
-  const localQueryOption = useMemo(
-    () => getItem<API.LocalListQueryOptions<T>>("list-query-option", {})[router.pathname],
-    [router.pathname],
+  const ListQuerySchema = useMemo(
+    () =>
+      z.object({
+        page: z.coerce.number().gte(1).optional().catch(1),
+        limit: z.coerce.number().gte(0).optional().catch(10),
+        sort: z
+          .string()
+          .transform((val) => option.sortOptions.find((opt) => opt.value === val)?.value)
+          .optional()
+          .catch(option.sortOptions[0].value),
+        order: z
+          .enum([
+            COMMON_ORDER_OPTIONS[0].value,
+            ...COMMON_ORDER_OPTIONS.slice(1).map((el) => el.value),
+          ])
+          .optional()
+          .catch(COMMON_ORDER_OPTIONS[0].value),
+      }),
+    [option.sortOptions],
   );
 
+  const queryParams = useMemo(() => {
+    const { data: params, error: paramsError } = ListQuerySchema.safeParse(router.query);
+
+    if (paramsError) {
+      console.error(paramsError);
+    }
+
+    return params;
+  }, [ListQuerySchema, router.query]);
+
+  const localQueryOption = useMemo(() => {
+    const item = getItem<API.LocalListQueryOptions<T>>("list-query-option", {})[router.pathname];
+
+    const { data: params, error: paramsError } = ListQuerySchema.safeParse(item);
+
+    if (paramsError) {
+      console.error(paramsError);
+    }
+
+    return params;
+  }, [router.pathname, ListQuerySchema]);
+
   const [query, setQuery] = useState<API.ListQueryOptions<T>>({
-    page: queryParams.page ?? option.initPage ?? 1,
+    page: queryParams?.page ?? option.initPage ?? 1,
     limit:
-      queryParams.limit ??
+      queryParams?.limit ??
       localQueryOption?.limit ??
       option.initLimit ??
       COMMON_LIMIT_OPTIONS[0].value,
     sort:
-      queryParams.sort ??
+      queryParams?.sort ??
       localQueryOption?.sort ??
       option.initSortBy ??
       option.sortOptions[0].value,
     order:
-      queryParams.order ??
+      queryParams?.order ??
       localQueryOption?.order ??
       option.initOrder ??
       COMMON_ORDER_OPTIONS[0].value,
@@ -63,19 +72,19 @@ export default function useListQueryOptions<T>(option: API.InitListQueryOptions<
 
   useEffect(() => {
     setQuery({
-      page: queryParams.page ?? option.initPage ?? 1,
+      page: queryParams?.page ?? option.initPage ?? 1,
       limit:
-        queryParams.limit ??
+        queryParams?.limit ??
         localQueryOption?.limit ??
         option.initLimit ??
         COMMON_LIMIT_OPTIONS[0].value,
       sort:
-        queryParams.sort ??
+        queryParams?.sort ??
         localQueryOption?.sort ??
         option.initSortBy ??
         option.sortOptions[0].value,
       order:
-        queryParams.order ??
+        queryParams?.order ??
         localQueryOption?.order ??
         option.initOrder ??
         COMMON_ORDER_OPTIONS[0].value,

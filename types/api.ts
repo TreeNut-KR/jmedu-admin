@@ -25,8 +25,8 @@ export interface LocalListQueryOptions<T = unknown> {
   [key: string]: Partial<ListQueryOptions<T>> | null;
 }
 
-export interface InitListQueryOptions<T = unknown> {
-  sortOptions: { value: keyof T; label: string }[];
+export interface InitListQueryOptions<T> {
+  sortOptions: [{ value: keyof T; label: string }, ...{ value: keyof T; label: string }[]];
   initPage?: number;
   initLimit?: number;
   initSortBy?: keyof T;
