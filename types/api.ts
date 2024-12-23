@@ -21,6 +21,10 @@ export interface ListQueryOptions<T = unknown> {
   order: "asc" | "desc";
 }
 
+export interface LocalListQueryOptions<T = unknown> {
+  [key: string]: Partial<ListQueryOptions<T>> | null;
+}
+
 export interface InitListQueryOptions<T = unknown> {
   sortOptions: { value: keyof T; label: string }[];
   initPage?: number;
