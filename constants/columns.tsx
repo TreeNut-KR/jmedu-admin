@@ -15,7 +15,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/shadcn/ui/tooltip";
-import { formatPhoneNumber } from "@/utils";
+import { formatDate, formatPhoneNumber } from "@/utils";
 import { PERMISSION_DESCRIPTIONS } from "@/constants/index";
 import type * as API from "@/types/api";
 import type { ColumnDef } from "@/types/client";
@@ -152,12 +152,12 @@ export const STUDENT_ATTENDANCE_COLUMN: ColumnDef<API.StudentAttendance> = [
   {
     header: "등원 시간",
     accessor: "attend_time",
-    renderer: (row) => new Date(row["attend_time"]).toLocaleString(),
+    renderer: (row) => formatDate(row["attend_time"]),
   },
   {
     header: "하원 시간",
     accessor: "leave_time",
-    renderer: (row) => new Date(row["leave_time"]).toLocaleString(),
+    renderer: (row) => formatDate(row["leave_time"]),
   },
   {
     header: "문자 발송 여부",
@@ -170,7 +170,7 @@ export const STUDENT_ATTENDANCE_COLUMN: ColumnDef<API.StudentAttendance> = [
   {
     header: "문자 발송 시간",
     accessor: "sms_sent_time",
-    renderer: (row) => new Date(row["sms_sent_time"]).toLocaleString(),
+    renderer: (row) => formatDate(row["sms_sent_time"]),
   },
 ];
 
@@ -268,6 +268,6 @@ export const ADMIN_LOG_COLUMN: ColumnDef<API.AdminLog> = [
   {
     header: "시간",
     accessor: "time",
-    renderer: (row) => new Date(row["time"]).toLocaleString(),
+    renderer: (row) => formatDate(row["time"]),
   },
 ];

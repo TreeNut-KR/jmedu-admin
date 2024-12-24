@@ -53,6 +53,11 @@ export const formatPhoneNumber = (value: string) => {
   }
 };
 
+export const formatDate = (value?: string) => {
+  if (!value) return;
+  return new Date(value).toLocaleString();
+};
+
 export const unformatPhoneNumber = (value: string) => value.replaceAll(/-/g, "");
 
 export const handlePhoneNumber = (e: ChangeEvent<HTMLInputElement>) => {
