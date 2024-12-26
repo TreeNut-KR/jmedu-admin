@@ -3,15 +3,40 @@ import mysql, { ResultSetHeader, RowDataPacket } from "mysql2/promise";
 import { NextApiRequest, NextApiResponse } from "next";
 import type * as API from "@/types/api";
 
-export const pool = mysql.createPool({
-  host: process.env.MYSQL_ROOT_HOST,
-  port: process.env.MYSQL_ROOT_PORT ? Number(process.env.MYSQL_ROOT_PORT) : 3306,
-  user: process.env.MYSQL_ROOT_USER,
-  password: process.env.MYSQL_ROOT_PASSWORD,
-  database: process.env.MYSQL_DATABASE,
-  charset: "utf8mb4",
-  connectionLimit: 3,
-});
+function check(it: false | (Window & typeof globalThis) | typeof globalThis) {
+  return it && it.Math === Math && it;
+}
+
+const globalObject =
+  check(typeof window === "object" && window) ||
+  check(typeof self === "object" && self) ||
+  check(typeof global === "object" && global) ||
+  (() => {
+    return this;
+  })() ||
+  Function("return this")();
+
+const registerService = <T>(name: string, initFn: () => T): T => {
+  if (process.env.NODE_ENV === "development") {
+    if (!(name in globalObject)) {
+      globalObject[name] = initFn();
+    }
+    return globalObject[name];
+  }
+  return initFn();
+};
+
+export const pool = registerService("mysql", () =>
+  mysql.createPool({
+    host: process.env.MYSQL_ROOT_HOST,
+    port: process.env.MYSQL_ROOT_PORT ? Number(process.env.MYSQL_ROOT_PORT) : 3306,
+    user: process.env.MYSQL_ROOT_USER,
+    password: process.env.MYSQL_ROOT_PASSWORD,
+    database: process.env.MYSQL_DATABASE,
+    charset: "utf8mb4",
+    connectionLimit: 3,
+  }),
+);
 
 export async function encrypt(payload: JWTPayload) {
   const key = new TextEncoder().encode(process.env.SESSION_SECRET);
