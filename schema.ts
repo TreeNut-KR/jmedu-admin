@@ -23,35 +23,35 @@ export const LoginSchema = z.object({
 });
 
 export const PermissionSchema = z.object({
-  level: z.number().min(0).max(3),
+  level: z.number().min(0).max(3).nullable(),
 });
 
 export const SchoolSchema = z.object({
-  name: z.string().min(2).max(50),
-  is_elementary: z.coerce.number().gte(0).lte(1),
-  is_middle: z.coerce.number().gte(0).lte(1),
-  is_high: z.coerce.number().gte(0).lte(1),
+  name: z.string().min(2).max(50).nullable(),
+  is_elementary: z.coerce.number().gte(0).lte(1).nullable(),
+  is_middle: z.coerce.number().gte(0).lte(1).nullable(),
+  is_high: z.coerce.number().gte(0).lte(1).nullable(),
 });
 
 export const StudentSchema = z.object({
-  name: z.string().min(2).max(20),
+  name: z.string().min(2).max(20).nullable(),
   sex: z.nativeEnum(SEX),
-  birthday: z.string().date(),
-  contact: z.string(),
-  contact_parent: z.string(),
-  school: z.number(),
-  payday: z.coerce.number().gte(0).lte(31),
-  firstreg: z.string().date(),
+  birthday: z.string().date().nullable(),
+  contact: z.string().nullable(),
+  contact_parent: z.string().nullable(),
+  school: z.number().nullable(),
+  payday: z.coerce.number().gte(0).lte(31).nullable(),
+  firstreg: z.string().date().nullable(),
 });
 
 export const TeacherSchema = z.object({
-  name: z.string().min(2).max(20),
+  name: z.string().min(2).max(20).nullable(),
   sex: z.nativeEnum(SEX),
-  birthday: z.string().date(),
-  contact: z.string(),
+  birthday: z.string().date().nullable(),
+  contact: z.string().nullable(),
 });
 
-export const TeacherLevelSchema = z.object({ admin_level: z.number().min(0).max(3) });
+export const TeacherLevelSchema = z.object({ admin_level: z.number().min(0).max(3).nullable() });
 
 export const GetSchoolSchema = z.object({
   includeDefault: z.preprocess((val) => val === "true", z.boolean().optional()),

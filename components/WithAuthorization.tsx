@@ -35,8 +35,8 @@ export default function WithAuthorization(props: WithAuthorizationProps) {
         const permission = permissions.data?.data?.find((p) => p.task_name === requiredPermission);
 
         if (
-          authStatus.data.data &&
-          permission &&
+          typeof authStatus.data.data?.admin_level === "number" &&
+          typeof permission?.level === "number" &&
           permission.level <= authStatus.data.data.admin_level
         ) {
           return true;

@@ -37,71 +37,70 @@ export type Task = (typeof PERMISSIONS)[number];
 
 export interface Permission {
   task_name: Task;
-  level: number;
-  created_at: string;
-  updated_at: string;
-  deleted_at: string | null;
+  level: null | number;
+  created_at: null | string;
+  updated_at: null | string;
+  deleted_at: null | string;
 }
 
 export type Sex = (typeof SEX)[keyof typeof SEX];
 
 export interface Student {
   student_pk: string;
-  name: string;
+  name: null | string;
   sex: Sex;
-  grade: number;
-  birthday: string; // ISO 8601 date string
-  contact: string;
-  contact_parent: string;
-  school: number;
+  grade: null | number;
+  birthday: null | string; // ISO 8601 date string
+  contact: null | string;
+  contact_parent: null | string;
+  school: null | number;
   schoolObj: null | Pick<School, "name" | "deleted_at">;
-  payday: number;
-  firstreg: string; // ISO 8601 date string
-  is_enable: number;
-  created_at: string; // ISO 8601 date string
-  updated_at: string; // ISO 8601 date string
-  deleted_at: string | null; // Can be null if not deleted
-  school_name: string;
+  payday: null | number;
+  firstreg: null | string; // ISO 8601 date string
+  is_enable: null | number;
+  created_at: null | string; // ISO 8601 date string
+  updated_at: null | string; // ISO 8601 date string
+  deleted_at: null | string; // Can be null if not deleted
 }
 
 export interface School {
   school_pk: number;
-  created_at: string;
-  deleted_at: string | null;
-  is_elementary: number;
-  is_high: number;
-  is_middle: number;
-  name: string;
-  updated_at: string;
+  name: null | string;
+  is_elementary: null | number;
+  is_high: null | number;
+  is_middle: null | number;
+  created_at: null | string;
+  updated_at: null | string;
+  deleted_at: null | string;
 }
 
 export interface Teacher {
   teacher_pk: string;
-  name: string;
+  name: null | string;
   sex: Sex;
-  birthday: string;
-  contact: string;
-  admin_level: number;
-  created_at: string;
-  updated_at: string;
-  deleted_at: string | null;
+  birthday: null | string;
+  contact: null | string;
+  admin_level: null | number;
+  created_at: null | string;
+  updated_at: null | string;
+  deleted_at: null | string;
 }
 
 export interface StudentAttendance {
   attendance_log_pk: number;
-  student: string;
+  student: null | string;
   studentObj: null | Pick<Student, "name" | "deleted_at">;
-  is_attend: number;
-  attend_time: string; // ISO 8601 date string
-  leave_time: string; // ISO 8601 date string
-  sms_sent: number;
-  sms_sent_time: string; // ISO 8601 date string
+  is_attend: null | number;
+  attend_time: null | string; // ISO 8601 date string
+  leave_time: null | string; // ISO 8601 date string
+  sms_sent: null | number;
+  sms_sent_time: null | string; // ISO 8601 date string
 }
 
 export interface AdminLog {
   admin_log_pk: number;
-  teacher: string;
+  teacher: null | string;
   teacherObj: null | Pick<Teacher, "name" | "deleted_at">;
-  time: string; // ISO 8601 date string
-  log: string;
+  time: null | string; // ISO 8601 date string
+  log: null | string;
 }

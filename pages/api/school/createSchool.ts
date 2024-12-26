@@ -79,7 +79,7 @@ export default async function createSchool(req: NextApiRequest, res: NextApiResp
 
     return res.status(201).json({
       success: true,
-      message: `학교 '${body.name}'${josa.pick(body.name, "을/를")} 생성했어요.`,
+      message: `학교 '${body.name ?? ""}'${josa.pick(body.name ?? "", "을/를")} 생성했어요.`,
       data: getResults[0],
     });
   } catch (error) {

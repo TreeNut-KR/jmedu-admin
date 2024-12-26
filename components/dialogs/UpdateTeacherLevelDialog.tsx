@@ -2,7 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { isAxiosError } from "axios";
 import { Loader2 } from "lucide-react";
 import Image from "next/image";
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { z } from "zod";
@@ -28,7 +28,27 @@ export default function UpdateTeacherLevelDialog(props: { pk: API.Teacher["teach
 
   const [dialog, setDialog] = useRecoilState(dialogAtom);
 
-  const teacher = useGetTeacherQuery(props.pk);
+  const getTeacher = useGetTeacherQuery(props.pk);
+
+  const teacher = useMemo(() => {
+    if (getTeacher.isLoading) {
+      return { isLoading: true, error: undefined, data: undefined };
+    }
+
+    if (getTeacher.error) {
+      return { isLoading: false, error: getTeacher.error, data: undefined };
+    }
+
+    if (getTeacher.data?.data?.admin_level) {
+      return { isLoading: false, error: undefined, data: getTeacher.data };
+    }
+
+    return {
+      isLoading: false,
+      error: new Error(`권한 레벨을 찾을 수 없어요.`),
+      data: undefined,
+    };
+  }, [getTeacher]);
 
   const { mutate, isPending } = useUpdateTeacherLevelMutation(props.pk);
 
@@ -132,7 +152,7 @@ export default function UpdateTeacherLevelDialog(props: { pk: API.Teacher["teach
             <Input
               className="col-span-4"
               type="number"
-              value={teacher.data?.data?.admin_level}
+              value={teacher.data?.data?.admin_level ?? ""}
               disabled
             />
           </fieldset>
@@ -141,7 +161,6 @@ export default function UpdateTeacherLevelDialog(props: { pk: API.Teacher["teach
             <Input
               className="col-span-4"
               type="number"
-              defaultValue={teacher.data?.data?.admin_level}
               min={0}
               max={3}
               {...form.register("admin_level", { valueAsNumber: true })}

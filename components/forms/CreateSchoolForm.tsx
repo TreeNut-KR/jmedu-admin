@@ -33,7 +33,7 @@ export default function CreateSchoolForm() {
       state: true,
       content: (
         <ActionAlert
-          title={`학교 ${josa(values.name, "을/를")} 등록할까요?`}
+          title={`학교 '${values.name ?? ""}'${josa.pick(values.name ?? "", "을/를")} 등록할까요?`}
           description="등록 후에도 수정할 수 있어요."
           action="등록하기"
           loading="등록하는 중"

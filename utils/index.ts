@@ -41,24 +41,29 @@ export const customErrorMap: z.ZodErrorMap = (error, ctx) => {
   return { message: ctx.defaultError };
 };
 
-export const formatPhoneNumber = (value: string) => {
+export const formatPhoneNumber = <T = undefined | null | string>(value: T): T => {
+  if (typeof value !== "string") return value;
+
   const cleaned = value.replace(/\D/g, "");
 
   if (cleaned.length < 4) {
-    return cleaned;
+    return cleaned as T;
   } else if (cleaned.length < 8) {
-    return `${cleaned.slice(0, 3)}-${cleaned.slice(3)}`;
+    return `${cleaned.slice(0, 3)}-${cleaned.slice(3)}` as T;
   } else {
-    return `${cleaned.slice(0, 3)}-${cleaned.slice(3, 7)}-${cleaned.slice(7, 11)}`;
+    return `${cleaned.slice(0, 3)}-${cleaned.slice(3, 7)}-${cleaned.slice(7, 11)}` as T;
   }
 };
 
-export const formatDate = (value?: string) => {
-  if (!value) return;
-  return new Date(value).toLocaleString();
+export const formatDate = <T = undefined | null | string>(value: T): T => {
+  if (typeof value !== "string") return value;
+  return new Date(value).toLocaleString() as T;
 };
 
-export const unformatPhoneNumber = (value: string) => value.replaceAll(/-/g, "");
+export const unformatPhoneNumber = <T = undefined | null | string>(value: T): T => {
+  if (typeof value !== "string") return value;
+  return value.replaceAll(/-/g, "") as T;
+};
 
 export const handlePhoneNumber = (e: ChangeEvent<HTMLInputElement>) => {
   const formattedValue = formatPhoneNumber(e.currentTarget.value);

@@ -42,13 +42,15 @@ export default function UpdatePermissionDialog(props: { name: API.Permission["ta
       (permission) => permission.task_name === props.name,
     );
 
-    if (findPermission) return { isLoading: false, error: undefined, data: findPermission };
-    else
-      return {
-        isLoading: false,
-        error: new Error(`권한을 찾을 수 없어요. (${props.name})`),
-        data: undefined,
-      };
+    if (findPermission?.level) {
+      return { isLoading: false, error: undefined, data: findPermission };
+    }
+
+    return {
+      isLoading: false,
+      error: new Error(`권한을 찾을 수 없어요. (${props.name})`),
+      data: undefined,
+    };
   }, [permissions, props.name]);
 
   const { mutate, isPending } = useUpdatePermissionMutation(props.name);
@@ -74,7 +76,7 @@ export default function UpdatePermissionDialog(props: { name: API.Permission["ta
       state: true,
       content: (
         <ActionAlert
-          title={`${permission.data?.task_name}의 권한을 레벨 ${form.getValues("level")}로 수정할까요?`}
+          title={`${permission.data?.task_name} 권한의 레벨을 ${form.getValues("level")}로 수정할까요?`}
           description="수정 내용을 즉시 반영되며, 변경된 권한 레벨로 인해 기능을 제한 받을 수 있어요."
           variant="destructive"
           action="수정하기"
@@ -142,14 +144,18 @@ export default function UpdatePermissionDialog(props: { name: API.Permission["ta
         <div className="flex flex-col gap-4">
           <fieldset className="grid grid-cols-5 items-center gap-2">
             <Label>기존 값</Label>
-            <Input className="col-span-4" type="number" value={permission.data?.level} disabled />
+            <Input
+              className="col-span-4"
+              type="number"
+              value={permission.data?.level ?? ""}
+              disabled
+            />
           </fieldset>
           <fieldset className="grid grid-cols-5 items-center gap-2">
             <Label>새로운 값</Label>
             <Input
               className="col-span-4"
               type="number"
-              defaultValue={permission.data?.level}
               min={0}
               max={3}
               {...form.register("level", { valueAsNumber: true })}
