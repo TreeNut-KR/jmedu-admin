@@ -32,7 +32,12 @@ export default function App({ Component, pageProps }: AppProps) {
         <AuthorizationOverlay />
         <GlobalDialog />
         <GlobalAlert />
-        <Toaster position="top-center" visibleToasts={1} richColors />
+        <Toaster
+          position="top-center"
+          className="whitespace-pre-line"
+          visibleToasts={1}
+          richColors
+        />
       </Providers>
     </>
   );
