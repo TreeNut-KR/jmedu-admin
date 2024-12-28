@@ -40,7 +40,8 @@ export default function useListQueryOptions<T>(option: API.InitListQueryOptions<
   }, [ListQuerySchema, router.query]);
 
   const localQueryOption = useMemo(() => {
-    const item = getItem<API.LocalListQueryOptions<T>>("list-query-option", {})[router.pathname];
+    const item =
+      getItem<API.LocalListQueryOptions<T>>("list-query-option", {})[router.pathname] ?? {};
 
     const { data: params, error: paramsError } = ListQuerySchema.safeParse(item);
 
@@ -49,7 +50,7 @@ export default function useListQueryOptions<T>(option: API.InitListQueryOptions<
     }
 
     return params;
-  }, [router.pathname, ListQuerySchema]);
+  }, [router, ListQuerySchema]);
 
   const [query, setQuery] = useState<API.ListQueryOptions<T>>({
     page: queryParams?.page ?? option.initPage ?? 1,
