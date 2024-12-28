@@ -6,6 +6,8 @@ import {
   STUDENT_ATTENDANCE_SORT_OPTIONS,
   STUDENT_SORT_OPTIONS,
   ADMIN_LOG_SORT_OPTIONS,
+  SUBJECT_SORT_OPTIONS,
+  COMMON_ORDER_OPTIONS,
 } from "@/constants/options";
 
 export const RegistrationSchema = z.object({
@@ -52,6 +54,14 @@ export const TeacherSchema = z.object({
 });
 
 export const TeacherLevelSchema = z.object({ admin_level: z.number().min(0).max(3).nullable() });
+
+export const SubjectSchema = z.object({
+  name: z.string().min(2).max(20).nullable(),
+  teacher: z.string().min(36).nullable(),
+  school: z.number().nullable(),
+  grade: z.number().nullable(),
+  is_personal: z.coerce.number().gte(0).lte(1).nullable(),
+});
 
 export const GetSchoolSchema = z.object({
   includeDefault: z.preprocess((val) => val === "true", z.boolean().optional()),
@@ -103,6 +113,28 @@ export const GetTeachersSchema = z.object({
   order: z.enum(["asc", "desc"]).optional().default("asc"),
   filter: z.enum(["name"]).optional(),
   search: z.string().optional(),
+  includeDeleted: z.preprocess((val) => val === "true", z.boolean().optional()),
+});
+
+export const GetSubjectsSchema = z.object({
+  page: z.coerce.number().gte(1).optional().default(1),
+  limit: z.coerce.number().gte(0).optional().default(10),
+  sort: z
+    .enum([SUBJECT_SORT_OPTIONS[0].value, ...SUBJECT_SORT_OPTIONS.slice(1).map((el) => el.value)])
+    .optional()
+    .default(SUBJECT_SORT_OPTIONS[0].value),
+  order: z
+    .enum([COMMON_ORDER_OPTIONS[0].value, ...COMMON_ORDER_OPTIONS.slice(1).map((el) => el.value)])
+    .optional()
+    .default(COMMON_ORDER_OPTIONS[0].value),
+  filter: z
+    .enum([SUBJECT_SORT_OPTIONS[0].value, ...SUBJECT_SORT_OPTIONS.slice(1).map((el) => el.value)])
+    .optional(),
+  search: z.string().optional(),
+  includeDeleted: z.preprocess((val) => val === "true", z.boolean().optional()),
+});
+
+export const GetSubjectSchema = z.object({
   includeDeleted: z.preprocess((val) => val === "true", z.boolean().optional()),
 });
 

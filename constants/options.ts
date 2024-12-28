@@ -31,13 +31,6 @@ export const SCHOOL_SORT_OPTIONS: Client.SelectorOptions<keyof API.School> = [
   { value: "created_at", label: "생성일" },
 ];
 
-export const TEACHER_SORT_OPTIONS: Client.SelectorOptions<keyof API.Teacher> = [
-  { value: "name", label: "이름" },
-  { value: "sex", label: "성별" },
-  { value: "created_at", label: "생성일" },
-  { value: "updated_at", label: "수정일" },
-];
-
 export const STUDENT_SORT_OPTIONS: Client.SelectorOptions<keyof API.Student> = [
   { value: "name", label: "이름" },
   { value: "school", label: "학교" },
@@ -45,6 +38,22 @@ export const STUDENT_SORT_OPTIONS: Client.SelectorOptions<keyof API.Student> = [
   { value: "birthday", label: "생일" },
   { value: "firstreg", label: "등록일" },
   { value: "created_at", label: "생성일" },
+];
+
+export const TEACHER_SORT_OPTIONS: Client.SelectorOptions<keyof API.Teacher> = [
+  { value: "name", label: "이름" },
+  { value: "sex", label: "성별" },
+  { value: "created_at", label: "생성일" },
+  { value: "updated_at", label: "수정일" },
+];
+
+export const SUBJECT_SORT_OPTIONS: Client.SelectorOptions<keyof API.Subject> = [
+  { value: "name", label: "이름" },
+  { value: "teacher", label: "담당 강사" },
+  { value: "school", label: "대상 학교" },
+  { value: "grade", label: "대상 학년" },
+  { value: "created_at", label: "생성일" },
+  { value: "updated_at", label: "수정일" },
 ];
 
 export const STUDENT_ATTENDANCE_SORT_OPTIONS: Client.SelectorOptions<keyof API.StudentAttendance> =

@@ -14,13 +14,13 @@ import {
 import { Button } from "@/components/shadcn/ui/button";
 import { Input } from "@/components/shadcn/ui/input";
 import { ScrollArea } from "@/components/shadcn/ui/scroll-area";
-import useGetSchoolsQuery from "@/hooks/queries/useGetSchoolsQuery";
+import useGetTeachersQuery from "@/hooks/queries/useGetTeachersQuery";
 import { cn } from "@/utils/shadcn";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export interface SchoolSelectorProps extends React.InputHTMLAttributes<HTMLInputElement> {}
+export interface TeacherSelectorProps extends React.InputHTMLAttributes<HTMLInputElement> {}
 
-const SchoolSelector = React.forwardRef<HTMLInputElement, SchoolSelectorProps>(
+const TeacherSelector = React.forwardRef<HTMLInputElement, TeacherSelectorProps>(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   ({ className, type, ...props }, ref) => {
     const closeRef = React.useRef<HTMLButtonElement>(null);
@@ -30,19 +30,18 @@ const SchoolSelector = React.forwardRef<HTMLInputElement, SchoolSelectorProps>(
     const [value, setValue] = React.useState("");
     const [selectedId, setSelectedId] = React.useState<string | undefined>(undefined);
 
-    const schools = useGetSchoolsQuery({
+    const teachers = useGetTeachersQuery({
       page: 1,
       limit: 0,
-      sort: "school_pk",
+      sort: "name",
       order: "asc",
-      includeDefault: true,
     });
 
-    const school = React.useMemo(() => {
-      if (schools.data?.data) {
-        return schools.data.data.find((school) => school.school_pk.toString() === value);
+    const teacher = React.useMemo(() => {
+      if (teachers.data?.data) {
+        return teachers.data.data.find((teacher) => teacher.teacher_pk === value);
       }
-    }, [schools, value]);
+    }, [teachers, value]);
 
     // ref를 통해 value가 변경되는 것을 감지하고 내부 state 반영
     React.useImperativeHandle(ref, () => {
@@ -105,23 +104,23 @@ const SchoolSelector = React.forwardRef<HTMLInputElement, SchoolSelectorProps>(
       }
     }
 
-    if (schools.isLoading) {
+    if (teachers.isLoading) {
       return (
         <div className="flex items-center">
           <Loader2 className="mr-2 h-4 w-4 animate-spin text-adaptiveBlue-500" />
-          <p className="text-sm">학교 목록을 가져오고 있어요</p>
+          <p className="text-sm">교직원 목록을 가져오고 있어요</p>
         </div>
       );
     }
 
-    if (schools.error) {
+    if (teachers.error) {
       return (
         <div className="flex items-center text-red-500">
           <CircleAlert className="mr-2" size="16" strokeWidth="2.5" />
           <p className="text-sm">
-            {isAxiosError(schools.error)
-              ? schools.error.response?.data.message
-              : "학교 목록을 가져오는 중에 문제가 발생했어요."}
+            {isAxiosError(teachers.error)
+              ? teachers.error.response?.data.message
+              : "교직원 목록을 가져오는 중에 문제가 발생했어요."}
           </p>
         </div>
       );
@@ -134,8 +133,11 @@ const SchoolSelector = React.forwardRef<HTMLInputElement, SchoolSelectorProps>(
         <ResponsiveDialog onOpenChange={handleChangeOpen}>
           <div className="flex items-center gap-2">
             <Input
-              className={cn("pointer-events-none w-auto", !school?.name && "text-adaptiveGray-400")}
-              value={school?.name ?? "학교를 선택해주세요"}
+              className={cn(
+                "pointer-events-none w-auto",
+                !teacher?.name && "text-adaptiveGray-400",
+              )}
+              value={teacher?.name ?? "교직원를 선택해주세요"}
               readOnly
             />
             <ResponsiveDialogTrigger asChild>
@@ -146,30 +148,30 @@ const SchoolSelector = React.forwardRef<HTMLInputElement, SchoolSelectorProps>(
           </div>
           <ResponsiveDialogContent className="">
             <ResponsiveDialogHeader>
-              <ResponsiveDialogTitle>학교를 선택해주세요</ResponsiveDialogTitle>
+              <ResponsiveDialogTitle>교직원를 선택해주세요</ResponsiveDialogTitle>
               <ResponsiveDialogDescription>
-                아래 목록에서 선택한 학교가 입력됩니다.
+                아래 목록에서 선택한 교직원이 입력됩니다.
               </ResponsiveDialogDescription>
             </ResponsiveDialogHeader>
             <ScrollArea className="h-64 rounded-md bg-adaptiveGray-100">
               <div className="my-4 ml-2 mr-4">
-                {schools.data?.data?.map((school) => (
+                {teachers.data?.data?.map((teacher) => (
                   <div
-                    key={school.school_pk}
-                    data-id={school.school_pk}
+                    key={teacher.teacher_pk}
+                    data-id={teacher.teacher_pk}
                     className={cn(
                       "py-2 text-sm",
-                      selectedId === school.school_pk.toString() && "font-bold",
+                      selectedId === teacher.teacher_pk && "font-bold",
                       "hover:cursor-pointer hover:bg-adaptiveGray-200",
                     )}
                     onClick={handleSelect}
                   >
                     <span className="inline-block min-w-8 text-center">
-                      {selectedId === school.school_pk.toString() && (
+                      {selectedId === teacher.teacher_pk.toString() && (
                         <Check className="inline" size="14" strokeWidth={3} />
                       )}
                     </span>
-                    <span>{school.name}</span>
+                    <span>{teacher.name}</span>
                   </div>
                 ))}
               </div>
@@ -203,6 +205,6 @@ const SchoolSelector = React.forwardRef<HTMLInputElement, SchoolSelectorProps>(
   },
 );
 
-SchoolSelector.displayName = "SchoolSelector";
+TeacherSelector.displayName = "TeacherSelector";
 
-export default SchoolSelector;
+export default TeacherSelector;

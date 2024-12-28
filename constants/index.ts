@@ -18,6 +18,11 @@ export const PERMISSIONS = [
   "teacher_edit",
   "teacher_delete",
   "teacher_level_edit",
+  "subjects_view",
+  "subject_view",
+  "subject_add",
+  "subject_edit",
+  "subject_delete",
   "students_attendance_view",
   "admin_log_view",
 ] as const;
@@ -54,6 +59,12 @@ export const MENU_ITEMS: {
     label: "교직원 관리",
     icon: "/tossface/u1F468_u1F3FB_u200D_u1F3EB.svg",
     permission: "teachers_view",
+  },
+  {
+    path: "/subject",
+    label: "과목 관리",
+    icon: "/tossface/u1F4DA.svg",
+    permission: "subjects_view",
   },
   {
     path: "/student-attendance",
@@ -97,6 +108,12 @@ export const PERMISSION_DESCRIPTIONS: { [key in API.Task]: string } = {
   teacher_edit: "특정 교직원 정보를 수정합니다.",
   teacher_delete: "특정 교직원을 삭제합니다.",
   teacher_level_edit: "특정 교직원의 등급을 수정합니다.",
+  // 과목 관련
+  subjects_view: "과목 목록을 조회합니다.",
+  subject_view: "특정 과목 정보를 조회합니다.",
+  subject_add: "새로운 과목을 추가합니다.",
+  subject_edit: "특정 과목 정보를 수정합니다.",
+  subject_delete: "특정 과목을 삭제합니다.",
   // 학생 등하원 관련
   students_attendance_view: "학생 등하원 기록을 조회합니다.",
   // 작업 기록 관련
@@ -125,6 +142,12 @@ export const PERMISSION_DEFAULT_LEVELS: { [key in API.Task]: number } = {
   teacher_edit: 3,
   teacher_delete: 3,
   teacher_level_edit: 3,
+  // 과목 관련
+  subjects_view: 1,
+  subject_view: 1,
+  subject_add: 3,
+  subject_edit: 3,
+  subject_delete: 3,
   // 학생 등하원 관련
   students_attendance_view: 1,
   // 작업 기록 관련

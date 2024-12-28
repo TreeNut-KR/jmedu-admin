@@ -1,11 +1,13 @@
 import { Check } from "lucide-react";
 import DeleteSchoolButton from "@/components/buttons/DeleteSchoolButton";
 import DeleteStudentButton from "@/components/buttons/DeleteStudentButton";
+import DeleteSubjectButton from "@/components/buttons/DeleteSubjectButton";
 import DeleteTeacherButton from "@/components/buttons/DeleteTeacherButton";
 import ShowStudentQRButton from "@/components/buttons/ShowStudentQRButton";
 import UpdatePermissionButton from "@/components/buttons/UpdatePermissionButton";
 import UpdateSchoolButton from "@/components/buttons/UpdateSchoolButton";
 import UpdateStudentButton from "@/components/buttons/UpdateStudentButton";
+import UpdateSubjectButton from "@/components/buttons/UpdateSubjectButton";
 import UpdateTeacherButton from "@/components/buttons/UpdateTeacherButton";
 import UpdateTeacherLevelButton from "@/components/buttons/UpdateTeacherLevelButton";
 import { Badge } from "@/components/shadcn/ui/badge";
@@ -208,6 +210,79 @@ export const TEACHER_COLUMN: ColumnDef<API.Teacher> = [
         <UpdateTeacherButton pk={row["teacher_pk"]} />
         <UpdateTeacherLevelButton pk={row["teacher_pk"]} />
         <DeleteTeacherButton pk={row["teacher_pk"]} />
+      </div>
+    ),
+  },
+];
+
+export const SUBJECT_COLUMNS: ColumnDef<API.Subject> = [
+  { accessor: "subject_pk", hidden: true },
+  {
+    header: "이름",
+    accessor: "name",
+  },
+  {
+    header: "담당 강사",
+    accessor: "teacher",
+    renderer: (row) => {
+      if (!row.teacherObj || !row.teacherObj.name) {
+        return <span className="text-adaptiveRed-500">교직원을 찾을 수 없어요.</span>;
+      }
+      if (row.teacherObj.deleted_at) {
+        return (
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger>
+                <span className="text-adaptiveGray-400">{row.teacherObj.name}</span>
+              </TooltipTrigger>
+              <TooltipContent>삭제된 교직원입니다.</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        );
+      }
+      return row.teacherObj.name;
+    },
+  },
+  {
+    header: "대상 학교",
+    accessor: "school",
+    renderer: (row) => {
+      if (!row.schoolObj || !row.schoolObj.name) {
+        return <span className="text-adaptiveRed-500">학교를 찾을 수 없어요.</span>;
+      }
+      if (row.schoolObj.deleted_at) {
+        return (
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger>
+                <span className="text-adaptiveGray-400">{row.schoolObj.name}</span>
+              </TooltipTrigger>
+              <TooltipContent>삭제된 학교입니다.</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        );
+      }
+      return row.schoolObj.name;
+    },
+  },
+  {
+    header: "대상 학년",
+    accessor: "grade",
+  },
+  {
+    header: "1대1 과외",
+    accessor: "is_personal",
+    renderer: (row) =>
+      row["is_personal"] ? (
+        <Check size="14" className="text-adaptiveBlue-500" strokeWidth={3} />
+      ) : null,
+  },
+  {
+    header: "관리",
+    renderer: (row) => (
+      <div className="flex gap-2">
+        <UpdateSubjectButton pk={row["subject_pk"]} />
+        <DeleteSubjectButton pk={row["subject_pk"]} />
       </div>
     ),
   },

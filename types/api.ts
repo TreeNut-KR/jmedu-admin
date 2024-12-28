@@ -86,6 +86,20 @@ export interface Teacher {
   deleted_at: null | string;
 }
 
+export interface Subject {
+  subject_pk: number;
+  name: null | string;
+  teacher: null | string;
+  teacherObj: null | Pick<Teacher, "name" | "deleted_at">;
+  school: null | number;
+  schoolObj: null | Pick<School, "name" | "deleted_at">;
+  grade: null | number;
+  is_personal: null | number;
+  created_at: null | string;
+  updated_at: null | string;
+  deleted_at: null | string;
+}
+
 export interface StudentAttendance {
   attendance_log_pk: number;
   student: null | string;
