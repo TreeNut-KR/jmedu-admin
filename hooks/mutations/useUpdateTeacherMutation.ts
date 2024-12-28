@@ -21,6 +21,9 @@ export default function useUpdateTeacherMutation(pk: API.Teacher["teacher_pk"]) 
     },
     onSuccess: async (data) => {
       await queryClient.invalidateQueries({
+        queryKey: [`${process.env.NEXT_PUBLIC_BASE_PATH}/api/teacher/${pk}`],
+      });
+      await queryClient.invalidateQueries({
         queryKey: [`${process.env.NEXT_PUBLIC_BASE_PATH}/api/teachers`],
       });
       toast.success(data.message ?? "교직원 정보를 수정했어요.");

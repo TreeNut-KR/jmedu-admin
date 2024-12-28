@@ -21,6 +21,9 @@ export default function useUpdateStudentMutation(pk: API.Student["student_pk"]) 
     },
     onSuccess: async (data) => {
       await queryClient.invalidateQueries({
+        queryKey: [`${process.env.NEXT_PUBLIC_BASE_PATH}/api/student/${pk}`],
+      });
+      await queryClient.invalidateQueries({
         queryKey: [`${process.env.NEXT_PUBLIC_BASE_PATH}/api/students`],
       });
       toast.success(data.message ?? "학생 정보를 수정했어요.");

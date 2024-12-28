@@ -21,6 +21,9 @@ export default function useUpdateSchoolMutation(pk: API.School["school_pk"]) {
     },
     onSuccess: async (data) => {
       await queryClient.invalidateQueries({
+        queryKey: [`${process.env.NEXT_PUBLIC_BASE_PATH}/api/school/${pk}`],
+      });
+      await queryClient.invalidateQueries({
         queryKey: [`${process.env.NEXT_PUBLIC_BASE_PATH}/api/schools`],
       });
       toast.success(data.message ?? "학교 정보를 수정했어요.");
