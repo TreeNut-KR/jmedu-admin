@@ -74,9 +74,14 @@ export const GetSchoolsSchema = z.object({
   sort: z
     .enum([SCHOOL_SORT_OPTIONS[0].value, ...SCHOOL_SORT_OPTIONS.slice(1).map((el) => el.value)])
     .optional()
-    .default("name"),
-  order: z.enum(["asc", "desc"]).optional().default("asc"),
-  filter: z.enum(["name", "is_elementary", "is_middle", "is_high"]).optional(),
+    .default(SCHOOL_SORT_OPTIONS[0].value),
+  order: z
+    .enum([COMMON_ORDER_OPTIONS[0].value, ...COMMON_ORDER_OPTIONS.slice(1).map((el) => el.value)])
+    .optional()
+    .default(COMMON_ORDER_OPTIONS[0].value),
+  filter: z
+    .enum([SCHOOL_SORT_OPTIONS[0].value, ...SCHOOL_SORT_OPTIONS.slice(1).map((el) => el.value)])
+    .optional(),
   search: z.string().optional(),
   includeDefault: z.preprocess((val) => val === "true", z.boolean().optional()),
   includeDeleted: z.preprocess((val) => val === "true", z.boolean().optional()),
@@ -92,9 +97,14 @@ export const GetStudentsSchema = z.object({
   sort: z
     .enum([STUDENT_SORT_OPTIONS[0].value, ...STUDENT_SORT_OPTIONS.slice(1).map((el) => el.value)])
     .optional()
-    .default("name"),
-  order: z.enum(["asc", "desc"]).optional().default("asc"),
-  filter: z.enum(["name", "birthday", "school", "firstreg", "created_at"]).optional(),
+    .default(STUDENT_SORT_OPTIONS[0].value),
+  order: z
+    .enum([COMMON_ORDER_OPTIONS[0].value, ...COMMON_ORDER_OPTIONS.slice(1).map((el) => el.value)])
+    .optional()
+    .default(COMMON_ORDER_OPTIONS[0].value),
+  filter: z
+    .enum([STUDENT_SORT_OPTIONS[0].value, ...STUDENT_SORT_OPTIONS.slice(1).map((el) => el.value)])
+    .optional(),
   search: z.string().optional(),
   includeDeleted: z.preprocess((val) => val === "true", z.boolean().optional()),
 });
@@ -109,9 +119,14 @@ export const GetTeachersSchema = z.object({
   sort: z
     .enum([TEACHER_SORT_OPTIONS[0].value, ...TEACHER_SORT_OPTIONS.slice(1).map((el) => el.value)])
     .optional()
-    .default("name"),
-  order: z.enum(["asc", "desc"]).optional().default("asc"),
-  filter: z.enum(["name"]).optional(),
+    .default(TEACHER_SORT_OPTIONS[0].value),
+  order: z
+    .enum([COMMON_ORDER_OPTIONS[0].value, ...COMMON_ORDER_OPTIONS.slice(1).map((el) => el.value)])
+    .optional()
+    .default(COMMON_ORDER_OPTIONS[0].value),
+  filter: z
+    .enum([TEACHER_SORT_OPTIONS[0].value, ...TEACHER_SORT_OPTIONS.slice(1).map((el) => el.value)])
+    .optional(),
   search: z.string().optional(),
   includeDeleted: z.preprocess((val) => val === "true", z.boolean().optional()),
 });
@@ -147,9 +162,17 @@ export const GetStudentAttendanceSchema = z.object({
       ...STUDENT_ATTENDANCE_SORT_OPTIONS.slice(1).map((el) => el.value),
     ])
     .optional()
-    .default("attend_time"),
-  order: z.enum(["asc", "desc"]).optional().default("asc"),
-  filter: z.enum(["attend_time"]).optional(),
+    .default(STUDENT_ATTENDANCE_SORT_OPTIONS[0].value),
+  order: z
+    .enum([COMMON_ORDER_OPTIONS[0].value, ...COMMON_ORDER_OPTIONS.slice(1).map((el) => el.value)])
+    .optional()
+    .default(COMMON_ORDER_OPTIONS[1].value),
+  filter: z
+    .enum([
+      STUDENT_ATTENDANCE_SORT_OPTIONS[0].value,
+      ...STUDENT_ATTENDANCE_SORT_OPTIONS.slice(1).map((el) => el.value),
+    ])
+    .optional(),
   search: z.string().optional(),
 });
 
@@ -162,8 +185,16 @@ export const GetAdminLogSchema = z.object({
       ...ADMIN_LOG_SORT_OPTIONS.slice(1).map((el) => el.value),
     ])
     .optional()
-    .default("time"),
-  order: z.enum(["asc", "desc"]).optional().default("asc"),
-  filter: z.enum(["time"]).optional(),
+    .default(ADMIN_LOG_SORT_OPTIONS[0].value),
+  order: z
+    .enum([COMMON_ORDER_OPTIONS[0].value, ...COMMON_ORDER_OPTIONS.slice(1).map((el) => el.value)])
+    .optional()
+    .default(COMMON_ORDER_OPTIONS[1].value),
+  filter: z
+    .enum([
+      ADMIN_LOG_SORT_OPTIONS[0].value,
+      ...ADMIN_LOG_SORT_OPTIONS.slice(1).map((el) => el.value),
+    ])
+    .optional(),
   search: z.string().optional(),
 });
