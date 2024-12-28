@@ -39,7 +39,7 @@ export default function UpdateTeacherLevelDialog(props: { pk: API.Teacher["teach
       return { isLoading: false, error: getTeacher.error, data: undefined };
     }
 
-    if (getTeacher.data?.data?.admin_level) {
+    if (typeof getTeacher.data?.data?.admin_level === "number") {
       return { isLoading: false, error: undefined, data: getTeacher.data };
     }
 

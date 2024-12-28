@@ -42,7 +42,7 @@ export default function UpdatePermissionDialog(props: { name: API.Permission["ta
       (permission) => permission.task_name === props.name,
     );
 
-    if (findPermission?.level) {
+    if (typeof findPermission?.level === "number") {
       return { isLoading: false, error: undefined, data: findPermission };
     }
 
