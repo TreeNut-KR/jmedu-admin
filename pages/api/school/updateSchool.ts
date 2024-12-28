@@ -36,7 +36,8 @@ export default async function updateSchool(req: NextApiRequest, res: NextApiResp
         name = ?, 
         is_elementary = ?, 
         is_middle = ?, 
-        is_high = ? 
+        is_high = ?,
+        updated_at = NOW()
       WHERE school_pk = ?
     `;
 

@@ -25,7 +25,9 @@ export default async function updateTeahcerLevel(req: NextApiRequest, res: NextA
 
     const updateQuery = `
       UPDATE teacher 
-      SET admin_level = ?
+      SET 
+        admin_level = ?,
+        updated_at = NOW()
       WHERE teacher_pk = ?
     `;
 

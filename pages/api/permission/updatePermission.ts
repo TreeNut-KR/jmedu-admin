@@ -32,7 +32,9 @@ export default async function updatePermission(req: NextApiRequest, res: NextApi
 
     const updateQuery = `
       UPDATE permissions 
-      SET level = ?
+      SET 
+        level = ?,
+        updated_at = NOW()
       WHERE task_name = ?
     `;
 
