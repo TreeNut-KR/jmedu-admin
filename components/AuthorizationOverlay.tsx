@@ -1,11 +1,18 @@
 import Head from "next/head";
 import LoginForm from "@/components/forms/LoginForm";
 import useAuthStatusQuery from "@/hooks/queries/useAuthStatusQuery";
+import { useRouter } from "next/router";
+import { PUBLIC_PATHS } from "@/constants";
 
 export default function AuthorizationOverlay() {
   const authStatus = useAuthStatusQuery();
+  const router = useRouter();
 
-  if (authStatus.isLoading || authStatus.data?.success) {
+  if (
+    PUBLIC_PATHS.find((path) => router.pathname === path) ||
+    authStatus.isLoading ||
+    authStatus.data?.success
+  ) {
     return;
   }
 

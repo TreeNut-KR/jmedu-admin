@@ -153,3 +153,5 @@ export const PERMISSION_DEFAULT_LEVELS: { [key in API.Task]: number } = {
   // 작업 기록 관련
   admin_log_view: 3,
 };
+
+export const PUBLIC_PATHS = ["/registration"];
