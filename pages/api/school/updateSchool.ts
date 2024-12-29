@@ -1,5 +1,6 @@
 import { ResultSetHeader, RowDataPacket } from "mysql2/promise";
 import type { NextApiRequest, NextApiResponse } from "next";
+import * as API from "@/types/api";
 import { adminLog, checkAuthenticated, pool } from "@/utils/server";
 import { SchoolSchema } from "@/schema";
 
@@ -48,7 +49,7 @@ export default async function updateSchool(req: NextApiRequest, res: NextApiResp
     `;
 
     // 수정할 학교가 존재하는지 확인
-    const [preResults] = await db.query<RowDataPacket[]>(getQuery, [req.query.pk]);
+    const [preResults] = await db.query<(RowDataPacket & API.School)[]>(getQuery, [req.query.pk]);
 
     // 수정할 학교가 존재하지 않는 경우
     if (preResults.length === 0) {
@@ -73,7 +74,7 @@ export default async function updateSchool(req: NextApiRequest, res: NextApiResp
       req.query.pk,
     ]);
 
-    const [getResults] = await db.query<RowDataPacket[]>(getQuery, [req.query.pk]);
+    const [getResults] = await db.query<(RowDataPacket & API.School)[]>(getQuery, [req.query.pk]);
 
     // 업데이트된 열(학교)이 1개 이상인경우
     if (updateResults.affectedRows > 1) {

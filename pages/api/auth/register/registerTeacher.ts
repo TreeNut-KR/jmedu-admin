@@ -2,6 +2,7 @@ import bcrypt from "bcrypt";
 import { josa } from "es-hangul";
 import { ResultSetHeader, RowDataPacket } from "mysql2/promise";
 import type { NextApiRequest, NextApiResponse } from "next";
+import * as API from "@/types/api";
 import { pool } from "@/utils/server";
 import { RegistrationSchema } from "@/schema";
 
@@ -23,9 +24,12 @@ export default async function registerTeacher(req: NextApiRequest, res: NextApiR
     const db = pool;
 
     // 아이디가 중복되는지 확인
-    const checkQuery = `SELECT * FROM teacher WHERE id = ?`;
+    const checkQuery = `SELECT teacher_pk FROM teacher WHERE id = ?`;
 
-    const [checkResults] = await db.query<RowDataPacket[]>(checkQuery, body.id);
+    const [checkResults] = await db.query<(RowDataPacket & Pick<API.Teacher, "teacher_pk">)[]>(
+      checkQuery,
+      body.id,
+    );
 
     if (checkResults.length) {
       return res.status(400).json({
@@ -60,7 +64,7 @@ export default async function registerTeacher(req: NextApiRequest, res: NextApiR
       body.contact,
     ]);
 
-    const [getResults] = await db.query<RowDataPacket[]>(getQuery);
+    const [getResults] = await db.query<(RowDataPacket & Pick<API.Teacher, "name">)[]>(getQuery);
 
     // 생성된 교직원을 찾을 수 없는 경우
     if (getResults.length === 0) {
@@ -93,7 +97,7 @@ export default async function registerTeacher(req: NextApiRequest, res: NextApiR
 
     return res.status(201).json({
       success: true,
-      message: `교직원 '${body.name}'${josa.pick(body.name, "을/를")} 등록했어요.`,
+      message: `교직원 '${getResults[0].name}'${josa.pick(getResults[0].name ?? "", "을/를")} 등록했어요.`,
     });
   } catch (error) {
     console.log(error);

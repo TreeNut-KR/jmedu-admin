@@ -1,5 +1,6 @@
 import { ResultSetHeader, RowDataPacket } from "mysql2/promise";
 import type { NextApiRequest, NextApiResponse } from "next";
+import * as API from "@/types/api";
 import { adminLog, checkAuthenticated, pool } from "@/utils/server";
 import { SubjectSchema } from "@/schema";
 
@@ -36,13 +37,26 @@ export default async function updateSubject(req: NextApiRequest, res: NextApiRes
     `;
 
     const getQuery = `
-      SELECT *
+      SELECT 
+        subject.*,
+        IF(
+          teacher.teacher_pk IS NOT NULL, 
+          JSON_OBJECT('name', teacher.name, 'deleted_at', teacher.deleted_at), 
+          NULL
+        ) as teacherObj,
+        IF(
+          school.school_pk IS NOT NULL, 
+          JSON_OBJECT('name', school.name, 'deleted_at', school.deleted_at), 
+          NULL
+        ) as schoolObj
       FROM subject
-      WHERE subject_pk = ?
+      LEFT JOIN teacher ON subject.teacher = teacher.teacher_pk
+      LEFT JOIN school ON subject.school = school.school_pk
+      WHERE subject.subject_pk = ?
     `;
 
     // 수정할 과목이 존재하는지 확인
-    const [preResults] = await db.query<RowDataPacket[]>(getQuery, [req.query.pk]);
+    const [preResults] = await db.query<(RowDataPacket & API.Subject)[]>(getQuery, [req.query.pk]);
 
     // 수정할 과목이 존재하지 않는 경우
     if (preResults.length === 0) {

@@ -1,6 +1,7 @@
 import { josa } from "es-hangul";
 import { ResultSetHeader, RowDataPacket } from "mysql2/promise";
 import type { NextApiRequest, NextApiResponse } from "next";
+import * as API from "@/types/api";
 import { adminLog, checkAuthenticated, pool } from "@/utils/server";
 import { StudentSchema } from "@/schema";
 
@@ -35,12 +36,21 @@ export default async function createStudent(req: NextApiRequest, res: NextApiRes
     `;
 
     const getQuery = `
-      SELECT
-        *,
-        DATE_FORMAT(birthday, '%Y-%m-%d') AS birthday,
-        DATE_FORMAT(firstreg, '%Y-%m-%d') as firstreg
+      SELECT 
+        student.*, 
+        DATE_FORMAT(student.birthday, '%Y-%m-%d') AS birthday, 
+        DATE_FORMAT(student.firstreg, '%Y-%m-%d') as firstreg,
+        IF(
+          school.school_pk IS NOT NULL, 
+          JSON_OBJECT('name', school.name, 'deleted_at', school.deleted_at), 
+          NULL
+        ) as schoolObj
       FROM student
-      WHERE deleted_at IS NULL AND is_enable = 1 AND student_pk = @create_student_uuid;
+      LEFT JOIN school ON student.school = school.school_pk
+      WHERE 
+        student.deleted_at IS NULL 
+        AND student.is_enable = 1 
+        AND student.student_pk = @create_student_uuid;
     `;
 
     await db.query<ResultSetHeader>(preQuery);
@@ -56,7 +66,7 @@ export default async function createStudent(req: NextApiRequest, res: NextApiRes
       body.firstreg,
     ]);
 
-    const [getResults] = await db.query<RowDataPacket[]>(getQuery);
+    const [getResults] = await db.query<(RowDataPacket & API.Student)[]>(getQuery);
 
     // 생성된 학생을 찾을 수 없는 경우
     if (getResults.length === 0) {
@@ -89,7 +99,7 @@ export default async function createStudent(req: NextApiRequest, res: NextApiRes
 
     return res.status(201).json({
       success: true,
-      message: `학생 '${getResults[0].name}'${josa.pick(getResults[0].name, "을/를")} 생성했어요.`,
+      message: `학생 '${getResults[0].name}'${josa.pick(getResults[0].name ?? "", "을/를")} 생성했어요.`,
       data: getResults[0],
     });
   } catch (error) {

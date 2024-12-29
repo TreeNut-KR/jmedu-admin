@@ -1,5 +1,6 @@
 import { RowDataPacket } from "mysql2/promise";
 import type { NextApiRequest, NextApiResponse } from "next";
+import * as API from "@/types/api";
 import { adminLog, checkAuthenticated, paramsToString, pool } from "@/utils/server";
 import { GetTeachersSchema } from "@/schema";
 
@@ -61,8 +62,8 @@ export default async function getTeachers(req: NextApiRequest, res: NextApiRespo
       WHERE ${whereConditions.join(" AND ")}
     `;
 
-    const [results] = await db.query<RowDataPacket[]>(query);
-    const [metaResult] = await db.query<RowDataPacket[]>(metaQuery);
+    const [results] = await db.query<(RowDataPacket & API.Teacher)[]>(query);
+    const [metaResult] = await db.query<(RowDataPacket & { count: number })[]>(metaQuery);
 
     return res.status(200).json({
       success: true,

@@ -1,6 +1,7 @@
 import { josa } from "es-hangul";
 import { ResultSetHeader, RowDataPacket } from "mysql2/promise";
 import type { NextApiRequest, NextApiResponse } from "next";
+import * as API from "@/types/api";
 import { adminLog, checkAuthenticated, pool } from "@/utils/server";
 import { SchoolSchema } from "@/schema";
 
@@ -59,7 +60,7 @@ export default async function createSchool(req: NextApiRequest, res: NextApiResp
       body.is_high,
     ]);
 
-    const [getResults] = await db.query<RowDataPacket[]>(getQuery);
+    const [getResults] = await db.query<(RowDataPacket & API.School)[]>(getQuery);
 
     // 생성된 학교을 찾을 수 없는 경우
     if (getResults.length === 0) {
@@ -79,7 +80,7 @@ export default async function createSchool(req: NextApiRequest, res: NextApiResp
 
     return res.status(201).json({
       success: true,
-      message: `학교 '${body.name ?? ""}'${josa.pick(body.name ?? "", "을/를")} 생성했어요.`,
+      message: `학교 '${getResults[0].name ?? ""}'${josa.pick(getResults[0].name ?? "", "을/를")} 생성했어요.`,
       data: getResults[0],
     });
   } catch (error) {

@@ -1,6 +1,7 @@
 import { JWTPayload } from "jose";
 import { RowDataPacket } from "mysql2/promise";
 import type { NextApiRequest, NextApiResponse } from "next";
+import * as API from "@/types/api";
 import { decrypt, pool } from "@/utils/server";
 
 export default async function getAuthStatus(req: NextApiRequest, res: NextApiResponse) {
@@ -25,15 +26,18 @@ export default async function getAuthStatus(req: NextApiRequest, res: NextApiRes
 
     const db = pool;
 
-    const [teachers] = await db.query<RowDataPacket[]>(
+    const [teachers] = await db.query<(RowDataPacket & API.Teacher)[]>(
       `
       SELECT 
         teacher_pk,
         name,
+        sex,
+        contact,
         admin_level,
         created_at,
         updated_at,
-        deleted_at
+        deleted_at,
+        DATE_FORMAT(birthday, '%Y-%m-%d') AS birthday
       FROM teacher 
       WHERE id = ?;
       `,

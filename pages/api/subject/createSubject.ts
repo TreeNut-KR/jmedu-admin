@@ -1,6 +1,7 @@
 import { josa } from "es-hangul";
 import { ResultSetHeader, RowDataPacket } from "mysql2/promise";
 import type { NextApiRequest, NextApiResponse } from "next";
+import * as API from "@/types/api";
 import { adminLog, checkAuthenticated, pool } from "@/utils/server";
 import { SubjectSchema } from "@/schema";
 
@@ -33,11 +34,24 @@ export default async function createSubject(req: NextApiRequest, res: NextApiRes
     `;
 
     const getQuery = `
-      SELECT *
+      SELECT 
+        subject.*,
+        IF(
+          teacher.teacher_pk IS NOT NULL, 
+          JSON_OBJECT('name', teacher.name, 'deleted_at', teacher.deleted_at), 
+          NULL
+        ) as teacherObj,
+        IF(
+          school.school_pk IS NOT NULL, 
+          JSON_OBJECT('name', school.name, 'deleted_at', school.deleted_at), 
+          NULL
+        ) as schoolObj
       FROM subject
+      LEFT JOIN teacher ON subject.teacher = teacher.teacher_pk
+      LEFT JOIN school ON subject.school = school.school_pk
       WHERE 
-        deleted_at IS NULL 
-        AND subject_pk = LAST_INSERT_ID();
+        subject.deleted_at IS NULL 
+        AND subject.subject_pk = LAST_INSERT_ID();
     `;
 
     await db.query<ResultSetHeader>(createQuery, [
@@ -48,7 +62,7 @@ export default async function createSubject(req: NextApiRequest, res: NextApiRes
       body.is_personal,
     ]);
 
-    const [getResults] = await db.query<RowDataPacket[]>(getQuery);
+    const [getResults] = await db.query<(RowDataPacket & API.Subject)[]>(getQuery);
 
     // 생성된 과목을 찾을 수 없는 경우
     if (getResults.length === 0) {

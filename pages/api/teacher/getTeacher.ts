@@ -1,5 +1,6 @@
 import { RowDataPacket } from "mysql2/promise";
 import type { NextApiRequest, NextApiResponse } from "next";
+import * as API from "@/types/api";
 import { customErrorMap } from "@/utils";
 import { adminLog, checkAuthenticated, pool } from "@/utils/server";
 import { GetTeacherSchema } from "@/schema";
@@ -47,7 +48,7 @@ export default async function getTeacher(req: NextApiRequest, res: NextApiRespon
       WHERE ${whereConditions.join(" AND ")};
     `;
 
-    const [results] = await db.query<RowDataPacket[]>(query, [req.query.pk]);
+    const [results] = await db.query<(RowDataPacket & API.Teacher)[]>(query, [req.query.pk]);
 
     if (results.length === 0) {
       return res.status(404).json({

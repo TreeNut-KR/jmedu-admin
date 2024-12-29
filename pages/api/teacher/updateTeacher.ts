@@ -1,5 +1,6 @@
 import { ResultSetHeader, RowDataPacket } from "mysql2/promise";
 import type { NextApiRequest, NextApiResponse } from "next";
+import * as API from "@/types/api";
 import { adminLog, checkAuthenticated, pool } from "@/utils/server";
 import { TeacherSchema } from "@/schema";
 
@@ -50,7 +51,7 @@ export default async function updateTeacher(req: NextApiRequest, res: NextApiRes
     `;
 
     // 수정할 교직원이 있는지 확인
-    const [preResults] = await db.query<RowDataPacket[]>(getQuery, [req.query.pk]);
+    const [preResults] = await db.query<(RowDataPacket & API.Teacher)[]>(getQuery, [req.query.pk]);
 
     // 수정할 교직원이 없는 경우
     if (preResults.length === 0) {
@@ -75,7 +76,7 @@ export default async function updateTeacher(req: NextApiRequest, res: NextApiRes
       req.query.pk,
     ]);
 
-    const [getResults] = await db.query<RowDataPacket[]>(getQuery, [req.query.pk]);
+    const [getResults] = await db.query<(RowDataPacket & API.Teacher)[]>(getQuery, [req.query.pk]);
 
     // 업데이트된 열(교직원)이 1개 이상인경우
     if (updateResults.affectedRows > 1) {

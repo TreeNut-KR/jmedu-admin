@@ -1,6 +1,7 @@
 import { josa } from "es-hangul";
 import { ResultSetHeader, RowDataPacket } from "mysql2/promise";
 import type { NextApiRequest, NextApiResponse } from "next";
+import * as API from "@/types/api";
 import { adminLog, checkAuthenticated, pool } from "@/utils/server";
 
 export default async function deleteSchool(req: NextApiRequest, res: NextApiResponse) {
@@ -22,7 +23,9 @@ export default async function deleteSchool(req: NextApiRequest, res: NextApiResp
 
     const preQuery = `
       SELECT 
-        name
+        school_pk,
+        name,
+        deleted_at
       FROM school
       WHERE school_pk = ?
     `;
@@ -36,7 +39,9 @@ export default async function deleteSchool(req: NextApiRequest, res: NextApiResp
     `;
 
     // 삭제할 학교가 존재하는지 확인
-    const [preResults] = await db.query<RowDataPacket[]>(preQuery, [req.query.pk]);
+    const [preResults] = await db.query<
+      (RowDataPacket & Pick<API.School, "school_pk" | "deleted_at">)[]
+    >(preQuery, [req.query.pk]);
 
     // 삭제할 학교가 존재하지 않는 경우
     if (preResults.length === 0) {
@@ -69,7 +74,7 @@ export default async function deleteSchool(req: NextApiRequest, res: NextApiResp
 
     const [deleteResults] = await db.query<ResultSetHeader>(deleteQuery, [req.query.pk]);
 
-    const [getResults] = await db.query<RowDataPacket[]>(getQuery, [req.query.pk]);
+    const [getResults] = await db.query<(RowDataPacket & API.School)[]>(getQuery, [req.query.pk]);
 
     // 삭제된 열(학교)이 1개 이상인경우
     if (deleteResults.affectedRows > 1) {
@@ -89,7 +94,7 @@ export default async function deleteSchool(req: NextApiRequest, res: NextApiResp
 
     return res.status(200).json({
       success: true,
-      message: `학교 '${preResults[0].name}'${josa.pick(preResults[0].name, "을/를")} 삭제했어요.`,
+      message: `학교 '${getResults[0].name}'${josa.pick(getResults[0].name ?? "", "을/를")} 삭제했어요.`,
       data: getResults[0],
     });
   } catch (error) {

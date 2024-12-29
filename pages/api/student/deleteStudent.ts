@@ -1,5 +1,6 @@
 import { ResultSetHeader, RowDataPacket } from "mysql2/promise";
 import type { NextApiRequest, NextApiResponse } from "next";
+import * as API from "@/types/api";
 import { adminLog, checkAuthenticated, pool } from "@/utils/server";
 
 export default async function deleteStudent(req: NextApiRequest, res: NextApiResponse) {
@@ -12,8 +13,12 @@ export default async function deleteStudent(req: NextApiRequest, res: NextApiRes
 
     const db = pool;
 
-    const [preResults] = await db.query<RowDataPacket[]>(
-      `SELECT name
+    const [preResults] = await db.query<
+      (RowDataPacket & Pick<API.Student, "student_pk" | "deleted_at">)[]
+    >(
+      `SELECT 
+        student_pk,
+        deleted_at
       FROM student
       WHERE student_pk = ?`,
       [req.query.pk],
@@ -45,13 +50,19 @@ export default async function deleteStudent(req: NextApiRequest, res: NextApiRes
       [req.query.pk],
     );
 
-    const [getResults] = await db.query<RowDataPacket[]>(
-      `SELECT
-        *,
-        DATE_FORMAT(birthday, '%Y-%m-%d') AS birthday,
-        DATE_FORMAT(firstreg, '%Y-%m-%d') as firstreg
+    const [getResults] = await db.query<(RowDataPacket & API.Student)[]>(
+      `SELECT 
+        student.*, 
+        DATE_FORMAT(student.birthday, '%Y-%m-%d') AS birthday, 
+        DATE_FORMAT(student.firstreg, '%Y-%m-%d') as firstreg,
+        IF(
+          school.school_pk IS NOT NULL, 
+          JSON_OBJECT('name', school.name, 'deleted_at', school.deleted_at), 
+          NULL
+        ) as schoolObj
       FROM student
-      WHERE deleted_at IS NOT NULL AND student_pk = ?`,
+      LEFT JOIN school ON student.school = school.school_pk
+      WHERE student.deleted_at IS NOT NULL AND student.student_pk = ?`,
       [req.query.pk],
     );
 
@@ -73,7 +84,7 @@ export default async function deleteStudent(req: NextApiRequest, res: NextApiRes
 
     return res.status(200).json({
       success: true,
-      message: `'${preResults[0].name}' 학생을 삭제했어요.`,
+      message: `'${getResults[0].name}' 학생을 삭제했어요.`,
       data: getResults[0],
     });
   } catch (error) {

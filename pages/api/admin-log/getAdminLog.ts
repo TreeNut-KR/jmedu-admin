@@ -1,5 +1,6 @@
 import { RowDataPacket } from "mysql2/promise";
 import type { NextApiRequest, NextApiResponse } from "next";
+import * as API from "@/types/api";
 import { checkAuthenticated, pool } from "@/utils/server";
 import { GetAdminLogSchema } from "@/schema";
 
@@ -55,8 +56,8 @@ export default async function getAdminLog(req: NextApiRequest, res: NextApiRespo
       WHERE ${whereConditions.join(" AND ")}
     `;
 
-    const [results] = await db.query<RowDataPacket[]>(query);
-    const [metaResult] = await db.query<RowDataPacket[]>(metaQuery);
+    const [results] = await db.query<(RowDataPacket & API.AdminLog)[]>(query);
+    const [metaResult] = await db.query<(RowDataPacket & { count: number })[]>(metaQuery);
 
     return res.status(200).json({
       success: true,

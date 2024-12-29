@@ -1,5 +1,6 @@
 import { ResultSetHeader, RowDataPacket } from "mysql2/promise";
 import type { NextApiRequest, NextApiResponse } from "next";
+import * as API from "@/types/api";
 import { adminLog, checkAuthenticated, pool } from "@/utils/server";
 import { StudentSchema } from "@/schema";
 
@@ -40,15 +41,24 @@ export default async function updateStudent(req: NextApiRequest, res: NextApiRes
 
     const getQuery = `
       SELECT 
-        *, 
-        DATE_FORMAT(birthday, '%Y-%m-%d') AS birthday, 
-        DATE_FORMAT(firstreg, '%Y-%m-%d') as firstreg
+        student.*, 
+        DATE_FORMAT(student.birthday, '%Y-%m-%d') AS birthday, 
+        DATE_FORMAT(student.firstreg, '%Y-%m-%d') as firstreg,
+        IF(
+          school.school_pk IS NOT NULL, 
+          JSON_OBJECT('name', school.name, 'deleted_at', school.deleted_at), 
+          NULL
+        ) as schoolObj
       FROM student
-      WHERE deleted_at IS NULL AND is_enable = 1 AND student_pk = ?
+      LEFT JOIN school ON student.school = school.school_pk
+      WHERE 
+        student.deleted_at IS NULL 
+        AND student.is_enable = 1 
+        AND student.student_pk = ?
     `;
 
     // 수정할 학생이 있는지 확인
-    const [preResults] = await db.query<RowDataPacket[]>(getQuery, [req.query.pk]);
+    const [preResults] = await db.query<(RowDataPacket & API.Student)[]>(getQuery, [req.query.pk]);
 
     // 수정할 학생을 찾을 수 없는 경우
     if (preResults.length === 0) {
@@ -77,7 +87,7 @@ export default async function updateStudent(req: NextApiRequest, res: NextApiRes
       req.query.pk,
     ]);
 
-    const [getResults] = await db.query<RowDataPacket[]>(getQuery, [req.query.pk]);
+    const [getResults] = await db.query<(RowDataPacket & API.Student)[]>(getQuery, [req.query.pk]);
 
     // 업데이트된 열(학생)이 1개 이상인경우
     if (updateResults.affectedRows > 1) {

@@ -1,5 +1,6 @@
 import { ResultSetHeader, RowDataPacket } from "mysql2/promise";
 import type { NextApiRequest, NextApiResponse } from "next";
+import * as API from "@/types/api";
 import { adminLog, checkAuthenticated, pool } from "@/utils/server";
 import { PermissionSchema } from "@/schema";
 
@@ -49,7 +50,9 @@ export default async function updatePermission(req: NextApiRequest, res: NextApi
       req.query.name,
     ]);
 
-    const [getResults] = await db.query<RowDataPacket[]>(getQuery, [req.query.name]);
+    const [getResults] = await db.query<(RowDataPacket & API.Permission)[]>(getQuery, [
+      req.query.name,
+    ]);
 
     // 업데이트된 열(권한)이 1개 이상인경우
     if (updateResults.affectedRows > 1) {

@@ -1,5 +1,6 @@
 import { RowDataPacket } from "mysql2/promise";
 import type { NextApiRequest, NextApiResponse } from "next";
+import * as API from "@/types/api";
 import { adminLog, checkAuthenticated, pool } from "@/utils/server";
 
 export default async function getPermissions(req: NextApiRequest, res: NextApiResponse) {
@@ -17,7 +18,7 @@ export default async function getPermissions(req: NextApiRequest, res: NextApiRe
       FROM permissions
     `;
 
-    const [results] = await db.query<RowDataPacket[]>(query);
+    const [results] = await db.query<(RowDataPacket & API.Permission)[]>(query);
 
     return res.status(200).json({
       success: true,

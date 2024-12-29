@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt";
 import { RowDataPacket } from "mysql2/promise";
 import type { NextApiRequest, NextApiResponse } from "next";
+import * as API from "@/types/api";
 import { adminLog, encrypt, pool } from "@/utils/server";
 import { LoginSchema } from "@/schema";
 
@@ -20,9 +21,10 @@ export default async function handleLogin(req: NextApiRequest, res: NextApiRespo
 
     const db = pool;
 
-    const [results] = await db.query<RowDataPacket[]>("SELECT * FROM teacher WHERE id = ?", [
-      body.id,
-    ]);
+    const [results] = await db.query<(RowDataPacket & API.Teacher)[]>(
+      "SELECT * FROM teacher WHERE id = ?",
+      [body.id],
+    );
 
     if (results.length > 1) {
       return res.status(409).json({
