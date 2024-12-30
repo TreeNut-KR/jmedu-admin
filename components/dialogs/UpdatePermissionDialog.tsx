@@ -57,19 +57,21 @@ export default function UpdatePermissionDialog(props: { name: API.Permission["ta
 
   const form = useForm<z.infer<typeof PermissionSchema>>({
     resolver: zodResolver(PermissionSchema, { errorMap: customErrorMap }),
-    defaultValues: {
-      level: permission.data?.level,
-    },
+    defaultValues: permission.data
+      ? {
+          level: permission.data?.level,
+        }
+      : undefined,
   });
 
-  useEffect(
-    () =>
+  useEffect(() => {
+    if (permission.data) {
       form.reset({
-        level: permission.data?.level,
-      }),
+        level: permission.data.level,
+      });
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [permission.data],
-  );
+  }, [permission.data]);
 
   function handleSubmit(values: z.infer<typeof PermissionSchema>) {
     setAlert({
@@ -125,7 +127,7 @@ export default function UpdatePermissionDialog(props: { name: API.Permission["ta
     );
   }
 
-  if (permission.isLoading || !permission.data) {
+  if (permission.isLoading || !permission.data || !form.formState.defaultValues) {
     return (
       <div className="flex items-center">
         <Loader2 className="mr-2 animate-spin text-adaptiveBlue-500" size="16" strokeWidth="2.5" />

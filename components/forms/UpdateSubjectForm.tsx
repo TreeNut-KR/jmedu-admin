@@ -93,7 +93,7 @@ export function UpdateSubjectForm(props: { pk: API.Subject["subject_pk"] }) {
     );
   }
 
-  if (subject.isLoading || !subject.data) {
+  if (subject.isLoading || !subject.data || !form.formState.defaultValues) {
     return (
       <div className="flex items-center">
         <Loader2 className="mr-2 animate-spin text-adaptiveBlue-500" size="16" strokeWidth="2.5" />

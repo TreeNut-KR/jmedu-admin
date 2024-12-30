@@ -100,7 +100,7 @@ export default function UpdateTeacherForm(props: { pk: API.Teacher["teacher_pk"]
     );
   }
 
-  if (teacher.isLoading || !teacher.data) {
+  if (teacher.isLoading || !teacher.data || !form.formState.defaultValues) {
     return (
       <div className="flex items-center">
         <Loader2 className="mr-2 animate-spin text-adaptiveBlue-500" size="16" strokeWidth="2.5" />

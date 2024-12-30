@@ -56,19 +56,21 @@ export default function UpdateTeacherLevelDialog(props: { pk: API.Teacher["teach
 
   const form = useForm<z.infer<typeof TeacherLevelSchema>>({
     resolver: zodResolver(TeacherLevelSchema, { errorMap: customErrorMap }),
-    defaultValues: {
-      admin_level: teacher.data?.data?.admin_level,
-    },
+    defaultValues: teacher.data?.data
+      ? {
+          admin_level: teacher.data.data.admin_level,
+        }
+      : undefined,
   });
 
-  useEffect(
-    () =>
+  useEffect(() => {
+    if (teacher.data?.data) {
       form.reset({
-        admin_level: teacher.data?.data?.admin_level,
-      }),
+        admin_level: teacher.data.data.admin_level,
+      });
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [teacher.data?.data],
-  );
+  }, [teacher.data?.data]);
 
   function handleSubmit(values: z.infer<typeof TeacherLevelSchema>) {
     setAlert({
@@ -126,7 +128,7 @@ export default function UpdateTeacherLevelDialog(props: { pk: API.Teacher["teach
     );
   }
 
-  if (teacher.isLoading || !teacher.data) {
+  if (teacher.isLoading || !teacher.data || !form.formState.defaultValues) {
     return (
       <GlobalDialogDescription className="flex items-center">
         <Loader2 className="mr-2 animate-spin text-adaptiveBlue-500" size="16" strokeWidth="2.5" />
