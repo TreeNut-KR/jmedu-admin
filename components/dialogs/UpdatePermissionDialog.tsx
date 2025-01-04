@@ -9,11 +9,11 @@ import { z } from "zod";
 import { alertAtom, dialogAtom } from "@/recoil";
 import ActionAlert from "@/components/alerts/ActionAlert";
 import {
-  GlobalDialogDescription,
-  GlobalDialogFooter,
-  GlobalDialogHeader,
-  GlobalDialogTitle,
-} from "@/components/dialogs/GlobalDialog";
+  ResponsiveDialogDescription,
+  ResponsiveDialogFooter,
+  ResponsiveDialogHeader,
+  ResponsiveDialogTitle,
+} from "@/components/dialogs/ResponsiveDialog";
 import { Button } from "@/components/shadcn/ui/button";
 import { Input } from "@/components/shadcn/ui/input";
 import { Label } from "@/components/shadcn/ui/label";
@@ -138,10 +138,10 @@ export default function UpdatePermissionDialog(props: { name: API.Permission["ta
 
   return (
     <>
-      <GlobalDialogHeader>
-        <GlobalDialogTitle>{props.name} 권한 레벨 수정</GlobalDialogTitle>
-        <GlobalDialogDescription>해당 권한의 레벨을 수정합니다.</GlobalDialogDescription>
-      </GlobalDialogHeader>
+      <ResponsiveDialogHeader>
+        <ResponsiveDialogTitle>{props.name} 권한 레벨 수정</ResponsiveDialogTitle>
+        <ResponsiveDialogDescription>해당 권한의 레벨을 수정합니다.</ResponsiveDialogDescription>
+      </ResponsiveDialogHeader>
       <form className="flex flex-col gap-8" onSubmit={form.handleSubmit(handleSubmit)}>
         <div className="flex flex-col gap-4">
           <fieldset className="grid grid-cols-5 items-center gap-2">
@@ -165,7 +165,7 @@ export default function UpdatePermissionDialog(props: { name: API.Permission["ta
           </fieldset>
         </div>
       </form>
-      <GlobalDialogFooter>
+      <ResponsiveDialogFooter>
         <Button
           type="button"
           variant="secondary"
@@ -183,7 +183,7 @@ export default function UpdatePermissionDialog(props: { name: API.Permission["ta
         >
           수정하기
         </Button>
-      </GlobalDialogFooter>
+      </ResponsiveDialogFooter>
     </>
   );
 }

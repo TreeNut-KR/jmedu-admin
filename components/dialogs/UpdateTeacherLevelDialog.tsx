@@ -9,11 +9,11 @@ import { z } from "zod";
 import { alertAtom, dialogAtom } from "@/recoil";
 import ActionAlert from "@/components/alerts/ActionAlert";
 import {
-  GlobalDialogDescription,
-  GlobalDialogFooter,
-  GlobalDialogHeader,
-  GlobalDialogTitle,
-} from "@/components/dialogs/GlobalDialog";
+  ResponsiveDialogDescription,
+  ResponsiveDialogFooter,
+  ResponsiveDialogHeader,
+  ResponsiveDialogTitle,
+} from "@/components/dialogs/ResponsiveDialog";
 import { Button } from "@/components/shadcn/ui/button";
 import { Input } from "@/components/shadcn/ui/input";
 import { Label } from "@/components/shadcn/ui/label";
@@ -108,8 +108,8 @@ export default function UpdateTeacherLevelDialog(props: { pk: API.Teacher["teach
   if (teacher.error) {
     return (
       <>
-        <GlobalDialogHeader>
-          <GlobalDialogTitle className="flex items-center gap-2">
+        <ResponsiveDialogHeader>
+          <ResponsiveDialogTitle className="flex items-center gap-2">
             <Image
               src={`${process.env.NEXT_PUBLIC_BASE_PATH}/tossface/u26A0.svg`}
               width={20}
@@ -117,32 +117,32 @@ export default function UpdateTeacherLevelDialog(props: { pk: API.Teacher["teach
               alt="warning icon"
             />
             에러가 발생했어요.
-          </GlobalDialogTitle>
-          <GlobalDialogDescription>
+          </ResponsiveDialogTitle>
+          <ResponsiveDialogDescription>
             {isAxiosError(teacher.error)
               ? (teacher.error.response?.data.message ?? "알 수 없는 에러")
               : teacher.error.message}
-          </GlobalDialogDescription>
-        </GlobalDialogHeader>
+          </ResponsiveDialogDescription>
+        </ResponsiveDialogHeader>
       </>
     );
   }
 
   if (teacher.isLoading || !teacher.data || !form.formState.defaultValues) {
     return (
-      <GlobalDialogDescription className="flex items-center">
+      <ResponsiveDialogDescription className="flex items-center">
         <Loader2 className="mr-2 animate-spin text-adaptiveBlue-500" size="16" strokeWidth="2.5" />
         교직원 정보를 불러오고 있어요.
-      </GlobalDialogDescription>
+      </ResponsiveDialogDescription>
     );
   }
 
   return (
     <>
-      <GlobalDialogHeader>
-        <GlobalDialogTitle>교직원 {teacher.data.data?.name} 권한 수정</GlobalDialogTitle>
-        <GlobalDialogDescription>해당 교직원의 권한을 수정해요.</GlobalDialogDescription>
-      </GlobalDialogHeader>
+      <ResponsiveDialogHeader>
+        <ResponsiveDialogTitle>교직원 {teacher.data.data?.name} 권한 수정</ResponsiveDialogTitle>
+        <ResponsiveDialogDescription>해당 교직원의 권한을 수정해요.</ResponsiveDialogDescription>
+      </ResponsiveDialogHeader>
       <form
         ref={formRef}
         className="flex flex-col gap-8"
@@ -170,7 +170,7 @@ export default function UpdateTeacherLevelDialog(props: { pk: API.Teacher["teach
           </fieldset>
         </div>
       </form>
-      <GlobalDialogFooter>
+      <ResponsiveDialogFooter>
         <Button
           type="button"
           variant="secondary"
@@ -188,7 +188,7 @@ export default function UpdateTeacherLevelDialog(props: { pk: API.Teacher["teach
         >
           수정하기
         </Button>
-      </GlobalDialogFooter>
+      </ResponsiveDialogFooter>
     </>
   );
 }

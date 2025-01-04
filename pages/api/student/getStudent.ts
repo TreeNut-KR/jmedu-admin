@@ -40,10 +40,48 @@ export default async function getStudent(req: NextApiRequest, res: NextApiRespon
           school.school_pk IS NOT NULL, 
           JSON_OBJECT('name', school.name, 'deleted_at', school.deleted_at), 
           NULL
-        ) as schoolObj
+        ) as schoolObj,
+        IF(
+          COUNT(student_subject.student_subject_pk) = 0,
+          JSON_ARRAY(),
+          JSON_ARRAYAGG(
+            IF(
+              student_subject.student_subject_pk IS NOT NULL, 
+              JSON_OBJECT(
+                'student_subject_pk', student_subject.student_subject_pk,
+                'student_id', student_subject.student_id,
+                'subject_id', student_subject.subject_id,
+                'created_at', student_subject.created_at,
+                'updated_at', student_subject.updated_at,
+                'deleted_at', student_subject.deleted_at,
+                'subjectObj', IF(
+                  subject.subject_pk IS NOT NULL,
+                  JSON_OBJECT(
+                    'subject_pk', subject.subject_pk,
+                    'name', subject.name,
+                    'teacher', subject.teacher,
+                    'school', subject.school,
+                    'grade', subject.grade,
+                    'is_personal', subject.is_personal,
+                    'created_at', subject.created_at,
+                    'updated_at', subject.updated_at,
+                    'deleted_at', subject.deleted_at
+                  ),
+                  NULL
+                )
+              ), 
+              NULL
+            )
+          )
+        ) as studentSubjectArray
       FROM student
       LEFT JOIN school ON student.school = school.school_pk
-      WHERE ${whereConditions.map((el) => `student.${el}`).join(" AND ")};
+            LEFT JOIN 
+          student_subject ON student.student_pk = student_subject.student_id
+      LEFT JOIN 
+          subject ON student_subject.student_subject_pk = subject.subject_pk
+      WHERE ${whereConditions.map((el) => `student.${el}`).join(" AND ")}
+      GROUP BY student.student_pk;
     `;
 
     const [results] = await db.query<(RowDataPacket & API.Student)[]>(query, [req.query.pk]);

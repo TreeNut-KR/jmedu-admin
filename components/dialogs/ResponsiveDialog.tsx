@@ -1,6 +1,5 @@
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import React, { forwardRef, HTMLAttributes } from "react";
-
 import {
   Dialog,
   DialogPortal,
@@ -80,21 +79,25 @@ export const ResponsiveDialogContent = forwardRef<
   const isDesktop = useMediaQuery("(min-width: 768px)");
 
   return isDesktop ? (
-    <DialogContent ref={ref} className={className} {...props} />
+    <DialogContent ref={ref} className={cn("p-8", className)} {...props} />
   ) : (
     <DrawerContent
       ref={ref}
-      className={cn("mx-auto max-w-xl rounded-t-2xl p-6", className)}
+      className={cn("mx-auto max-w-xl rounded-t-2xl p-8 pt-0", className)}
       {...props}
     />
   );
 });
 ResponsiveDialogContent.displayName = "ResponsiveDialogContent";
 
-export const ResponsiveDialogHeader = (props: HTMLAttributes<HTMLDivElement>) => {
+export const ResponsiveDialogHeader = ({ className, ...props }: HTMLAttributes<HTMLDivElement>) => {
   const isDesktop = useMediaQuery("(min-width: 768px)");
 
-  return isDesktop ? <DialogHeader {...props} /> : <DrawerHeader {...props} />;
+  return isDesktop ? (
+    <DialogHeader className={className} {...props} />
+  ) : (
+    <DrawerHeader className={cn("px-0 pt-8", className)} {...props} />
+  );
 };
 ResponsiveDialogHeader.displayName = "ResponsiveDialogHeader";
 
@@ -122,10 +125,14 @@ export const ResponsiveDialogDescription = forwardRef<
 });
 ResponsiveDialogDescription.displayName = "ResponsiveDialogDescription";
 
-export const ResponsiveDialogFooter = (props: HTMLAttributes<HTMLDivElement>) => {
+export const ResponsiveDialogFooter = ({ className, ...props }: HTMLAttributes<HTMLDivElement>) => {
   const isDesktop = useMediaQuery("(min-width: 768px)");
 
-  return isDesktop ? <DialogFooter {...props} /> : <DrawerFooter {...props} />;
+  return isDesktop ? (
+    <DialogFooter className={className} {...props} />
+  ) : (
+    <DrawerFooter className={cn("px-0", className)} {...props} />
+  );
 };
 ResponsiveDialogFooter.displayName = "ResponsiveDialogFooter";
 

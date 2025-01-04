@@ -7,6 +7,7 @@ import ShowStudentQRButton from "@/components/buttons/ShowStudentQRButton";
 import UpdatePermissionButton from "@/components/buttons/UpdatePermissionButton";
 import UpdateSchoolButton from "@/components/buttons/UpdateSchoolButton";
 import UpdateStudentButton from "@/components/buttons/UpdateStudentButton";
+import UpdateStudentSubjectsButton from "@/components/buttons/UpdateStudentSubjectsButton";
 import UpdateSubjectButton from "@/components/buttons/UpdateSubjectButton";
 import UpdateTeacherButton from "@/components/buttons/UpdateTeacherButton";
 import UpdateTeacherLevelButton from "@/components/buttons/UpdateTeacherLevelButton";
@@ -73,6 +74,7 @@ export const STUDENT_COLUMNS: ColumnDef<API.Student> = [
     renderer: (row) => (
       <div className="flex gap-2">
         <ShowStudentQRButton pk={row["student_pk"]} />
+        <UpdateStudentSubjectsButton pk={row["student_pk"]} />
         <UpdateStudentButton pk={row["student_pk"]} />
         <DeleteStudentButton pk={row["student_pk"]} />
       </div>

@@ -17,7 +17,7 @@ export default function UpdatePermissionButton(props: { name: API.Permission["ta
     if (typeof name === "string" && PERMISSIONS.find((permission) => permission === name)) {
       setDialog({
         state: true,
-        content: <UpdatePermissionDialog name={props.name} />,
+        content: <UpdatePermissionDialog name={name as API.Task} />,
       });
     } else {
       toast.error(`수정하려는 권한을 찾을 수 없어요. (${name})`);

@@ -19,6 +19,8 @@ export interface ListQueryOptions<T = unknown> {
   limit: number;
   sort: keyof T;
   order: "asc" | "desc";
+  filter?: keyof T;
+  search?: string;
 }
 
 export interface LocalListQueryOptions<T = unknown> {
@@ -55,6 +57,7 @@ export interface Student {
   contact_parent: null | string;
   school: null | number;
   schoolObj: null | Pick<School, "name" | "deleted_at">;
+  studentSubjectArray: StudentSubject[];
   payday: null | number;
   firstreg: null | string; // ISO 8601 date string
   is_enable: null | number;
@@ -95,6 +98,16 @@ export interface Subject {
   schoolObj: null | Pick<School, "name" | "deleted_at">;
   grade: null | number;
   is_personal: null | number;
+  created_at: null | string;
+  updated_at: null | string;
+  deleted_at: null | string;
+}
+
+export interface StudentSubject {
+  student_subject_pk: number;
+  student_id: null | string;
+  subject_id: null | number;
+  subjectObj: null | Subject;
   created_at: null | string;
   updated_at: null | string;
   deleted_at: null | string;

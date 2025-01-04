@@ -46,6 +46,11 @@ export const StudentSchema = z.object({
   firstreg: z.string().date().nullable(),
 });
 
+export const UpdateStudentSubjectsSchema = z.object({
+  removed_subjects: z.number().array(),
+  added_subjects: z.number().array(),
+});
+
 export const TeacherSchema = z.object({
   name: z.string().min(2).max(20).nullable(),
   sex: z.nativeEnum(SEX),

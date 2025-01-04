@@ -5,12 +5,12 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import * as API from "@/types/api";
 import {
-  GlobalDialogClose,
-  GlobalDialogDescription,
-  GlobalDialogFooter,
-  GlobalDialogHeader,
-  GlobalDialogTitle,
-} from "@/components/dialogs/GlobalDialog";
+  ResponsiveDialogClose,
+  ResponsiveDialogDescription,
+  ResponsiveDialogFooter,
+  ResponsiveDialogHeader,
+  ResponsiveDialogTitle,
+} from "@/components/dialogs/ResponsiveDialog";
 import { Button } from "@/components/shadcn/ui/button";
 import useGetStudentQuery from "@/hooks/queries/useGetStudentQuery";
 
@@ -91,23 +91,23 @@ export default function QRCodeDialog(props: { pk: API.Student["student_pk"] }) {
 
   return (
     <>
-      <GlobalDialogHeader>
-        <GlobalDialogTitle>학생 {student.data?.data?.name} QR 코드</GlobalDialogTitle>
-        <GlobalDialogDescription>아래 QR 코드를 등하원에 사용해요.</GlobalDialogDescription>
-      </GlobalDialogHeader>
+      <ResponsiveDialogHeader>
+        <ResponsiveDialogTitle>학생 {student.data?.data?.name} QR 코드</ResponsiveDialogTitle>
+        <ResponsiveDialogDescription>아래 QR 코드를 등하원에 사용해요.</ResponsiveDialogDescription>
+      </ResponsiveDialogHeader>
       <div className="flex flex-col items-center justify-center">
         <Image src={image} alt="qr code" width="200" height="200" />
       </div>
-      <GlobalDialogFooter>
-        <GlobalDialogClose asChild>
+      <ResponsiveDialogFooter>
+        <ResponsiveDialogClose asChild>
           <Button size="lg" variant="secondary">
             닫기
           </Button>
-        </GlobalDialogClose>
+        </ResponsiveDialogClose>
         <Button size="lg" onClick={handleDownload}>
           다운로드
         </Button>
-      </GlobalDialogFooter>
+      </ResponsiveDialogFooter>
     </>
   );
 }

@@ -1,12 +1,12 @@
-import { ShieldCheck } from "lucide-react";
+import { LibraryBig } from "lucide-react";
 import { useSetRecoilState } from "recoil";
 import { dialogAtom } from "@/recoil";
 import WithAuthorization from "@/components/WithAuthorization";
-import UpdateTeacherLevelDialog from "@/components/dialogs/UpdateTeacherLevelDialog";
+import UpdateStudentSubjectsDialog from "@/components/dialogs/UpdateStudentSubjectsDialog";
 import { Button } from "@/components/shadcn/ui/button";
 import type * as API from "@/types/api";
 
-export default function UpdateTeacherLevelButton(props: { pk: API.Teacher["teacher_pk"] }) {
+export default function UpdateStudentSubjectsButton(props: { pk: API.Student["student_pk"] }) {
   const setDialog = useSetRecoilState(dialogAtom);
 
   function handleDelete(e: React.MouseEvent) {
@@ -15,16 +15,16 @@ export default function UpdateTeacherLevelButton(props: { pk: API.Teacher["teach
     if (typeof pk === "string") {
       setDialog({
         state: true,
-        content: <UpdateTeacherLevelDialog pk={pk} />,
+        content: <UpdateStudentSubjectsDialog pk={pk} />,
       });
     }
   }
 
   return (
-    <WithAuthorization requiredPermission={"teacher_level_edit"}>
+    <WithAuthorization requiredPermission={"student_subjects_edit"}>
       <Button variant="lightGreen" size="sm" data-pk={props.pk} onClick={handleDelete}>
-        <ShieldCheck size={14} />
-        권한 수정
+        <LibraryBig size={14} />
+        수강 과목
       </Button>
     </WithAuthorization>
   );

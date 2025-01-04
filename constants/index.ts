@@ -23,6 +23,7 @@ export const PERMISSIONS = [
   "subject_add",
   "subject_edit",
   "subject_delete",
+  "student_subjects_edit",
   "students_attendance_view",
   "admin_log_view",
 ] as const;
@@ -114,6 +115,7 @@ export const PERMISSION_DESCRIPTIONS: { [key in API.Task]: string } = {
   subject_add: "새로운 과목을 추가합니다.",
   subject_edit: "특정 과목 정보를 수정합니다.",
   subject_delete: "특정 과목을 삭제합니다.",
+  student_subjects_edit: "학생과 과목간의 연결 정보를 수정합니다.",
   // 학생 등하원 관련
   students_attendance_view: "학생 등하원 기록을 조회합니다.",
   // 작업 기록 관련
@@ -148,6 +150,7 @@ export const PERMISSION_DEFAULT_LEVELS: { [key in API.Task]: number } = {
   subject_add: 3,
   subject_edit: 3,
   subject_delete: 3,
+  student_subjects_edit: 3,
   // 학생 등하원 관련
   students_attendance_view: 1,
   // 작업 기록 관련
