@@ -1,7 +1,7 @@
 import Head from "next/head";
+import { useRouter } from "next/router";
 import LoginForm from "@/components/forms/LoginForm";
 import useAuthStatusQuery from "@/hooks/queries/useAuthStatusQuery";
-import { useRouter } from "next/router";
 import { PUBLIC_PATHS } from "@/constants";
 
 export default function AuthorizationOverlay() {

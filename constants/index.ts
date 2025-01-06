@@ -38,7 +38,7 @@ export const SEX = {
 export const THEME = {
   "밝은 화면": "light",
   "어두운 화면": "dark",
-  자동: "system",
+  "시스템 설정": "system",
 } as const;
 
 export const MENU_ITEMS: {

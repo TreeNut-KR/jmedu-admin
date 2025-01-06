@@ -18,7 +18,7 @@ export default async function getAuthStatus(req: NextApiRequest, res: NextApiRes
     const payload = await decrypt<JWTPayload>(token);
 
     if (!payload) {
-      return res.status(200).json({
+      return res.status(401).json({
         success: false,
         message: "잘못된 로그인 정보에요.",
       });

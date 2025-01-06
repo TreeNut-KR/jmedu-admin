@@ -1,7 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { ModeToggle } from "@/components/ModeToggle";
 import WithAuthorization from "@/components/WithAuthorization";
 import { cn } from "@/utils/shadcn";
 import { MENU_ITEMS } from "@/constants";
@@ -47,9 +46,6 @@ export default function Navigation(props: { className?: string }) {
             </WithAuthorization>
           );
         })}
-      </div>
-      <div className="mb-6 mt-6">
-        <ModeToggle />
       </div>
     </nav>
   );
