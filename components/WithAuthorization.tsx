@@ -29,6 +29,8 @@ export default function WithAuthorization(props: WithAuthorizationProps) {
   }, [authStatus]);
 
   const condition = useMemo(() => {
+    if (props.requiredPermission.length === 0) return true;
+
     if (authStatus.data && permissions.data) {
       const requiredPermission = [props.requiredPermission].flat();
       const passedPermissions = requiredPermission.filter((requiredPermission) => {
