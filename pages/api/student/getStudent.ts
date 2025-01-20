@@ -1,8 +1,9 @@
+import { JWTPayload } from "jose";
 import { RowDataPacket } from "mysql2/promise";
 import type { NextApiRequest, NextApiResponse } from "next";
 import * as API from "@/types/api";
 import { customErrorMap } from "@/utils";
-import { adminLog, checkPermission, pool } from "@/utils/server";
+import { adminLog, checkPermission, decrypt, pool } from "@/utils/server";
 import { GetStudentSchema } from "@/schema";
 
 export default async function getStudent(req: NextApiRequest, res: NextApiResponse) {
@@ -82,6 +83,56 @@ export default async function getStudent(req: NextApiRequest, res: NextApiRespon
         message: "삭제된 학생이에요.",
         data: results[0],
       });
+    }
+
+    // 관리자가 아닌 경우 담당 학생만 조회 할 수 있도록 제한
+    const isAdmin = await checkPermission("boolean", "student_admin_view", req, res);
+
+    if (!isAdmin) {
+      // 현재 로그인한 교직원 정보 조회
+      const token = req.cookies["token"];
+
+      if (!token) {
+        return res.status(400).json({
+          success: false,
+          message: "토큰이 없어요.",
+        });
+      }
+
+      const payload = await decrypt<JWTPayload>(token);
+
+      if (!payload) {
+        return res.status(401).json({
+          success: false,
+          message: "토큰을 확인해주세요.",
+        });
+      }
+
+      const [teachers] = await db.query<(RowDataPacket & Pick<API.Teacher, "teacher_pk">)[]>(
+        "SELECT teacher_pk FROM teacher WHERE id = ?;",
+        [payload.id],
+      );
+
+      if (teachers.length < 1) {
+        return res.status(404).json({
+          success: false,
+          message: "관리자 정보를 찾을 수 없어요.",
+        });
+      }
+
+      // 로그인한 교직원이 담당하는 과목 조회
+      const [subjects] = await db.query<(RowDataPacket & Pick<API.Subject, "subject_pk">)[]>(
+        "SELECT subject_pk FROM subject WHERE teacher = ?;",
+        [teachers[0].teacher_pk],
+      );
+
+      // 조회할 학생이 수강중인 과목과 교직원이 담당하는 과목이 겹치치 않는 경우
+      if (!results[0].subjects.some((el) => subjects.map((el) => el.subject_pk).includes(el))) {
+        return res.status(403).json({
+          success: false,
+          message: "담당 학생이 아니에요.",
+        });
+      }
     }
 
     return res.status(200).json({

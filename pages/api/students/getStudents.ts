@@ -1,8 +1,9 @@
-import { RowDataPacket } from "mysql2/promise";
 import type { NextApiRequest, NextApiResponse } from "next";
 import * as API from "@/types/api";
-import { adminLog, checkPermission, paramsToString, pool } from "@/utils/server";
+import { adminLog, checkPermission, decrypt, paramsToString, pool } from "@/utils/server";
 import { GetStudentsSchema } from "@/schema";
+import type { JWTPayload } from "jose";
+import type { RowDataPacket } from "mysql2/promise";
 
 export default async function getStudents(req: NextApiRequest, res: NextApiResponse) {
   try {
@@ -24,14 +25,64 @@ export default async function getStudents(req: NextApiRequest, res: NextApiRespo
 
     const db = pool;
 
-    const whereConditions = ["is_enable = 1"];
+    const whereConditions = ["student.is_enable = 1"];
 
     if (!params.includeDeleted) {
-      whereConditions.push("deleted_at IS NULL");
+      whereConditions.push("student.deleted_at IS NULL");
     }
 
     if (params.filter && params.search) {
-      whereConditions.push(`${params.filter} LIKE '${params.search}'`);
+      whereConditions.push(`student.${params.filter} LIKE '${params.search}'`);
+    }
+
+    // 전체 학생 목록을 조회할 수 있는지 확인
+    const isAdmin = await checkPermission("boolean", "students_admin_view", req, res);
+
+    // 전체 학생 목록을 조회할 수 없는 경우
+    if (!isAdmin) {
+      // 현재 로그인한 교직원 정보 조회
+      const token = req.cookies["token"];
+
+      if (!token) {
+        return res.status(400).json({
+          success: false,
+          message: "토큰이 없어요.",
+        });
+      }
+
+      const payload = await decrypt<JWTPayload>(token);
+
+      if (!payload) {
+        return res.status(401).json({
+          success: false,
+          message: "토큰을 확인해주세요.",
+        });
+      }
+
+      const [teachers] = await db.query<(RowDataPacket & Pick<API.Teacher, "teacher_pk">)[]>(
+        "SELECT teacher_pk FROM teacher WHERE id = ?;",
+        [payload.id],
+      );
+
+      if (teachers.length < 1) {
+        return res.status(404).json({
+          success: false,
+          message: "관리자 정보를 찾을 수 없어요.",
+        });
+      }
+
+      // 로그인한 교직원이 담당하는 과목 조회
+      const [subjects] = await db.query<(RowDataPacket & Pick<API.Subject, "subject_pk">)[]>(
+        "SELECT subject_pk FROM subject WHERE teacher = ?;",
+        [teachers[0].teacher_pk],
+      );
+
+      // 조건문에 추가
+      if (subjects.length) {
+        whereConditions.push(
+          `(${subjects.map((el) => `student_subject.subject_id = ${el.subject_pk}`).join(" OR ")})`,
+        );
+      }
     }
 
     const limitClause = params.limit > 0 ? `LIMIT ${params.limit}` : ``;
@@ -61,7 +112,7 @@ export default async function getStudents(req: NextApiRequest, res: NextApiRespo
           AND student_subject.deleted_at IS NULL
       LEFT JOIN 
           subject ON student_subject.student_subject_pk = subject.subject_pk
-      WHERE ${whereConditions.map((el) => `student.${el}`).join(" AND ")}
+      WHERE ${whereConditions.join(" AND ")}
       GROUP BY student.student_pk
       ORDER BY ${params.sort} ${params.order.toUpperCase()}
       ${limitClause}
@@ -71,6 +122,13 @@ export default async function getStudents(req: NextApiRequest, res: NextApiRespo
     const metaQuery = `
       SELECT count(*) AS count
       FROM student
+      LEFT JOIN school ON student.school = school.school_pk
+      LEFT JOIN 
+          student_subject ON student.student_pk = student_subject.student_id
+          AND student_subject.student_subject_pk IS NOT NULL
+          AND student_subject.deleted_at IS NULL
+      LEFT JOIN 
+          subject ON student_subject.student_subject_pk = subject.subject_pk
       WHERE ${whereConditions.join(" AND ")}
     `;
 
