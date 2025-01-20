@@ -52,7 +52,7 @@ async function main() {
   console.log("작업 권한을 추가합니다.");
 
   for (const permission of PERMISSIONS) {
-    const [checkResult] = await connection.query<RowDataPacket[]>(
+    const [checkResult] = await connection.query<(RowDataPacket & API.Permission)[]>(
       `
       SELECT *
       FROM permissions
@@ -70,6 +70,17 @@ async function main() {
           (?, ?, NOW(), NOW())
       `,
         [permission, PERMISSION_DEFAULT_LEVELS[permission]],
+      );
+    }
+
+    if (checkResult[0].deleted_at) {
+      await connection.query(
+        `
+        UPDATE permissions 
+        SET deleted_at = NULL
+        WHERE task_name = ?
+      `,
+        [permission],
       );
     }
   }

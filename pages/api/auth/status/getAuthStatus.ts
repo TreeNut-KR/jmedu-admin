@@ -39,7 +39,7 @@ export default async function getAuthStatus(req: NextApiRequest, res: NextApiRes
         deleted_at,
         DATE_FORMAT(birthday, '%Y-%m-%d') AS birthday
       FROM teacher 
-      WHERE id = ?;
+      WHERE deleted_at IS NULL AND id = ?;
       `,
       [payload.id],
     );

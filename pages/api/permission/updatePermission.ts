@@ -36,7 +36,7 @@ export default async function updatePermission(req: NextApiRequest, res: NextApi
       SET 
         level = ?,
         updated_at = NOW()
-      WHERE task_name = ?
+      WHERE deleted_at IS NULL AND task_name = ?
     `;
 
     const getQuery = `
@@ -44,6 +44,26 @@ export default async function updatePermission(req: NextApiRequest, res: NextApi
       FROM permissions
       WHERE deleted_at IS NULL AND task_name = ?
     `;
+
+    // 수정할 권한이 있는지 확인
+    const [preResults] = await db.query<(RowDataPacket & API.Permission)[]>(getQuery, [
+      req.query.name,
+    ]);
+
+    // 수정할 권한이 없는 경우
+    if (preResults.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "수정할 권한을 찾을 수 없어요.",
+      });
+    }
+
+    if (preResults.length > 1) {
+      return res.status(409).json({
+        success: false,
+        message: "중복된 이름을 가진 권한이 있어요. 서버 관리자에게 문의해주세요.",
+      });
+    }
 
     const [updateResults] = await db.query<ResultSetHeader>(updateQuery, [
       body.level,

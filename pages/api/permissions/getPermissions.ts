@@ -16,6 +16,7 @@ export default async function getPermissions(req: NextApiRequest, res: NextApiRe
     const query = `
       SELECT *
       FROM permissions
+      WHERE deleted_at IS NULL;
     `;
 
     const [results] = await db.query<(RowDataPacket & API.Permission)[]>(query);

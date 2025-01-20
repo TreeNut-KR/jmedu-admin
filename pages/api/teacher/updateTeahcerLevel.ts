@@ -29,7 +29,7 @@ export default async function updateTeahcerLevel(req: NextApiRequest, res: NextA
       SET 
         admin_level = ?,
         updated_at = NOW()
-      WHERE teacher_pk = ?
+      WHERE deleted_at IS NULL AND teacher_pk = ?
     `;
 
     const getQuery = `

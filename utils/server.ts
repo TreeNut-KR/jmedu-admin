@@ -105,12 +105,12 @@ export async function checkPermission(
   const db = pool;
 
   const [teachers] = await db.query<RowDataPacket[]>(
-    "SELECT admin_level FROM teacher WHERE id = ?;",
+    "SELECT admin_level FROM teacher WHERE deleted_at IS NULL AND id = ?;",
     [payload.id],
   );
 
-  const [results] = await db.query<RowDataPacket[]>(
-    "SELECT * FROM permissions WHERE task_name = ?;",
+  const [permissions] = await db.query<RowDataPacket[]>(
+    "SELECT * FROM permissions WHERE deleted_at IS NULL AND task_name = ?;",
     [taskName],
   );
 
@@ -122,7 +122,7 @@ export async function checkPermission(
     });
   }
 
-  if (results.length < 1) {
+  if (permissions.length < 1) {
     if (type === "boolean") return false;
     return res.status(404).json({
       success: false,
@@ -130,7 +130,7 @@ export async function checkPermission(
     });
   }
 
-  if (results[0].level > teachers[0].admin_level) {
+  if (permissions[0].level > teachers[0].admin_level) {
     if (type === "boolean") return false;
     return res.status(403).json({
       success: false,
@@ -174,7 +174,8 @@ export async function adminLog(message: string, req: NextApiRequest) {
         updated_at,
         deleted_at
       FROM teacher
-      WHERE deleted_at IS NULL AND id = ?`;
+      WHERE deleted_at IS NULL AND id = ?
+    `;
 
     const [preResults] = await db.query<RowDataPacket[]>(preQuery, [payload.id]);
 

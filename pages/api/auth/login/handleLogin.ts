@@ -22,7 +22,7 @@ export default async function handleLogin(req: NextApiRequest, res: NextApiRespo
     const db = pool;
 
     const [results] = await db.query<(RowDataPacket & API.Teacher)[]>(
-      "SELECT * FROM teacher WHERE id = ?",
+      "SELECT * FROM teacher WHERE deleted_at IS NULL AND id = ?",
       [body.id],
     );
 

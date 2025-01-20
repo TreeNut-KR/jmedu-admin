@@ -32,7 +32,7 @@ export default async function updateTeacher(req: NextApiRequest, res: NextApiRes
         birthday = ?, 
         contact = ?,
         updated_at = NOW() 
-      WHERE teacher_pk = ?
+      WHERE deleted_at IS NULL AND teacher_pk = ?
     `;
 
     const getQuery = `

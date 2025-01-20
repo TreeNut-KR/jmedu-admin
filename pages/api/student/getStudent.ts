@@ -109,7 +109,7 @@ export default async function getStudent(req: NextApiRequest, res: NextApiRespon
       }
 
       const [teachers] = await db.query<(RowDataPacket & Pick<API.Teacher, "teacher_pk">)[]>(
-        "SELECT teacher_pk FROM teacher WHERE id = ?;",
+        "SELECT teacher_pk FROM teacher WHERE deleted_at IS NULL AND id = ?;",
         [payload.id],
       );
 
@@ -122,7 +122,7 @@ export default async function getStudent(req: NextApiRequest, res: NextApiRespon
 
       // 로그인한 교직원이 담당하는 과목 조회
       const [subjects] = await db.query<(RowDataPacket & Pick<API.Subject, "subject_pk">)[]>(
-        "SELECT subject_pk FROM subject WHERE teacher = ?;",
+        "SELECT subject_pk FROM subject WHERE deleted_at IS NULL AND teacher = ?;",
         [teachers[0].teacher_pk],
       );
 
