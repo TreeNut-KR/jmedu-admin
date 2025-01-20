@@ -1,13 +1,13 @@
 import { ResultSetHeader, RowDataPacket } from "mysql2/promise";
 import type { NextApiRequest, NextApiResponse } from "next";
 import * as API from "@/types/api";
-import { adminLog, checkAuthenticated, pool } from "@/utils/server";
+import { adminLog, checkPermission, pool } from "@/utils/server";
 import { PermissionSchema } from "@/schema";
 
 export default async function updatePermission(req: NextApiRequest, res: NextApiResponse) {
   try {
     // 접근 권한 검증
-    await checkAuthenticated("permission_edit", req, res);
+    await checkPermission("http", "permission_edit", req, res);
 
     // 필요한 쿼리
     const { data: body, error: bodyError } = PermissionSchema.safeParse(req.body);

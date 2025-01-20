@@ -57,7 +57,7 @@ export interface Student {
   contact_parent: null | string;
   school: null | number;
   schoolObj: null | Pick<School, "name" | "deleted_at">;
-  studentSubjectArray: StudentSubject[];
+  subjects: number[];
   payday: null | number;
   firstreg: null | string; // ISO 8601 date string
   is_enable: null | number;

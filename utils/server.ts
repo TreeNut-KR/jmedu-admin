@@ -62,7 +62,22 @@ export async function decrypt<T>(input: string) {
   }
 }
 
-export async function checkAuthenticated(
+export function checkPermission(
+  type: "boolean",
+  taskName: API.Task,
+  req: NextApiRequest,
+  res: NextApiResponse,
+): Promise<boolean>;
+
+export function checkPermission(
+  type: "http",
+  taskName: API.Task,
+  req: NextApiRequest,
+  res: NextApiResponse,
+): Promise<void>;
+
+export async function checkPermission(
+  type: "boolean" | "http",
   taskName: API.Task,
   req: NextApiRequest,
   res: NextApiResponse,
@@ -70,6 +85,7 @@ export async function checkAuthenticated(
   const token = req.cookies["token"];
 
   if (!token) {
+    if (type === "boolean") return false;
     return res.status(400).json({
       success: false,
       message: "토큰이 없어요.",
@@ -79,6 +95,7 @@ export async function checkAuthenticated(
   const payload = await decrypt<JWTPayload>(token);
 
   if (!payload) {
+    if (type === "boolean") return false;
     return res.status(401).json({
       success: false,
       message: "토큰을 확인해주세요.",
@@ -98,6 +115,7 @@ export async function checkAuthenticated(
   );
 
   if (teachers.length < 1) {
+    if (type === "boolean") return false;
     return res.status(404).json({
       success: false,
       message: "관리자 정보를 찾을 수 없어요.",
@@ -105,6 +123,7 @@ export async function checkAuthenticated(
   }
 
   if (results.length < 1) {
+    if (type === "boolean") return false;
     return res.status(404).json({
       success: false,
       message: "접근 권한을 찾을 수 없어요.",
@@ -112,13 +131,14 @@ export async function checkAuthenticated(
   }
 
   if (results[0].level > teachers[0].admin_level) {
+    if (type === "boolean") return false;
     return res.status(403).json({
       success: false,
       message: "접근 권한이 없어요.",
     });
-  } else {
-    return undefined;
   }
+
+  if (type === "boolean") return true;
 }
 
 export async function adminLog(message: string, req: NextApiRequest) {

@@ -1,13 +1,13 @@
 import { RowDataPacket } from "mysql2/promise";
 import type { NextApiRequest, NextApiResponse } from "next";
 import * as API from "@/types/api";
-import { adminLog, checkAuthenticated, paramsToString, pool } from "@/utils/server";
+import { adminLog, checkPermission, paramsToString, pool } from "@/utils/server";
 import { GetStudentsSchema } from "@/schema";
 
 export default async function getStudents(req: NextApiRequest, res: NextApiResponse) {
   try {
     // 접근 권한 검증
-    await checkAuthenticated("students_view", req, res);
+    await checkPermission("http", "students_view", req, res);
 
     // 필요한 쿼리
     const { data: params, error: paramsError } = GetStudentsSchema.safeParse(req.query);
@@ -49,42 +49,16 @@ export default async function getStudents(req: NextApiRequest, res: NextApiRespo
           NULL
         ) as schoolObj,
         IF(
-          COUNT(student_subject.student_subject_pk) = 0,
+          COUNT(student_subject.subject_id) = 0,
           JSON_ARRAY(),
-          JSON_ARRAYAGG(
-            IF(
-              student_subject.student_subject_pk IS NOT NULL, 
-              JSON_OBJECT(
-                'student_subject_pk', student_subject.student_subject_pk,
-                'student_id', student_subject.student_id,
-                'subject_id', student_subject.subject_id,
-                'created_at', student_subject.created_at,
-                'updated_at', student_subject.updated_at,
-                'deleted_at', student_subject.deleted_at,
-                'subjectObj', IF(
-                  subject.subject_pk IS NOT NULL,
-                  JSON_OBJECT(
-                    'subject_pk', subject.subject_pk,
-                    'name', subject.name,
-                    'teacher', subject.teacher,
-                    'school', subject.school,
-                    'grade', subject.grade,
-                    'is_personal', subject.is_personal,
-                    'created_at', subject.created_at,
-                    'updated_at', subject.updated_at,
-                    'deleted_at', subject.deleted_at
-                  ),
-                  NULL
-                )
-              ), 
-              NULL
-            )
-          )
-        ) as studentSubjectArray
+          JSON_ARRAYAGG(student_subject.subject_id)
+        ) as subjects
       FROM student
       LEFT JOIN school ON student.school = school.school_pk
       LEFT JOIN 
           student_subject ON student.student_pk = student_subject.student_id
+          AND student_subject.student_subject_pk IS NOT NULL
+          AND student_subject.deleted_at IS NULL
       LEFT JOIN 
           subject ON student_subject.student_subject_pk = subject.subject_pk
       WHERE ${whereConditions.map((el) => `student.${el}`).join(" AND ")}

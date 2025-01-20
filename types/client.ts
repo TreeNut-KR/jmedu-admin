@@ -2,6 +2,7 @@
 import { FunctionComponent, HTMLInputTypeAttribute, ReactNode } from "react";
 import { z } from "zod";
 import { THEME } from "@/constants";
+import type * as API from "@/types/api";
 
 export type Theme = (typeof THEME)[keyof typeof THEME];
 
@@ -43,4 +44,5 @@ export type FormDef<T extends z.ZodObject<any>> = {
   label: string;
   custom?: FunctionComponent<React.InputHTMLAttributes<HTMLInputElement>>;
   onChange?: (event: any) => void;
+  permission?: API.Task | API.Task[];
 }[];

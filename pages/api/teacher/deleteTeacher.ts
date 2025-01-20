@@ -2,12 +2,12 @@ import { josa } from "es-hangul";
 import { ResultSetHeader, RowDataPacket } from "mysql2/promise";
 import type { NextApiRequest, NextApiResponse } from "next";
 import * as API from "@/types/api";
-import { adminLog, checkAuthenticated, pool } from "@/utils/server";
+import { adminLog, checkPermission, pool } from "@/utils/server";
 
 export default async function deleteTeacher(req: NextApiRequest, res: NextApiResponse) {
   try {
     // 접근 권한 검증
-    await checkAuthenticated("teacher_delete", req, res);
+    await checkPermission("http", "teacher_delete", req, res);
 
     // 교직원 삭제 시작
     adminLog(`교직원 삭제 (teacher_pk: "${req.query.pk}")`, req);

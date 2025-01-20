@@ -2,13 +2,13 @@ import { josa } from "es-hangul";
 import { ResultSetHeader, RowDataPacket } from "mysql2/promise";
 import type { NextApiRequest, NextApiResponse } from "next";
 import * as API from "@/types/api";
-import { adminLog, checkAuthenticated, pool } from "@/utils/server";
+import { adminLog, checkPermission, pool } from "@/utils/server";
 import { StudentSchema } from "@/schema";
 
 export default async function createStudent(req: NextApiRequest, res: NextApiResponse) {
   try {
     // 접근 권한 검증
-    await checkAuthenticated("student_add", req, res);
+    await checkPermission("http", "student_add", req, res);
 
     // 필요한 쿼리
     const { data: body, error: bodyError } = StudentSchema.safeParse(req.body);
@@ -44,13 +44,30 @@ export default async function createStudent(req: NextApiRequest, res: NextApiRes
           school.school_pk IS NOT NULL, 
           JSON_OBJECT('name', school.name, 'deleted_at', school.deleted_at), 
           NULL
-        ) as schoolObj
+        ) as schoolObj,
+        IF(
+          COUNT(student_subject.subject_id) = 0,
+          JSON_ARRAY(),
+          JSON_ARRAYAGG(student_subject.subject_id)
+        ) as subjects
       FROM student
       LEFT JOIN school ON student.school = school.school_pk
+      LEFT JOIN 
+          student_subject ON student.student_pk = student_subject.student_id
+          AND student_subject.student_subject_pk IS NOT NULL
+          AND student_subject.deleted_at IS NULL
       WHERE 
         student.deleted_at IS NULL 
         AND student.is_enable = 1 
         AND student.student_pk = @create_student_uuid;
+    `;
+
+    const createStudentSubjectQuery = `
+      INSERT INTO student_subject (
+        subject_id, student_id, created_at
+      ) VALUES (
+        ?, @create_student_uuid, NOW()
+      )
     `;
 
     await db.query<ResultSetHeader>(preQuery);
@@ -65,6 +82,21 @@ export default async function createStudent(req: NextApiRequest, res: NextApiRes
       body.payday,
       body.firstreg,
     ]);
+
+    // 학생 수강 과목 정보 생성
+    for (const subjectId of body.subjects) {
+      const [createResults] = await db.query<ResultSetHeader>(createStudentSubjectQuery, [
+        subjectId,
+      ]);
+
+      // 생성된 열(학생 수강 과목 정보)이 1개 이상인경우
+      if (createResults.affectedRows > 1) {
+        return res.status(409).json({
+          success: false,
+          message: "학생 수강 과목 정보 생성이 중복으로 발생했어요. 서버 관리자에게 문의해주세요.",
+        });
+      }
+    }
 
     const [getResults] = await db.query<(RowDataPacket & API.Student)[]>(getQuery);
 

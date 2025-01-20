@@ -2,13 +2,13 @@ import { RowDataPacket } from "mysql2/promise";
 import type { NextApiRequest, NextApiResponse } from "next";
 import * as API from "@/types/api";
 import { customErrorMap } from "@/utils";
-import { adminLog, checkAuthenticated, pool } from "@/utils/server";
+import { adminLog, checkPermission, pool } from "@/utils/server";
 import { GetSchoolSchema } from "@/schema";
 
 export default async function getSchool(req: NextApiRequest, res: NextApiResponse) {
   try {
     // 접근 권한 검증
-    await checkAuthenticated("school_view", req, res);
+    await checkPermission("http", "school_view", req, res);
 
     // 필요한 쿼리
     const { data: params, error: paramsError } = GetSchoolSchema.safeParse(req.query, {

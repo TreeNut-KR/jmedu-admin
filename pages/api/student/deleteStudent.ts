@@ -1,12 +1,12 @@
 import { ResultSetHeader, RowDataPacket } from "mysql2/promise";
 import type { NextApiRequest, NextApiResponse } from "next";
 import * as API from "@/types/api";
-import { adminLog, checkAuthenticated, pool } from "@/utils/server";
+import { adminLog, checkPermission, pool } from "@/utils/server";
 
 export default async function deleteStudent(req: NextApiRequest, res: NextApiResponse) {
   try {
     // 접근 권한 검증
-    await checkAuthenticated("student_delete", req, res);
+    await checkPermission("http", "student_delete", req, res);
 
     // 학생 삭제 시작
     adminLog(`학생 삭제 (student_pk: "${req.query.pk}")`, req);
@@ -59,9 +59,18 @@ export default async function deleteStudent(req: NextApiRequest, res: NextApiRes
           school.school_pk IS NOT NULL, 
           JSON_OBJECT('name', school.name, 'deleted_at', school.deleted_at), 
           NULL
-        ) as schoolObj
+        ) as schoolObj,
+        IF(
+          COUNT(student_subject.subject_id) = 0,
+          JSON_ARRAY(),
+          JSON_ARRAYAGG(student_subject.subject_id)
+        ) as subjects
       FROM student
       LEFT JOIN school ON student.school = school.school_pk
+      LEFT JOIN 
+          student_subject ON student.student_pk = student_subject.student_id
+          AND student_subject.student_subject_pk IS NOT NULL
+          AND student_subject.deleted_at IS NULL
       WHERE student.deleted_at IS NOT NULL AND student.student_pk = ?`,
       [req.query.pk],
     );

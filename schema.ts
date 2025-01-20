@@ -42,13 +42,9 @@ export const StudentSchema = z.object({
   contact: z.string().nullable(),
   contact_parent: z.string().nullable(),
   school: z.number().nullable(),
+  subjects: z.number().array(),
   payday: z.coerce.number().gte(0).lte(31).nullable(),
   firstreg: z.string().date().nullable(),
-});
-
-export const UpdateStudentSubjectsSchema = z.object({
-  removed_subjects: z.number().array(),
-  added_subjects: z.number().array(),
 });
 
 export const TeacherSchema = z.object({

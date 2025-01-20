@@ -1,6 +1,7 @@
 import BooleanSelector from "@/components/selectors/BooleanSelector";
 import SchoolSelector from "@/components/selectors/SchoolSelector";
 import SexSelector from "@/components/selectors/SexSelector";
+import SubjectsSelector from "@/components/selectors/SubjectsSelector";
 import TeacherSelector from "@/components/selectors/TeacherSelector";
 import { handlePhoneNumber } from "@/utils";
 import {
@@ -10,11 +11,11 @@ import {
   SubjectSchema,
   TeacherSchema,
 } from "@/schema";
-import type { FormDef } from "@/types/client";
+import type * as Client from "@/types/client";
 
 export const TEACHER_LEVEL_EDIT_FORM = [{ id: "old", type: "number" }];
 
-export const REGISTRATION_FORM: FormDef<typeof RegistrationSchema> = [
+export const REGISTRATION_FORM: Client.FormDef<typeof RegistrationSchema> = [
   {
     type: "string",
     key: "name",
@@ -49,7 +50,7 @@ export const REGISTRATION_FORM: FormDef<typeof RegistrationSchema> = [
   },
 ];
 
-export const STUDENT_FORM: FormDef<typeof StudentSchema> = [
+export const STUDENT_FORM: Client.FormDef<typeof StudentSchema> = [
   {
     type: "string",
     key: "name",
@@ -85,6 +86,13 @@ export const STUDENT_FORM: FormDef<typeof StudentSchema> = [
     custom: SchoolSelector,
   },
   {
+    type: "array",
+    key: "subjects",
+    label: "과목",
+    custom: SubjectsSelector,
+    permission: "student_subjects_edit",
+  },
+  {
     label: "결제일",
     key: "payday",
     type: "number",
@@ -96,7 +104,7 @@ export const STUDENT_FORM: FormDef<typeof StudentSchema> = [
   },
 ];
 
-export const SCHOOL_FORM: FormDef<typeof SchoolSchema> = [
+export const SCHOOL_FORM: Client.FormDef<typeof SchoolSchema> = [
   {
     type: "string",
     key: "name",
@@ -122,7 +130,7 @@ export const SCHOOL_FORM: FormDef<typeof SchoolSchema> = [
   },
 ];
 
-export const TEACHER_FORM: FormDef<typeof TeacherSchema> = [
+export const TEACHER_FORM: Client.FormDef<typeof TeacherSchema> = [
   {
     type: "string",
     key: "name",
@@ -147,7 +155,7 @@ export const TEACHER_FORM: FormDef<typeof TeacherSchema> = [
   },
 ];
 
-export const SUBJECT_FORM: FormDef<typeof SubjectSchema> = [
+export const SUBJECT_FORM: Client.FormDef<typeof SubjectSchema> = [
   {
     type: "string",
     key: "name",

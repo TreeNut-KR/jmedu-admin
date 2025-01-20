@@ -2,13 +2,13 @@ import { josa } from "es-hangul";
 import { ResultSetHeader, RowDataPacket } from "mysql2/promise";
 import type { NextApiRequest, NextApiResponse } from "next";
 import * as API from "@/types/api";
-import { adminLog, checkAuthenticated, pool } from "@/utils/server";
+import { adminLog, checkPermission, pool } from "@/utils/server";
 import { SchoolSchema } from "@/schema";
 
 export default async function createSchool(req: NextApiRequest, res: NextApiResponse) {
   try {
     // 접근 권한 검증
-    await checkAuthenticated("school_add", req, res);
+    await checkPermission("http", "school_add", req, res);
 
     // 필요한 쿼리
     const { data: body, error: bodyError } = SchoolSchema.safeParse(req.body);

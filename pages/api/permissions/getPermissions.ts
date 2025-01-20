@@ -1,12 +1,12 @@
 import { RowDataPacket } from "mysql2/promise";
 import type { NextApiRequest, NextApiResponse } from "next";
 import * as API from "@/types/api";
-import { adminLog, checkAuthenticated, pool } from "@/utils/server";
+import { adminLog, checkPermission, pool } from "@/utils/server";
 
 export default async function getPermissions(req: NextApiRequest, res: NextApiResponse) {
   try {
     // 접근 권한 검증
-    await checkAuthenticated("permissions_view", req, res);
+    await checkPermission("http", "permissions_view", req, res);
 
     // 권한 목록 조회 시작
     adminLog("관리자 권한 목록 조회", req);

@@ -1,13 +1,13 @@
 import { RowDataPacket } from "mysql2/promise";
 import type { NextApiRequest, NextApiResponse } from "next";
 import * as API from "@/types/api";
-import { checkAuthenticated, pool } from "@/utils/server";
+import { checkPermission, pool } from "@/utils/server";
 import { GetAdminLogSchema } from "@/schema";
 
 export default async function getAdminLog(req: NextApiRequest, res: NextApiResponse) {
   try {
     // 접근 권한 검증
-    await checkAuthenticated("admin_log_view", req, res);
+    await checkPermission("http", "admin_log_view", req, res);
 
     // 필요한 쿼리
     const { data: params, error: paramsError } = GetAdminLogSchema.safeParse(req.query);

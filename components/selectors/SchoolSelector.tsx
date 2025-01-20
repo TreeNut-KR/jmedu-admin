@@ -177,12 +177,13 @@ const SchoolSelector = React.forwardRef<HTMLInputElement, SchoolSelectorProps>(
             <ResponsiveDialogFooter>
               <ResponsiveDialogClose ref={closeRef} />
               <ResponsiveDialogClose asChild>
-                <Button type="button" variant="secondary">
+                <Button type="button" size="lg" variant="secondary">
                   취소
                 </Button>
               </ResponsiveDialogClose>
               <Button
                 type="submit"
+                size="lg"
                 onClick={() => {
                   if (selectedId) {
                     handleChangeValue(selectedId);
