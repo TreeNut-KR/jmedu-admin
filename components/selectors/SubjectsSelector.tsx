@@ -109,7 +109,7 @@ const SubjectsSelector = React.forwardRef<HTMLInputElement, SubjectsSelectorProp
             state: true,
             content: (
               <ActionAlert
-                title={`과목 수정을 그만둘까요?`}
+                title={`과목 선택을 그만둘까요?`}
                 variant="destructive"
                 action="그만하기"
                 onAction={() => {
@@ -128,7 +128,7 @@ const SubjectsSelector = React.forwardRef<HTMLInputElement, SubjectsSelectorProp
         state: true,
         content: (
           <ActionAlert
-            title={`수정 사항을 적용할까요?`}
+            title={`선택 사항을 적용할까요?`}
             action="적용하기"
             onAction={() => {
               form.setValue("subjects", value);
@@ -183,7 +183,7 @@ const SubjectsSelector = React.forwardRef<HTMLInputElement, SubjectsSelectorProp
     return (
       <>
         <ResponsiveDialog open={isOpen} onOpenChange={handleChangeOpen}>
-          <div className="flex items-center gap-2">
+          <div className="space-y-2">
             <ul className="flex min-w-44 flex-col items-start gap-2 py-2">
               {fields.map((field, index) => (
                 <li key={index} className="flex items-center gap-2">
@@ -203,13 +203,13 @@ const SubjectsSelector = React.forwardRef<HTMLInputElement, SubjectsSelectorProp
             </ul>
             <ResponsiveDialogTrigger asChild>
               <Button type="button" variant="default" className="text-xs">
-                수정하기
+                선택하기
               </Button>
             </ResponsiveDialogTrigger>
           </div>
           <ResponsiveDialogContent className="gap-4">
             <ResponsiveDialogHeader>
-              <ResponsiveDialogTitle>수강 과목 수정</ResponsiveDialogTitle>
+              <ResponsiveDialogTitle>수강 과목 선택</ResponsiveDialogTitle>
               <ResponsiveDialogDescription></ResponsiveDialogDescription>
             </ResponsiveDialogHeader>
             <div className="grid gap-6">
