@@ -104,24 +104,14 @@ export default async function updateStudent(req: NextApiRequest, res: NextApiRes
       });
     }
 
-    const [getResults] = await db.query<(RowDataPacket & API.Student)[]>(getQuery, [req.query.pk]);
-
-    // 업데이트된 학생을 찾을 수 없는 경우
-    if (getResults.length === 0) {
-      return res.status(404).json({
-        success: false,
-        message: "업데이트된 학생를 찾을 수 없어요. 서버 관리자에게 문의해주세요.",
-      });
-    }
-
     // 학생 수강 과목 정보 업데이트
     const isAllow = await checkPermission("boolean", "student_subjects_edit", req, res);
 
-    const removedSubjects = getResults[0].subjects.filter(
+    const removedSubjects = preResults[0].subjects.filter(
       (el) => !body.subjects.find((el2) => el2 === el),
     );
     const addedSubjects = body.subjects.filter(
-      (el) => !getResults[0].subjects.find((el2) => el2 === el),
+      (el) => !preResults[0].subjects.find((el2) => el2 === el),
     );
 
     if (isAllow && (removedSubjects.length || addedSubjects.length)) {
@@ -152,9 +142,9 @@ export default async function updateStudent(req: NextApiRequest, res: NextApiRes
       }
 
       const findQuery = `
-      SELECT *
-      FROM student_subject
-      WHERE subject_id = ? AND student_id = ?;
+        SELECT *
+        FROM student_subject
+        WHERE subject_id = ? AND student_id = ?;
       `;
 
       const restoreQuery = `
@@ -213,6 +203,16 @@ export default async function updateStudent(req: NextApiRequest, res: NextApiRes
           });
         }
       }
+    }
+
+    const [getResults] = await db.query<(RowDataPacket & API.Student)[]>(getQuery, [req.query.pk]);
+
+    // 업데이트된 학생을 찾을 수 없는 경우
+    if (getResults.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "업데이트된 학생를 찾을 수 없어요. 서버 관리자에게 문의해주세요.",
+      });
     }
 
     // 구버전 대응
