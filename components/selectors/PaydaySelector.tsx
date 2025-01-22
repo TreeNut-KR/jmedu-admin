@@ -55,7 +55,7 @@ const PaydaySelector = React.forwardRef<HTMLInputElement, AdminLevelSelectorProp
     return (
       <>
         <Select
-          className={cn("w-44", className)}
+          className={cn("min-w-44", className)}
           placeholder="결제일을 선택하세요."
           options={PAYDAY_OPTIONS}
           value={value}

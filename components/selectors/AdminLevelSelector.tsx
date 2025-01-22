@@ -1,5 +1,6 @@
 import * as React from "react";
 import Select from "@/components/selectors/Select";
+import { cn } from "@/utils/shadcn";
 import { ADMIN_LEVEL_OPTIONS } from "@/constants/options";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
@@ -8,7 +9,6 @@ export interface AdminLevelSelectorProps extends React.InputHTMLAttributes<HTMLI
 const AdminLevelSelector = React.forwardRef<HTMLInputElement, AdminLevelSelectorProps>(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   ({ className, type, ...props }, ref) => {
-    const fieldsetRef = React.useRef<HTMLFieldSetElement>(null);
     const inputRef = React.useRef<HTMLInputElement>(null);
 
     const [value, setValue] = React.useState<undefined | string | number>(undefined);
@@ -28,7 +28,7 @@ const AdminLevelSelector = React.forwardRef<HTMLInputElement, AdminLevelSelector
     });
 
     React.useEffect(() => {
-      const inputEl = fieldsetRef.current?.querySelector("input");
+      const inputEl = inputRef.current;
 
       if (inputEl) {
         Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value")?.set?.call(
@@ -53,8 +53,9 @@ const AdminLevelSelector = React.forwardRef<HTMLInputElement, AdminLevelSelector
     }
 
     return (
-      <fieldset ref={fieldsetRef}>
+      <>
         <Select
+          className={cn("min-w-44", className)}
           placeholder="권한 레벨을 선택하세요."
           options={ADMIN_LEVEL_OPTIONS}
           value={value}
@@ -62,7 +63,7 @@ const AdminLevelSelector = React.forwardRef<HTMLInputElement, AdminLevelSelector
           disabled={props.disabled}
         />
         <input type="number" ref={inputRef} {...props} onChange={handleOnChange} hidden />
-      </fieldset>
+      </>
     );
   },
 );

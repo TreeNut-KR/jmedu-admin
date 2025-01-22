@@ -1,5 +1,6 @@
 import * as React from "react";
 import Select from "@/components/selectors/Select";
+import { cn } from "@/utils/shadcn";
 import { SEX_OPTIONS } from "@/constants/options";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
@@ -8,7 +9,6 @@ export interface SexSelectorProps extends React.InputHTMLAttributes<HTMLInputEle
 const SexSelector = React.forwardRef<HTMLInputElement, SexSelectorProps>(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   ({ className, type, ...props }, ref) => {
-    const fieldsetRef = React.useRef<HTMLFieldSetElement>(null);
     const inputRef = React.useRef<HTMLInputElement>(null);
 
     const [value, setValue] = React.useState<undefined | number | string>(undefined);
@@ -28,7 +28,7 @@ const SexSelector = React.forwardRef<HTMLInputElement, SexSelectorProps>(
     });
 
     React.useEffect(() => {
-      const inputEl = fieldsetRef.current?.querySelector("input");
+      const inputEl = inputRef.current;
 
       if (inputEl) {
         Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value")?.set?.call(
@@ -53,8 +53,9 @@ const SexSelector = React.forwardRef<HTMLInputElement, SexSelectorProps>(
     }
 
     return (
-      <fieldset ref={fieldsetRef}>
+      <>
         <Select
+          className={cn("min-w-44", className)}
           placeholder="성별을 선택하세요."
           options={SEX_OPTIONS}
           value={value}
@@ -62,7 +63,7 @@ const SexSelector = React.forwardRef<HTMLInputElement, SexSelectorProps>(
           disabled={props.disabled}
         />
         <input type="number" ref={inputRef} {...props} onChange={handleOnChange} hidden />
-      </fieldset>
+      </>
     );
   },
 );
