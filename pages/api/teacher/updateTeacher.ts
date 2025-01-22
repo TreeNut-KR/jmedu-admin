@@ -76,8 +76,6 @@ export default async function updateTeacher(req: NextApiRequest, res: NextApiRes
       req.query.pk,
     ]);
 
-    const [getResults] = await db.query<(RowDataPacket & API.Teacher)[]>(getQuery, [req.query.pk]);
-
     // 업데이트된 열(교직원)이 1개 이상인경우
     if (updateResults.affectedRows > 1) {
       return res.status(409).json({
@@ -85,6 +83,36 @@ export default async function updateTeacher(req: NextApiRequest, res: NextApiRes
         message: "중복으로 업데이트가 발생했어요. 서버 관리자에게 문의해주세요.",
       });
     }
+
+    // 교직원 권한 레벨 업데이트
+    const isAllow = await checkPermission("boolean", "teacher_level_edit", req, res);
+
+    if (isAllow) {
+      adminLog(`교직원 권한 수정 (teacher_pk: "${req.query.pk}")`, req);
+
+      const updateQuery = `
+        UPDATE teacher 
+        SET 
+          admin_level = ?,
+          updated_at = NOW()
+        WHERE deleted_at IS NULL AND teacher_pk = ?
+      `;
+
+      const [updateResults] = await db.query<ResultSetHeader>(updateQuery, [
+        body.admin_level,
+        req.query.pk,
+      ]);
+
+      // 업데이트된 열(교직원)이 1개 이상인경우
+      if (updateResults.affectedRows > 1) {
+        return res.status(409).json({
+          success: false,
+          message: "교직원 권한 수정이 중복으로 발생했어요. 서버 관리자에게 문의해주세요.",
+        });
+      }
+    }
+
+    const [getResults] = await db.query<(RowDataPacket & API.Teacher)[]>(getQuery, [req.query.pk]);
 
     // 업데이트된 교직원을 찾을 수 없는 경우
     if (getResults.length === 0) {

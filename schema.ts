@@ -52,9 +52,8 @@ export const TeacherSchema = z.object({
   sex: z.nativeEnum(SEX),
   birthday: z.string().date().nullable(),
   contact: z.string().nullable(),
+  admin_level: z.number().min(0).max(3).nullable(),
 });
-
-export const TeacherLevelSchema = z.object({ admin_level: z.number().min(0).max(3).nullable() });
 
 export const SubjectSchema = z.object({
   name: z.string().min(2).max(20).nullable(),

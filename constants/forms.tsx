@@ -1,3 +1,4 @@
+import AdminLevelSelector from "@/components/selectors/AdminLevelSelector";
 import BooleanSelector from "@/components/selectors/BooleanSelector";
 import SchoolSelector from "@/components/selectors/SchoolSelector";
 import SexSelector from "@/components/selectors/SexSelector";
@@ -152,6 +153,13 @@ export const TEACHER_FORM: Client.FormDef<typeof TeacherSchema> = [
     key: "contact",
     label: "연락처",
     onChange: handlePhoneNumber,
+  },
+  {
+    type: "number",
+    key: "admin_level",
+    label: "권한",
+    permission: "teacher_level_edit",
+    custom: AdminLevelSelector,
   },
 ];
 

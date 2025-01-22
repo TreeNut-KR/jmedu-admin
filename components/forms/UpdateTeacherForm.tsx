@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import { useSetRecoilState } from "recoil";
 import { z } from "zod";
 import { alertAtom } from "@/recoil";
+import WithAuthorization from "@/components/WithAuthorization";
 import ActionAlert from "@/components/alerts/ActionAlert";
 import { Button } from "@/components/shadcn/ui/button";
 import { Input } from "@/components/shadcn/ui/input";
@@ -114,34 +115,36 @@ export default function UpdateTeacherForm(props: { pk: API.Teacher["teacher_pk"]
       <Table>
         <TableBody>
           {TEACHER_FORM.map((column) => (
-            <TableRow key={column.key}>
-              <TableHead className="w-40">{column.label}</TableHead>
-              <TableCell>
-                {column.custom ? (
-                  <column.custom
-                    {...form.register(column.key, {
-                      onChange: column.onChange ?? undefined,
-                      valueAsNumber: column.type === "number",
-                    })}
-                    disabled={isPending}
-                  />
-                ) : (
-                  <Input
-                    type={column.type}
-                    {...form.register(column.key, {
-                      onChange: column.onChange ?? undefined,
-                      valueAsNumber: column.type === "number",
-                    })}
-                    disabled={isPending}
-                  />
-                )}
-                {form.formState.errors[column.key]?.message ? (
-                  <p className="my-1 text-xs text-adaptiveRed-500">
-                    {form.formState.errors[column.key]?.message}
-                  </p>
-                ) : null}
-              </TableCell>
-            </TableRow>
+            <WithAuthorization key={column.key} requiredPermission={column.permission ?? []}>
+              <TableRow>
+                <TableHead className="w-40">{column.label}</TableHead>
+                <TableCell>
+                  {column.custom ? (
+                    <column.custom
+                      {...form.register(column.key, {
+                        onChange: column.onChange ?? undefined,
+                        valueAsNumber: column.type === "number",
+                      })}
+                      disabled={isPending}
+                    />
+                  ) : (
+                    <Input
+                      type={column.type}
+                      {...form.register(column.key, {
+                        onChange: column.onChange ?? undefined,
+                        valueAsNumber: column.type === "number",
+                      })}
+                      disabled={isPending}
+                    />
+                  )}
+                  {form.formState.errors[column.key]?.message ? (
+                    <p className="my-1 text-xs text-adaptiveRed-500">
+                      {form.formState.errors[column.key]?.message}
+                    </p>
+                  ) : null}
+                </TableCell>
+              </TableRow>
+            </WithAuthorization>
           ))}
         </TableBody>
       </Table>

@@ -19,6 +19,11 @@ export const SEX_OPTIONS = Object.entries(SEX).map((arr) => ({
   value: arr[1],
 })) as Client.SelectorOptions<API.Sex>;
 
+export const ADMIN_LEVEL_OPTIONS = Array.from({ length: 4 }).map((_, idx) => ({
+  label: idx.toString(),
+  value: idx,
+})) as Client.SelectorOptions<API.Teacher["admin_level"]>;
+
 export const THEME_OPTIONS: Client.SelectorOptions<Client.Theme> = [
   { value: "light", label: "라이트 모드" },
   { value: "dark", label: "다크 모드" },

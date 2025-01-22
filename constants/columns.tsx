@@ -9,7 +9,6 @@ import UpdateSchoolButton from "@/components/buttons/UpdateSchoolButton";
 import UpdateStudentButton from "@/components/buttons/UpdateStudentButton";
 import UpdateSubjectButton from "@/components/buttons/UpdateSubjectButton";
 import UpdateTeacherButton from "@/components/buttons/UpdateTeacherButton";
-import UpdateTeacherLevelButton from "@/components/buttons/UpdateTeacherLevelButton";
 import { Badge } from "@/components/shadcn/ui/badge";
 import {
   Tooltip,
@@ -208,7 +207,6 @@ export const TEACHER_COLUMN: ColumnDef<API.Teacher> = [
     renderer: (row) => (
       <div className="flex gap-2">
         <UpdateTeacherButton pk={row["teacher_pk"]} />
-        <UpdateTeacherLevelButton pk={row["teacher_pk"]} />
         <DeleteTeacherButton pk={row["teacher_pk"]} />
       </div>
     ),
