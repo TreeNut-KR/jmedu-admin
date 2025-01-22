@@ -11,17 +11,13 @@ const SexSelector = React.forwardRef<HTMLInputElement, SexSelectorProps>(
     const fieldsetRef = React.useRef<HTMLFieldSetElement>(null);
     const inputRef = React.useRef<HTMLInputElement>(null);
 
-    const [value, setValue] = React.useState(props.value ?? 0);
+    const [value, setValue] = React.useState<undefined | number | string>(undefined);
 
     React.useImperativeHandle(ref, () => {
       return {
         ...(inputRef.current as HTMLInputElement),
         set value(str: unknown) {
-          if (
-            typeof str === "string" ||
-            (typeof str === "number" && !Number.isNaN(str)) ||
-            (Array.isArray(str) && str.every((el) => typeof el === "string" && !Number.isNaN(el)))
-          ) {
+          if (typeof str === "string" || (typeof str === "number" && !Number.isNaN(str))) {
             setValue(str);
           }
         },
