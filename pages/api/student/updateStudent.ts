@@ -188,19 +188,17 @@ export default async function updateStudent(req: NextApiRequest, res: NextApiRes
                 "학생 수강 과목 정보 복구가 중복으로 발생했어요. 서버 관리자에게 문의해주세요.",
             });
           }
+        } else {
+          const [addResults] = await db.query<ResultSetHeader>(addQuery, [subjectId, req.query.pk]);
 
-          break;
-        }
-
-        const [addResults] = await db.query<ResultSetHeader>(addQuery, [subjectId, req.query.pk]);
-
-        // 생성된 열(학생 수강 과목 정보)이 1개 이상인경우
-        if (addResults.affectedRows > 1) {
-          return res.status(409).json({
-            success: false,
-            message:
-              "학생 수강 과목 정보 생성이 중복으로 발생했어요. 서버 관리자에게 문의해주세요.",
-          });
+          // 생성된 열(학생 수강 과목 정보)이 1개 이상인경우
+          if (addResults.affectedRows > 1) {
+            return res.status(409).json({
+              success: false,
+              message:
+                "학생 수강 과목 정보 생성이 중복으로 발생했어요. 서버 관리자에게 문의해주세요.",
+            });
+          }
         }
       }
     }
