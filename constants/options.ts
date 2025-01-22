@@ -24,6 +24,18 @@ export const ADMIN_LEVEL_OPTIONS = Array.from({ length: 4 }).map((_, idx) => ({
   value: idx,
 })) as Client.SelectorOptions<API.Teacher["admin_level"]>;
 
+export const PAYDAY_OPTIONS = [
+  {
+    label: "미선택",
+    value: 0,
+  },
+].concat(
+  Array.from({ length: 27 }).map((_, idx) => ({
+    label: `${idx + 1}일`,
+    value: idx + 1,
+  })),
+) as Client.SelectorOptions<API.Student["payday"]>;
+
 export const THEME_OPTIONS: Client.SelectorOptions<Client.Theme> = [
   { value: "light", label: "라이트 모드" },
   { value: "dark", label: "다크 모드" },

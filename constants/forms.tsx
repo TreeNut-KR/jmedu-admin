@@ -1,5 +1,6 @@
 import AdminLevelSelector from "@/components/selectors/AdminLevelSelector";
 import BooleanSelector from "@/components/selectors/BooleanSelector";
+import PaydaySelector from "@/components/selectors/PaydaySelector";
 import SchoolSelector from "@/components/selectors/SchoolSelector";
 import SexSelector from "@/components/selectors/SexSelector";
 import SubjectsSelector from "@/components/selectors/SubjectsSelector";
@@ -97,6 +98,8 @@ export const STUDENT_FORM: Client.FormDef<typeof StudentSchema> = [
     label: "결제일",
     key: "payday",
     type: "number",
+    // custom: forwardRef((props, ref) => <Input ref={ref} rightItem={<span>일</span>} {...props} />),
+    custom: PaydaySelector,
   },
   {
     label: "등록일",
