@@ -8,6 +8,7 @@ import {
   ADMIN_LOG_SORT_OPTIONS,
   SUBJECT_SORT_OPTIONS,
   COMMON_ORDER_OPTIONS,
+  HOMEWORK_SORT_OPTIONS,
 } from "@/constants/options";
 
 export const RegistrationSchema = z.object({
@@ -61,6 +62,19 @@ export const SubjectSchema = z.object({
   school: z.number().nullable(),
   grade: z.number().nullable(),
   is_personal: z.coerce.number().gte(0).lte(1).nullable(),
+});
+
+export const HomeworkSchema = z.object({
+  subject_id: z.number().nullable(),
+  title: z.string().min(2).max(20).nullable(),
+  description: z.string().min(2).max(20).nullable(),
+  due_date: z.string().datetime({ local: true }).nullable(),
+  students: z.string().array(),
+});
+
+export const StudentHomeworkSchema = z.object({
+  remarks: z.string().max(255).nullable(),
+  submitted_at: z.string().datetime({ local: true }).nullable(),
 });
 
 export const GetSchoolSchema = z.object({
@@ -150,6 +164,28 @@ export const GetSubjectsSchema = z.object({
 });
 
 export const GetSubjectSchema = z.object({
+  includeDeleted: z.preprocess((val) => val === "true", z.boolean().optional()),
+});
+
+export const GetHomeworksSchema = z.object({
+  page: z.coerce.number().gte(1).optional().default(1),
+  limit: z.coerce.number().gte(0).optional().default(10),
+  sort: z
+    .enum([HOMEWORK_SORT_OPTIONS[0].value, ...HOMEWORK_SORT_OPTIONS.slice(1).map((el) => el.value)])
+    .optional()
+    .default(HOMEWORK_SORT_OPTIONS[0].value),
+  order: z
+    .enum([COMMON_ORDER_OPTIONS[0].value, ...COMMON_ORDER_OPTIONS.slice(1).map((el) => el.value)])
+    .optional()
+    .default(COMMON_ORDER_OPTIONS[0].value),
+  filter: z
+    .enum([HOMEWORK_SORT_OPTIONS[0].value, ...HOMEWORK_SORT_OPTIONS.slice(1).map((el) => el.value)])
+    .optional(),
+  search: z.string().optional(),
+  includeDeleted: z.preprocess((val) => val === "true", z.boolean().optional()),
+});
+
+export const GetHomeworkSchema = z.object({
   includeDeleted: z.preprocess((val) => val === "true", z.boolean().optional()),
 });
 

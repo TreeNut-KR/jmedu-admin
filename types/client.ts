@@ -42,7 +42,10 @@ export type FormDef<T extends z.ZodObject<any>> = {
   type: HTMLInputTypeAttribute;
   key: keyof z.infer<T>;
   label: string;
-  custom?: FunctionComponent<React.InputHTMLAttributes<HTMLInputElement>>;
+  custom?:
+    | FunctionComponent<React.InputHTMLAttributes<HTMLInputElement>>
+    | FunctionComponent<React.TextareaHTMLAttributes<HTMLTextAreaElement>>;
+  className?: string;
   onChange?: (event: any) => void;
   permission?: API.Task | API.Task[];
 }[];

@@ -35,7 +35,7 @@ export default function App({ Component, pageProps }: AppProps) {
         <Toaster
           position="top-center"
           className="whitespace-pre-line"
-          visibleToasts={1}
+          visibleToasts={3}
           richColors
         />
       </Providers>

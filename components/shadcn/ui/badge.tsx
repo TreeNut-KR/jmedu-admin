@@ -2,7 +2,6 @@ import { cva, type VariantProps } from "class-variance-authority";
 import * as React from "react";
 import { cn } from "@/utils/shadcn";
 
-
 const badgeVariants = cva(
   "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
   {
@@ -18,6 +17,8 @@ const badgeVariants = cva(
           "border-transparent bg-adaptiveRed-50 text-adaptiveRed-600 hover:bg-adaptiveRed-100",
         lightBlue:
           "border-transparent bg-adaptiveBlue-50 text-adaptiveBlue-600 hover:bg-adaptiveBlue-100",
+        lightGray:
+          "border-transparent bg-adaptiveGray-100 text-adaptiveGray-700 hover:bg-adaptiveGray-200",
       },
     },
     defaultVariants: {

@@ -1,12 +1,16 @@
 import AdminLevelSelector from "@/components/selectors/AdminLevelSelector";
 import BooleanSelector from "@/components/selectors/BooleanSelector";
+import DatetimeSelector from "@/components/selectors/DatetimeSelector";
 import PaydaySelector from "@/components/selectors/PaydaySelector";
 import SchoolSelector from "@/components/selectors/SchoolSelector";
 import SexSelector from "@/components/selectors/SexSelector";
+import SubjectSelector from "@/components/selectors/SubjectSelector";
 import SubjectsSelector from "@/components/selectors/SubjectsSelector";
 import TeacherSelector from "@/components/selectors/TeacherSelector";
+import { Textarea } from "@/components/shadcn/ui/textarea";
 import { handlePhoneNumber } from "@/utils";
 import {
+  HomeworkSchema,
   RegistrationSchema,
   SchoolSchema,
   StudentSchema,
@@ -92,13 +96,12 @@ export const STUDENT_FORM: Client.FormDef<typeof StudentSchema> = [
     key: "subjects",
     label: "과목",
     custom: SubjectsSelector,
-    permission: "student_subjects_edit",
+    permission: "student_subject_edit",
   },
   {
     label: "결제일",
     key: "payday",
     type: "number",
-    // custom: forwardRef((props, ref) => <Input ref={ref} rightItem={<span>일</span>} {...props} />),
     custom: PaydaySelector,
   },
   {
@@ -194,5 +197,32 @@ export const SUBJECT_FORM: Client.FormDef<typeof SubjectSchema> = [
     key: "is_personal",
     label: "1대1 과외 여부",
     custom: BooleanSelector,
+  },
+];
+
+export const HOMEWORK_INFO_FORM: Client.FormDef<typeof HomeworkSchema> = [
+  {
+    type: "number",
+    key: "subject_id",
+    label: "과목",
+    custom: SubjectSelector,
+  },
+  {
+    type: "string",
+    key: "title",
+    label: "과제 이름",
+    className: "w-full",
+  },
+  {
+    type: "string",
+    key: "description",
+    label: "과제 설명",
+    custom: Textarea,
+  },
+  {
+    type: "datetime-local",
+    key: "due_date",
+    label: "제출 기한",
+    custom: DatetimeSelector,
   },
 ];

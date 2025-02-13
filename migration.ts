@@ -17,10 +17,55 @@ async function main() {
     connectionLimit: 3,
   });
 
-  const targetTables = ["student", "teacher"];
+  // 테이블 추가
+  console.log("필요한 테이블을 추가합니다.");
+
+  const requiredTableQueries = {
+    homework: `
+      CREATE TABLE homework (
+        homework_pk INT AUTO_INCREMENT,
+        subject_id INT,
+        title VARCHAR(50), /* 과제 이름, 입력 단계에서 20자로 제한 */
+        description VARCHAR(255), /* 과제 설명 */
+        due_date DATETIME, /* 과제 제출 마감일 */
+        created_at DATETIME DEFAULT NOW(),
+        updated_at DATETIME DEFAULT NOW(),
+        deleted_at DATETIME DEFAULT NULL,
+        PRIMARY KEY(homework_pk),
+        FOREIGN KEY (subject_id) REFERENCES subject(subject_pk)
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
+    `,
+    student_homework: `
+      CREATE TABLE student_homework (
+        student_homework_pk INT AUTO_INCREMENT,
+        homework_id INT,
+        student_id CHAR(36),
+        remarks VARCHAR(255), /* 비고 */
+        submitted_at DATETIME DEFAULT NULL, /* 과제 제출일 */
+        created_at DATETIME DEFAULT NOW(),
+        updated_at DATETIME DEFAULT NOW(),
+        deleted_at DATETIME DEFAULT NULL,
+        PRIMARY KEY(student_homework_pk),
+        FOREIGN KEY (homework_id) REFERENCES homework(homework_pk),
+        FOREIGN KEY (student_id) REFERENCES student(student_pk)
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_unicode_ci;
+    `,
+  };
+
+  Object.entries(requiredTableQueries).forEach(async ([tableName, createQuery]) => {
+    const [checkResult] = await connection.query<RowDataPacket[]>(`
+      SHOW TABLES LIKE '${tableName}';
+    `);
+
+    if (checkResult.length === 0) {
+      await connection.query<RowDataPacket[]>(createQuery);
+    }
+  });
 
   // 컬럼 추가 및 마이그레이션
   console.log("컬럼을 추가하고 마이그레이션합니다.");
+
+  const targetTables = ["student", "teacher"];
 
   for (const table of targetTables) {
     const [checkResult] = await connection.query<RowDataPacket[]>(`
@@ -71,9 +116,7 @@ async function main() {
       `,
         [permission, PERMISSION_DEFAULT_LEVELS[permission]],
       );
-    }
-
-    if (checkResult[0].deleted_at) {
+    } else if (checkResult[0].deleted_at) {
       await connection.query(
         `
         UPDATE permissions 

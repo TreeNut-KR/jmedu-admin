@@ -103,11 +103,37 @@ export interface Subject {
   deleted_at: null | string;
 }
 
+export interface Homework {
+  homework_pk: number;
+  subject_id: null | number;
+  subjectObj: null | Pick<Subject, "name" | "deleted_at">;
+  students: string[];
+  student_homeworks: StudentHomework[];
+  title: null | string;
+  description: null | string;
+  due_date: null | string;
+  created_at: null | string;
+  updated_at: null | string;
+  deleted_at: null | string;
+}
+
 export interface StudentSubject {
   student_subject_pk: number;
   student_id: null | string;
   subject_id: null | number;
   subjectObj: null | Subject;
+  created_at: null | string;
+  updated_at: null | string;
+  deleted_at: null | string;
+}
+
+export interface StudentHomework {
+  student_homework_pk: number;
+  homework_id: null | number;
+  student_id: null | string;
+  studentObj: null | Pick<Student, "name" | "deleted_at">;
+  remarks: null | string;
+  submitted_at: null | string;
   created_at: null | string;
   updated_at: null | string;
   deleted_at: null | string;

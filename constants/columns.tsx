@@ -1,14 +1,17 @@
 import { Check } from "lucide-react";
+import DeleteHomeworkButton from "@/components/buttons/DeleteHomeworkButton";
 import DeleteSchoolButton from "@/components/buttons/DeleteSchoolButton";
 import DeleteStudentButton from "@/components/buttons/DeleteStudentButton";
 import DeleteSubjectButton from "@/components/buttons/DeleteSubjectButton";
 import DeleteTeacherButton from "@/components/buttons/DeleteTeacherButton";
 import ShowStudentQRButton from "@/components/buttons/ShowStudentQRButton";
+import UpdateHomeworkButton from "@/components/buttons/UpdateHomeworkButton";
 import UpdatePermissionButton from "@/components/buttons/UpdatePermissionButton";
 import UpdateSchoolButton from "@/components/buttons/UpdateSchoolButton";
 import UpdateStudentButton from "@/components/buttons/UpdateStudentButton";
 import UpdateSubjectButton from "@/components/buttons/UpdateSubjectButton";
 import UpdateTeacherButton from "@/components/buttons/UpdateTeacherButton";
+import ViewHomeworkButton from "@/components/buttons/ViewHomeworkButton";
 import { Badge } from "@/components/shadcn/ui/badge";
 import {
   Tooltip,
@@ -283,6 +286,94 @@ export const SUBJECT_COLUMNS: ColumnDef<API.Subject> = [
         <DeleteSubjectButton pk={row["subject_pk"]} />
       </div>
     ),
+  },
+];
+
+export const HOMEWORK_COLUMNS: ColumnDef<API.Homework> = [
+  { accessor: "homework_pk", hidden: true },
+  {
+    header: "과목",
+    accessor: "subjectObj",
+    renderer: (row) => {
+      if (!row.subjectObj || !row.subjectObj.name) {
+        return <span className="text-adaptiveRed-500">과목을 찾을 수 없어요.</span>;
+      }
+      if (row.subjectObj.deleted_at) {
+        return (
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger>
+                <span className="text-adaptiveGray-400">{row.subjectObj.name}</span>
+              </TooltipTrigger>
+              <TooltipContent>삭제된 과목입니다.</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        );
+      }
+      return row.subjectObj.name;
+    },
+  },
+  {
+    header: "과제 이름",
+    accessor: "title",
+  },
+  {
+    header: "과제 설명",
+    accessor: "description",
+  },
+  {
+    header: "제출 기한",
+    accessor: "due_date",
+    renderer: (row) => formatDate(row["due_date"]),
+  },
+  {
+    header: "관리",
+    renderer: (row) => (
+      <div className="flex gap-2">
+        <ViewHomeworkButton pk={row["homework_pk"]} />
+        <UpdateHomeworkButton pk={row["homework_pk"]} />
+        <DeleteHomeworkButton pk={row["homework_pk"]} />
+      </div>
+    ),
+  },
+];
+
+export const VIEW_HOMEWORK_COLUMNS: ColumnDef<API.Homework> = [
+  { accessor: "homework_pk", hidden: true },
+  {
+    header: "과목",
+    accessor: "subjectObj",
+    renderer: (row) => {
+      if (!row.subjectObj || !row.subjectObj.name) {
+        return <span className="text-adaptiveRed-500">과목을 찾을 수 없어요.</span>;
+      }
+      if (row.subjectObj.deleted_at) {
+        return (
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger>
+                <span className="text-adaptiveGray-400">{row.subjectObj.name}</span>
+              </TooltipTrigger>
+              <TooltipContent>삭제된 과목입니다.</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        );
+      }
+      return row.subjectObj.name;
+    },
+  },
+  {
+    header: "과제 이름",
+    accessor: "title",
+  },
+  {
+    header: "과제 설명",
+    accessor: "description",
+  },
+  {
+    header: "제출 기한",
+    accessor: "due_date",
+    renderer: (row) => formatDate(row["due_date"]),
   },
 ];
 

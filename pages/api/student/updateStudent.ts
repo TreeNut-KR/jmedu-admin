@@ -105,7 +105,7 @@ export default async function updateStudent(req: NextApiRequest, res: NextApiRes
     }
 
     // 학생 수강 과목 정보 업데이트
-    const isAllow = await checkPermission("boolean", "student_subjects_edit", req, res);
+    const isAllow = await checkPermission("boolean", "student_subject_edit", req, res);
 
     const removedSubjects = preResults[0].subjects.filter(
       (el) => !body.subjects.find((el2) => el2 === el),

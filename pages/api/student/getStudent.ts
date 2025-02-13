@@ -9,7 +9,7 @@ import { GetStudentSchema } from "@/schema";
 export default async function getStudent(req: NextApiRequest, res: NextApiResponse) {
   try {
     // 접근 권한 검증
-    await checkPermission("http", "students_view", req, res);
+    await checkPermission("http", "student_view", req, res);
 
     // 필요한 쿼리
     const { data: params, error: paramsError } = GetStudentSchema.safeParse(req.query, {

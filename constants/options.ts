@@ -73,6 +73,15 @@ export const SUBJECT_SORT_OPTIONS: Client.SelectorOptions<keyof API.Subject> = [
   { value: "updated_at", label: "수정일" },
 ];
 
+export const HOMEWORK_SORT_OPTIONS: Client.SelectorOptions<keyof API.Homework> = [
+  { value: "subject_id", label: "과목" },
+  { value: "title", label: "과제 이름" },
+  { value: "description", label: "과제 설명" },
+  { value: "due_date", label: "제출 기한" },
+  { value: "created_at", label: "생성일" },
+  { value: "updated_at", label: "수정일" },
+];
+
 export const STUDENT_ATTENDANCE_SORT_OPTIONS: Client.SelectorOptions<keyof API.StudentAttendance> =
   [
     { value: "attend_time", label: "등원 시간" },
