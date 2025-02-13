@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import updateStudentHomework from "./updateStudentHomework";
+import updateStudentHomework from "@/pages/api/student-homework/updateStudentHomework";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === "PUT") {
