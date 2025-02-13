@@ -1,5 +1,6 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
+import ThemeToggleButton from "@/components/buttons/ThemeToggleButton";
 import LoginForm from "@/components/forms/LoginForm";
 import useAuthStatusQuery from "@/hooks/queries/useAuthStatusQuery";
 import { PUBLIC_PATHS } from "@/constants";
@@ -22,8 +23,11 @@ export default function AuthorizationOverlay() {
         <title>로그인 - 제이엠에듀</title>
       </Head>
       <div className="absolute inset-0 h-full w-full bg-adaptiveGray-50">
-        <div className="mx-auto mt-[20vh] flex w-full max-w-md flex-col gap-4 p-8">
-          <h1 className="text-2xl font-bold">로그인</h1>
+        <div className="mx-auto mt-[20vh] flex w-full max-w-md flex-col gap-6 p-8">
+          <header className="flex items-center justify-between">
+            <h1 className="flex text-2xl font-bold">로그인</h1>
+            <ThemeToggleButton />
+          </header>
           <LoginForm />
         </div>
       </div>
