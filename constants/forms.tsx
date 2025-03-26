@@ -190,7 +190,7 @@ export const SUBJECT_FORM: Client.FormDef<typeof SubjectSchema> = [
   {
     type: "number",
     key: "grade",
-    label: "대학 학년",
+    label: "대상 학년",
   },
   {
     type: "number",
