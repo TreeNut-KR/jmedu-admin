@@ -47,7 +47,7 @@ export default function SubjectListTable() {
           />
           <span>에러가 발생했어요.</span>
         </div>
-        <div className="text-sm text-adaptiveGray-700">
+        <div className="whitespace-pre-line text-sm text-adaptiveGray-700">
           {isAxiosError(subjects.error)
             ? (subjects.error.response?.data.message ?? "알 수 없는 에러")
             : subjects.error.message}

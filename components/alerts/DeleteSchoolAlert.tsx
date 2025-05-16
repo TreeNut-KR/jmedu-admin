@@ -31,7 +31,7 @@ export default function DeleteSchoolAlert(props: { pk: API.School["school_pk"] }
       <>
         <AlertDialogHeader>
           <AlertDialogTitle>에러가 발생했어요.</AlertDialogTitle>
-          <AlertDialogDescription>
+          <AlertDialogDescription className="whitespace-pre-line">
             {isAxiosError(school.error)
               ? (school.error.response?.data.message ?? "알 수 없는 에러")
               : school.error.message}

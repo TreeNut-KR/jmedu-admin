@@ -150,7 +150,7 @@ export default function Profile() {
         {authStatus.error && (
           <>
             <DropdownMenuItem className={dropdownItemCn} disabled>
-              <div className="max-w-48">
+              <div className="max-w-48 whitespace-pre-line">
                 <div className="mb-1 font-semibold">
                   {isAxiosError(authStatus.error)
                     ? "로그인 에러"

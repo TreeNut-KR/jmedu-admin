@@ -158,7 +158,7 @@ const SubjectsSelector = React.forwardRef<HTMLInputElement, SubjectsSelectorProp
             />
             에러가 발생했어요.
           </div>
-          <div>
+          <div className="whitespace-pre-line">
             {isAxiosError(subjects.error)
               ? (subjects.error.response?.data.message ?? "알 수 없는 에러")
               : subjects.error?.message}

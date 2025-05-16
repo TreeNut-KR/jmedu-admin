@@ -117,7 +117,7 @@ const TeacherSelector = React.forwardRef<HTMLInputElement, TeacherSelectorProps>
       return (
         <div className="flex items-center text-red-500">
           <CircleAlert className="mr-2" size="16" strokeWidth="2.5" />
-          <p className="text-sm">
+          <p className="whitespace-pre-line text-sm">
             {isAxiosError(teachers.error)
               ? teachers.error.response?.data.message
               : "교직원 목록을 가져오는 중에 문제가 발생했어요."}

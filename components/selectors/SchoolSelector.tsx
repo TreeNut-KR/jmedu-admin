@@ -118,7 +118,7 @@ const SchoolSelector = React.forwardRef<HTMLInputElement, SchoolSelectorProps>(
       return (
         <div className="flex items-center text-red-500">
           <CircleAlert className="mr-2" size="16" strokeWidth="2.5" />
-          <p className="text-sm">
+          <p className="whitespace-pre-line text-sm">
             {isAxiosError(schools.error)
               ? schools.error.response?.data.message
               : "학교 목록을 가져오는 중에 문제가 발생했어요."}

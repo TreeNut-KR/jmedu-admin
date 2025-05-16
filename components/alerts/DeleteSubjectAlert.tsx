@@ -31,7 +31,7 @@ export default function DeleteSubjectAlert(props: { pk: API.Subject["subject_pk"
       <>
         <AlertDialogHeader>
           <AlertDialogTitle>에러가 발생했어요.</AlertDialogTitle>
-          <AlertDialogDescription>
+          <AlertDialogDescription className="whitespace-pre-line">
             {isAxiosError(subject.error)
               ? (subject.error.response?.data.message ?? "알 수 없는 에러")
               : subject.error.message}

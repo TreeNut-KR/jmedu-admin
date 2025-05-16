@@ -116,7 +116,7 @@ const SubjectSelector = React.forwardRef<HTMLInputElement, SubjectSelectorProps>
       return (
         <div className="flex items-center text-red-500">
           <CircleAlert className="mr-2" size="16" strokeWidth="2.5" />
-          <p className="text-sm">
+          <p className="whitespace-pre-line text-sm">
             {isAxiosError(subjects.error)
               ? subjects.error.response?.data.message
               : "과목 목록을 가져오는 중에 문제가 발생했어요."}

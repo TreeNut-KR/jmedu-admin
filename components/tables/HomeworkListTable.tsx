@@ -47,7 +47,7 @@ export default function HomeworkListTable() {
           />
           <span>에러가 발생했어요.</span>
         </div>
-        <div className="text-sm text-adaptiveGray-700">
+        <div className="whitespace-pre-line text-sm text-adaptiveGray-700">
           {isAxiosError(homeworks.error)
             ? (homeworks.error.response?.data.message ?? "알 수 없는 에러")
             : homeworks.error.message}

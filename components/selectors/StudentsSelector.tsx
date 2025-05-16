@@ -136,7 +136,7 @@ const StudentsSelector = React.forwardRef<HTMLInputElement, StudentsSelectorProp
             />
             에러가 발생했어요.
           </div>
-          <div>
+          <div className="whitespace-pre-line">
             {isAxiosError(students.error)
               ? (students.error.response?.data.message ?? "알 수 없는 에러")
               : students.error?.message}
