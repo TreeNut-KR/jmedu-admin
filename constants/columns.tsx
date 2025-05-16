@@ -12,6 +12,7 @@ import UpdateStudentButton from "@/components/buttons/UpdateStudentButton";
 import UpdateSubjectButton from "@/components/buttons/UpdateSubjectButton";
 import UpdateTeacherButton from "@/components/buttons/UpdateTeacherButton";
 import ViewHomeworkButton from "@/components/buttons/ViewHomeworkButton";
+import ViewStudentAttendanceButton from "@/components/buttons/ViewStudentAttendanceButton";
 import { Badge } from "@/components/shadcn/ui/badge";
 import {
   Tooltip,
@@ -75,11 +76,89 @@ export const STUDENT_COLUMNS: ColumnDef<API.Student> = [
     renderer: (row) => (
       <div className="flex gap-2">
         <ShowStudentQRButton pk={row["student_pk"]} />
+        <ViewStudentAttendanceButton pk={row["student_pk"]} />
         <UpdateStudentButton pk={row["student_pk"]} />
         <DeleteStudentButton pk={row["student_pk"]} />
       </div>
     ),
   },
+];
+
+export const STUDENT_SUMMARY_COLUMNS: ColumnDef<API.Student> = [
+  { accessor: "student_pk", hidden: true },
+  {
+    header: "이름",
+    accessor: "name",
+  },
+  {
+    header: "성별",
+    accessor: "sex",
+    renderer: (row) => {
+      if (typeof row["sex"] !== "number")
+        return <Badge variant="outline">올바르지 않은 값({row["sex"]})</Badge>;
+      else if (row["sex"] === 0) return <Badge variant="secondary">알 수 없음</Badge>;
+      else if (row["sex"] === 1) return <Badge variant="lightBlue">남자</Badge>;
+      else if (row["sex"] === 2) return <Badge variant="lightRed">여자</Badge>;
+      else if (row["sex"] === 9) return <Badge variant="secondary">해당 없음</Badge>;
+    },
+  },
+  {
+    header: "학교",
+    accessor: "school",
+    renderer: (row) => {
+      if (!row.schoolObj || !row.schoolObj.name) {
+        return <span className="text-adaptiveRed-500">학교을 찾을 수 없어요.</span>;
+      }
+      if (row.schoolObj.deleted_at) {
+        return (
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger>
+                <span className="text-adaptiveGray-400">{row.schoolObj.name}</span>
+              </TooltipTrigger>
+              <TooltipContent>삭제된 학교입니다.</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        );
+      }
+      return row.schoolObj.name;
+    },
+  },
+  {
+    header: "생일",
+    accessor: "birthday",
+  },
+  { header: "연락처", accessor: "contact", renderer: (row) => formatPhoneNumber(row["contact"]) },
+  {
+    header: "부모님 연락처",
+    accessor: "contact_parent",
+    renderer: (row) => formatPhoneNumber(row["contact_parent"]),
+  },
+  // {
+  //   header: "과목",
+  //   accessor: "subjects",
+  //   renderer: (row) => {
+  //     if (!row["subjects"]) return <div></div>;
+  //     return (
+  //       <ul className="flex min-w-44 flex-col items-start gap-2 py-2">
+  //         {row["subjects"].map((field, index) => (
+  //           <li key={index} className="flex items-center gap-2">
+  //             <Image
+  //               alt="subject icon"
+  //               src={process.env.NEXT_PUBLIC_BASE_PATH + "/tossface/u1F4DA.svg"}
+  //               width={18}
+  //               height={18}
+  //             />
+  //             {/* sdfsdf */}
+  //           </li>
+  //         ))}
+  //         <li className="hidden text-adaptiveGray-400 first:block">
+  //           <span>수강중인 과목이 없습니다.</span>
+  //         </li>
+  //       </ul>
+  //     );
+  //   },
+  // },
 ];
 
 export const SCHOOL_COLUMNS: ColumnDef<API.School> = [

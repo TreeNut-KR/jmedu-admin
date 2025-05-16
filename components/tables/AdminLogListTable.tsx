@@ -21,7 +21,7 @@ import {
 } from "@/constants/options";
 import type * as API from "@/types/api";
 
-export default function AdminLogTable() {
+export default function AdminLogListTable() {
   const { query, handleChangeLimit, handleChangeSortBy, handleChangeOrder } =
     useListQueryOptions<API.AdminLog>({
       sortOptions: ADMIN_LOG_SORT_OPTIONS,

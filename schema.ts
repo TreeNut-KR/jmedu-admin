@@ -190,6 +190,11 @@ export const GetHomeworkSchema = z.object({
 });
 
 export const GetStudentAttendanceSchema = z.object({
+  year: z.coerce.number().gte(1),
+  month: z.coerce.number().gte(1).lte(12),
+});
+
+export const GetStudentAttendancesSchema = z.object({
   page: z.coerce.number().gte(1).optional().default(1),
   limit: z.coerce.number().gte(0).optional().default(10),
   sort: z

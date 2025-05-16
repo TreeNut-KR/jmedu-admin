@@ -23,7 +23,7 @@ import {
 } from "@/constants/options";
 import type * as API from "@/types/api";
 
-export default function HomeworkTable() {
+export default function HomeworkListTable() {
   const { query, handleChangeLimit, handleChangeSortBy, handleChangeOrder } =
     useListQueryOptions<API.Homework>({
       sortOptions: HOMEWORK_SORT_OPTIONS,
