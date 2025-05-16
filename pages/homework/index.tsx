@@ -1,6 +1,6 @@
 import Head from "next/head";
 import WithAuthorization from "@/components/WithAuthorization";
-import HomeworkTable from "@/components/tables/HomeworkTable";
+import HomeworkListTable from "@/components/tables/HomeworkListTable";
 
 export default function HomeworkPage() {
   return (
@@ -11,7 +11,7 @@ export default function HomeworkPage() {
       <div className="space-y-6 p-8">
         <h1 className="text-xl font-bold text-adaptiveGray-800">과제 관리</h1>
         <WithAuthorization requiredPermission={"homeworks_view"} isFallback>
-          <HomeworkTable />
+          <HomeworkListTable />
         </WithAuthorization>
       </div>
     </>

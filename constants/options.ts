@@ -1,4 +1,4 @@
-import { SEX } from "@/constants";
+import { SEX, START_YEAR } from "@/constants";
 import type * as API from "@/types/api";
 import type * as Client from "@/types/client";
 
@@ -12,6 +12,19 @@ export const COMMON_LIMIT_OPTIONS: Client.SelectorOptions<number> = [
 export const COMMON_ORDER_OPTIONS: Client.SelectorOptions<"asc" | "desc"> = [
   { value: "asc", label: "오름차순" },
   { value: "desc", label: "내림차순" },
+];
+
+export const COMMON_YEAR_OPTIONS: Client.SelectorOptions<number> = [
+  { value: START_YEAR, label: `${START_YEAR}년` },
+  ...Array.from({ length: new Date().getFullYear() - 2024 }).map((_, idx) => ({
+    value: START_YEAR + 1 + idx,
+    label: `${START_YEAR + 1 + idx}년`,
+  })),
+];
+
+export const COMMON_MONTH_OPTIONS: Client.SelectorOptions<number> = [
+  { value: 1, label: "1월" },
+  ...Array.from({ length: 11 }).map((_, idx) => ({ value: idx + 2, label: `${idx + 2}월` })),
 ];
 
 export const SEX_OPTIONS = Object.entries(SEX).map((arr) => ({

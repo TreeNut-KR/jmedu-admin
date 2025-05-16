@@ -1,8 +1,10 @@
 import { isAxiosError } from "axios";
-import { ArrowUpDown, List, Loader2, Tag } from "lucide-react";
+import { ArrowUpDown, List, Loader2, Plus, Tag } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import Pagination from "@/components/Pagination";
 import Select from "@/components/selectors/Select";
+import { Button } from "@/components/shadcn/ui/button";
 import {
   Table,
   TableBody,
@@ -11,29 +13,29 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/tables/Table";
-import useGetStudentAttendanceQuery from "@/hooks/queries/useGetStudentAttendanceQuery";
+import useGetSubjectsQuery from "@/hooks/queries/useGetSubjectsQuery";
 import useListQueryOptions from "@/hooks/useListQueryOptions";
-import { STUDENT_ATTENDANCE_COLUMN } from "@/constants/columns";
+import { SUBJECT_COLUMNS } from "@/constants/columns";
 import {
   COMMON_LIMIT_OPTIONS,
   COMMON_ORDER_OPTIONS,
-  STUDENT_ATTENDANCE_SORT_OPTIONS,
+  SUBJECT_SORT_OPTIONS,
 } from "@/constants/options";
 import type * as API from "@/types/api";
 
-export default function StudentAttendanceTable() {
+export default function SubjectListTable() {
   const { query, handleChangeLimit, handleChangeSortBy, handleChangeOrder } =
-    useListQueryOptions<API.StudentAttendance>({
-      sortOptions: STUDENT_ATTENDANCE_SORT_OPTIONS,
+    useListQueryOptions<API.Subject>({
+      sortOptions: SUBJECT_SORT_OPTIONS,
       initLimit: 10,
       initPage: 1,
-      initSortBy: STUDENT_ATTENDANCE_SORT_OPTIONS[0].value,
+      initSortBy: "name",
       initOrder: "asc",
     });
 
-  const logs = useGetStudentAttendanceQuery(query);
+  const subjects = useGetSubjectsQuery(query);
 
-  if (logs.error) {
+  if (subjects.error) {
     return (
       <div className="flex flex-col gap-2">
         <div className="flex items-center gap-2">
@@ -46,19 +48,19 @@ export default function StudentAttendanceTable() {
           <span>에러가 발생했어요.</span>
         </div>
         <div className="text-sm text-adaptiveGray-700">
-          {isAxiosError(logs.error)
-            ? (logs.error.response?.data.message ?? "알 수 없는 에러")
-            : logs.error.message}
+          {isAxiosError(subjects.error)
+            ? (subjects.error.response?.data.message ?? "알 수 없는 에러")
+            : subjects.error.message}
         </div>
       </div>
     );
   }
 
-  if (logs.isLoading || !logs.data) {
+  if (subjects.isLoading || !subjects.data) {
     return (
       <div className="flex items-center">
         <Loader2 className="mr-2 animate-spin text-adaptiveBlue-500" size="16" strokeWidth="2.5" />
-        등하원 정보를 불러오고 있어요.
+        과목 정보를 불러오고 있어요.
       </div>
     );
   }
@@ -76,10 +78,16 @@ export default function StudentAttendanceTable() {
           />
         </div>
         <div className="flex items-center gap-2">
+          <Button variant="secondary" asChild>
+            <Link href="/subject/new" className="text-xs">
+              <Plus size={14} />
+              과목 추가하기
+            </Link>
+          </Button>
           <Select
             size="sm"
             className={"w-[130px]"}
-            options={STUDENT_ATTENDANCE_SORT_OPTIONS}
+            options={SUBJECT_SORT_OPTIONS}
             value={query.sort}
             onValueChange={handleChangeSortBy}
             left={<Tag size={12} />}
@@ -97,12 +105,10 @@ export default function StudentAttendanceTable() {
       <Table>
         <TableHeader>
           <TableRow>
-            {STUDENT_ATTENDANCE_COLUMN.map((column, columnIdx) => {
+            {SUBJECT_COLUMNS.map((column, columnIdx) => {
               if (column.hidden) return;
               return (
-                <TableHead
-                  key={`student-attendance-header-${column.accessor ?? column.header ?? columnIdx}`}
-                >
+                <TableHead key={`subject-header-${column.accessor ?? column.header ?? columnIdx}`}>
                   {column.header ?? column.accessor}
                 </TableHead>
               );
@@ -110,27 +116,27 @@ export default function StudentAttendanceTable() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {logs.data.data ? (
-            logs.data.data.map((log) => (
+          {subjects.data.data ? (
+            subjects.data.data.map((subject) => (
               <TableRow
                 key={
-                  typeof STUDENT_ATTENDANCE_COLUMN[0].accessor === "object"
-                    ? JSON.stringify(log[STUDENT_ATTENDANCE_COLUMN[0].accessor])
-                    : (log[STUDENT_ATTENDANCE_COLUMN[0].accessor] as string | number)
+                  typeof SUBJECT_COLUMNS[0].accessor === "object"
+                    ? JSON.stringify(subject[SUBJECT_COLUMNS[0].accessor])
+                    : (subject[SUBJECT_COLUMNS[0].accessor] as string | number)
                 }
               >
-                {STUDENT_ATTENDANCE_COLUMN.map((column, columnIdx) => {
+                {SUBJECT_COLUMNS.map((column, columnIdx) => {
                   if (column.hidden) return;
                   return (
                     <TableCell
-                      key={`student-attendance-column-${column.accessor ?? column.header ?? columnIdx}`}
+                      key={`subject-column-${column.accessor ?? column.header ?? columnIdx}`}
                     >
                       {column.renderer
-                        ? column.renderer(log)
+                        ? column.renderer(subject)
                         : column.accessor
-                          ? typeof log[column.accessor] === "object"
-                            ? JSON.stringify(log[column.accessor])
-                            : (log[column.accessor] as string | number)
+                          ? typeof subject[column.accessor] === "object"
+                            ? JSON.stringify(subject[column.accessor])
+                            : (subject[column.accessor] as string | number)
                           : null}
                     </TableCell>
                   );
@@ -144,7 +150,7 @@ export default function StudentAttendanceTable() {
           )}
         </TableBody>
       </Table>
-      <Pagination total={logs.data.meta.total} limit={query.limit} page={query.page} size={3} />
+      <Pagination total={subjects.data.meta.total} limit={query.limit} page={query.page} size={3} />
     </div>
   );
 }

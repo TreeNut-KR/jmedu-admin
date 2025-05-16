@@ -1,10 +1,8 @@
 import { isAxiosError } from "axios";
-import { ArrowUpDown, List, Loader2, Plus, Tag } from "lucide-react";
+import { ArrowUpDown, List, Loader2, Tag } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
 import Pagination from "@/components/Pagination";
 import Select from "@/components/selectors/Select";
-import { Button } from "@/components/shadcn/ui/button";
 import {
   Table,
   TableBody,
@@ -13,29 +11,29 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/tables/Table";
-import useGetSchoolsQuery from "@/hooks/queries/useGetSchoolsQuery";
+import useGetStudentAttendancesQuery from "@/hooks/queries/useGetStudentAttendancesQuery";
 import useListQueryOptions from "@/hooks/useListQueryOptions";
-import { SCHOOL_COLUMNS } from "@/constants/columns";
+import { STUDENT_ATTENDANCE_COLUMN } from "@/constants/columns";
 import {
   COMMON_LIMIT_OPTIONS,
   COMMON_ORDER_OPTIONS,
-  SCHOOL_SORT_OPTIONS,
+  STUDENT_ATTENDANCE_SORT_OPTIONS,
 } from "@/constants/options";
 import type * as API from "@/types/api";
 
-export default function SchoolTable() {
+export default function StudentsAttendanceListTable() {
   const { query, handleChangeLimit, handleChangeSortBy, handleChangeOrder } =
-    useListQueryOptions<API.School>({
-      sortOptions: SCHOOL_SORT_OPTIONS,
+    useListQueryOptions<API.StudentAttendance>({
+      sortOptions: STUDENT_ATTENDANCE_SORT_OPTIONS,
       initLimit: 10,
       initPage: 1,
-      initSortBy: "name",
+      initSortBy: STUDENT_ATTENDANCE_SORT_OPTIONS[0].value,
       initOrder: "asc",
     });
 
-  const schools = useGetSchoolsQuery(query);
+  const logs = useGetStudentAttendancesQuery(query);
 
-  if (schools.error) {
+  if (logs.error) {
     return (
       <div className="flex flex-col gap-2">
         <div className="flex items-center gap-2">
@@ -48,19 +46,19 @@ export default function SchoolTable() {
           <span>에러가 발생했어요.</span>
         </div>
         <div className="text-sm text-adaptiveGray-700">
-          {isAxiosError(schools.error)
-            ? (schools.error.response?.data.message ?? "알 수 없는 에러")
-            : schools.error.message}
+          {isAxiosError(logs.error)
+            ? (logs.error.response?.data.message ?? "알 수 없는 에러")
+            : logs.error.message}
         </div>
       </div>
     );
   }
 
-  if (schools.isLoading || !schools.data) {
+  if (logs.isLoading || !logs.data) {
     return (
       <div className="flex items-center">
         <Loader2 className="mr-2 animate-spin text-adaptiveBlue-500" size="16" strokeWidth="2.5" />
-        학교 정보를 불러오고 있어요.
+        등하원 정보를 불러오고 있어요.
       </div>
     );
   }
@@ -78,16 +76,10 @@ export default function SchoolTable() {
           />
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="secondary" asChild>
-            <Link href="/school/new" className="text-xs">
-              <Plus size={14} />
-              학교 추가하기
-            </Link>
-          </Button>
           <Select
             size="sm"
             className={"w-[130px]"}
-            options={SCHOOL_SORT_OPTIONS}
+            options={STUDENT_ATTENDANCE_SORT_OPTIONS}
             value={query.sort}
             onValueChange={handleChangeSortBy}
             left={<Tag size={12} />}
@@ -105,10 +97,12 @@ export default function SchoolTable() {
       <Table>
         <TableHeader>
           <TableRow>
-            {SCHOOL_COLUMNS.map((column, columnIdx) => {
+            {STUDENT_ATTENDANCE_COLUMN.map((column, columnIdx) => {
               if (column.hidden) return;
               return (
-                <TableHead key={`school-header-${column.accessor ?? column.header ?? columnIdx}`}>
+                <TableHead
+                  key={`student-attendance-header-${column.accessor ?? column.header ?? columnIdx}`}
+                >
                   {column.header ?? column.accessor}
                 </TableHead>
               );
@@ -116,27 +110,27 @@ export default function SchoolTable() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {schools.data.data ? (
-            schools.data.data.map((school) => (
+          {logs.data.data ? (
+            logs.data.data.map((log) => (
               <TableRow
                 key={
-                  typeof SCHOOL_COLUMNS[0].accessor === "object"
-                    ? JSON.stringify(school[SCHOOL_COLUMNS[0].accessor])
-                    : (school[SCHOOL_COLUMNS[0].accessor] as string | number)
+                  typeof STUDENT_ATTENDANCE_COLUMN[0].accessor === "object"
+                    ? JSON.stringify(log[STUDENT_ATTENDANCE_COLUMN[0].accessor])
+                    : (log[STUDENT_ATTENDANCE_COLUMN[0].accessor] as string | number)
                 }
               >
-                {SCHOOL_COLUMNS.map((column, columnIdx) => {
+                {STUDENT_ATTENDANCE_COLUMN.map((column, columnIdx) => {
                   if (column.hidden) return;
                   return (
                     <TableCell
-                      key={`school-column-${column.accessor ?? column.header ?? columnIdx}`}
+                      key={`student-attendance-column-${column.accessor ?? column.header ?? columnIdx}`}
                     >
                       {column.renderer
-                        ? column.renderer(school)
+                        ? column.renderer(log)
                         : column.accessor
-                          ? typeof school[column.accessor] === "object"
-                            ? JSON.stringify(school[column.accessor])
-                            : (school[column.accessor] as string | number)
+                          ? typeof log[column.accessor] === "object"
+                            ? JSON.stringify(log[column.accessor])
+                            : (log[column.accessor] as string | number)
                           : null}
                     </TableCell>
                   );
@@ -150,7 +144,7 @@ export default function SchoolTable() {
           )}
         </TableBody>
       </Table>
-      <Pagination total={schools.data.meta.total} limit={query.limit} page={query.page} size={3} />
+      <Pagination total={logs.data.meta.total} limit={query.limit} page={query.page} size={3} />
     </div>
   );
 }

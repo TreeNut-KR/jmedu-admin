@@ -13,7 +13,7 @@ import useGetPermissionsQuery from "@/hooks/queries/useGetPermissionsQuery";
 import { PERMISSION_DESCRIPTIONS } from "@/constants";
 import { PERMISSION_COLUMN } from "@/constants/columns";
 
-export default function PermissionTable() {
+export default function PermissionListTable() {
   const permissions = useGetPermissionsQuery();
 
   if (permissions.error) {

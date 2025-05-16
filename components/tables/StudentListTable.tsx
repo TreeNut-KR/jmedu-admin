@@ -23,7 +23,7 @@ import {
 } from "@/constants/options";
 import type * as API from "@/types/api";
 
-export default function StudentTable() {
+export default function StudentListTable() {
   const { query, handleChangeLimit, handleChangeSortBy, handleChangeOrder } =
     useListQueryOptions<API.Student>({
       sortOptions: STUDENT_SORT_OPTIONS,

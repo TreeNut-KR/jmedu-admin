@@ -1,5 +1,9 @@
 import type * as API from "@/types/api";
 
+export const START_YEAR = isNaN(Number(process.env.NEXT_PUBLIC_START_YEAR))
+  ? 2024
+  : Number(process.env.NEXT_PUBLIC_START_YEAR);
+
 export const PUBLIC_PATHS = ["/registration"];
 
 export const PERMISSIONS = [
@@ -33,6 +37,7 @@ export const PERMISSIONS = [
   "homework_edit",
   "homework_delete",
   "student_subject_edit",
+  "student_attendance_view",
   "students_attendance_view",
   "admin_log_view",
 ] as const;
@@ -75,6 +80,7 @@ export const PERMISSION_DESCRIPTIONS: { [key in API.Task]: string } = {
   homework_edit: "특정 과목 정보를 수정합니다.",
   homework_delete: "특정 과목을 삭제합니다.",
   // 학생 등하원 관련
+  student_attendance_view: "특정 학생 등하원 기록을 조회합니다.",
   students_attendance_view: "학생 등하원 기록을 조회합니다.",
   // 작업 기록 관련
   admin_log_view: "작업 기록을 조회합니다.",
@@ -118,6 +124,7 @@ export const PERMISSION_DEFAULT_LEVELS: { [key in API.Task]: number } = {
   homework_edit: 2,
   homework_delete: 3,
   // 학생 등하원 관련
+  student_attendance_view: 1,
   students_attendance_view: 1,
   // 작업 기록 관련
   admin_log_view: 3,

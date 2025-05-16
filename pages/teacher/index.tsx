@@ -1,6 +1,6 @@
 import Head from "next/head";
 import WithAuthorization from "@/components/WithAuthorization";
-import TeacherTable from "@/components/tables/TeacherTable";
+import TeacherListTable from "@/components/tables/TeacherListTable";
 
 export default function TeacherPage() {
   return (
@@ -11,7 +11,7 @@ export default function TeacherPage() {
       <div className="space-y-6 p-8">
         <h1 className="text-xl font-bold text-adaptiveGray-800">교직원 관리</h1>
         <WithAuthorization requiredPermission={"teachers_view"} isFallback>
-          <TeacherTable />
+          <TeacherListTable />
         </WithAuthorization>
       </div>
     </>
