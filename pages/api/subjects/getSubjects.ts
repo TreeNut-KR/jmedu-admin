@@ -15,7 +15,7 @@ export default async function getSubjects(req: NextApiRequest, res: NextApiRespo
     if (!params) {
       return res.status(400).json({
         success: false,
-        message: paramsError.issues.map((issue) => issue.message).join("\n"),
+        message: paramsError.issues.map((issue) => `${issue.path}, ${issue.message}`).join("\n"),
       });
     }
 

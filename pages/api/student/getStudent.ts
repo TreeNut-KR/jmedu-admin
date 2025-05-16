@@ -19,7 +19,7 @@ export default async function getStudent(req: NextApiRequest, res: NextApiRespon
     if (!params) {
       return res.status(400).json({
         success: false,
-        message: paramsError.issues.map((issue) => issue.message).join("\n"),
+        message: paramsError.issues.map((issue) => `${issue.path}, ${issue.message}`).join("\n"),
       });
     }
 
