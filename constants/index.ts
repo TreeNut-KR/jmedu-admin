@@ -7,13 +7,16 @@ export const START_YEAR = isNaN(Number(process.env.NEXT_PUBLIC_START_YEAR))
 export const PUBLIC_PATHS = ["/registration"];
 
 export const PERMISSIONS = [
+  // 권한 관련
   "permissions_view",
   "permission_edit",
+  // 학교 관련
   "schools_view",
   "school_view",
   "school_add",
   "school_edit",
   "school_delete",
+  // 학생 관련
   "students_view",
   "students_admin_view",
   "student_view",
@@ -21,22 +24,27 @@ export const PERMISSIONS = [
   "student_add",
   "student_edit",
   "student_delete",
+  // 교직원 관련
   "teachers_view",
   "teacher_view",
   "teacher_edit",
   "teacher_delete",
   "teacher_level_edit",
+  // 과목 관련
   "subjects_view",
   "subject_view",
   "subject_add",
   "subject_edit",
   "subject_delete",
+  "student_subject_edit",
+  // 과제 관련
   "homeworks_view",
   "homework_view",
   "homework_add",
   "homework_edit",
   "homework_delete",
-  "student_subject_edit",
+  "student_homework_view",
+  // 학생 등하원 관련
   "student_attendance_view",
   "students_attendance_view",
   "admin_log_view",
@@ -74,11 +82,12 @@ export const PERMISSION_DESCRIPTIONS: { [key in API.Task]: string } = {
   subject_delete: "특정 과목을 삭제합니다.",
   student_subject_edit: "학생과 과목간의 연결 정보를 수정합니다.",
   // 과제 관련
-  homeworks_view: "과목 목록을 조회합니다.",
-  homework_view: "특정 과목 정보를 조회합니다.",
-  homework_add: "새로운 과목을 추가합니다.",
-  homework_edit: "특정 과목 정보를 수정합니다.",
-  homework_delete: "특정 과목을 삭제합니다.",
+  homeworks_view: "과제 목록을 조회합니다.",
+  homework_view: "특정 과제 정보를 조회합니다.",
+  homework_add: "새로운 과제을 추가합니다.",
+  homework_edit: "특정 과제 정보를 수정합니다.",
+  homework_delete: "특정 과제을 삭제합니다.",
+  student_homework_view: "특정 학생의 과제내역을 조회합니다.",
   // 학생 등하원 관련
   student_attendance_view: "특정 학생 등하원 기록을 조회합니다.",
   students_attendance_view: "학생 등하원 기록을 조회합니다.",
@@ -123,6 +132,7 @@ export const PERMISSION_DEFAULT_LEVELS: { [key in API.Task]: number } = {
   homework_add: 2,
   homework_edit: 2,
   homework_delete: 3,
+  student_homework_view: 1,
   // 학생 등하원 관련
   student_attendance_view: 1,
   students_attendance_view: 1,

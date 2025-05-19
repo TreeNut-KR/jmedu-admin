@@ -1,3 +1,4 @@
+import { parse } from "date-fns";
 import { Check } from "lucide-react";
 import DeleteHomeworkButton from "@/components/buttons/DeleteHomeworkButton";
 import DeleteSchoolButton from "@/components/buttons/DeleteSchoolButton";
@@ -13,6 +14,7 @@ import UpdateSubjectButton from "@/components/buttons/UpdateSubjectButton";
 import UpdateTeacherButton from "@/components/buttons/UpdateTeacherButton";
 import ViewHomeworkButton from "@/components/buttons/ViewHomeworkButton";
 import ViewStudentAttendanceButton from "@/components/buttons/ViewStudentAttendanceButton";
+import ViewStudentHomeworkButton from "@/components/buttons/ViewStudentHomeworkButton";
 import { Badge } from "@/components/shadcn/ui/badge";
 import {
   Tooltip,
@@ -77,6 +79,7 @@ export const STUDENT_COLUMNS: ColumnDef<API.Student> = [
       <div className="flex gap-2">
         <ShowStudentQRButton pk={row["student_pk"]} />
         <ViewStudentAttendanceButton pk={row["student_pk"]} />
+        <ViewStudentHomeworkButton pk={row["student_pk"]} />
         <UpdateStudentButton pk={row["student_pk"]} />
         <DeleteStudentButton pk={row["student_pk"]} />
       </div>
@@ -453,6 +456,63 @@ export const VIEW_HOMEWORK_COLUMNS: ColumnDef<API.Homework> = [
     header: "제출 기한",
     accessor: "due_date",
     renderer: (row) => formatDate(row["due_date"]),
+  },
+];
+
+export const VIEW_STUDENT_HOMEWORK_COLUMNS: ColumnDef<API.StudentHomework> = [
+  { accessor: "student_homework_pk", hidden: true },
+  {
+    header: "과목",
+    renderer: (row) => {
+      if (row["subjectObj"]) {
+        return row["subjectObj"].name;
+      }
+    },
+  },
+  {
+    header: "과제",
+    renderer: (row) => {
+      if (row["homeworkObj"]) {
+        return row["homeworkObj"].title;
+      }
+    },
+  },
+  {
+    header: "제출 기한",
+    renderer: (row) => {
+      if (row["homeworkObj"]) {
+        return formatDate(row["homeworkObj"].due_date);
+      }
+    },
+  },
+  {
+    header: "제출일",
+    accessor: "submitted_at",
+    renderer: (row) => {
+      if (row["submitted_at"]) {
+        return formatDate(row["submitted_at"]);
+      }
+    },
+  },
+  {
+    header: "상태",
+    renderer: (row) => {
+      return row["submitted_at"] ? (
+        row["homeworkObj"]?.due_date &&
+        parse(row["submitted_at"], "yyyy-MM-dd HH:mm:ss.SSSSSS", new Date()).getTime() >
+          parse(row["homeworkObj"].due_date, "yyyy-MM-dd'T'HH:mm:ss", new Date()).getTime() ? (
+          <Badge variant={"lightRed"}>지연 제출</Badge>
+        ) : (
+          <Badge variant={"lightBlue"}>제출</Badge>
+        )
+      ) : (
+        <Badge variant={"lightGray"}>미제출</Badge>
+      );
+    },
+  },
+  {
+    header: "비고",
+    accessor: "remarks",
   },
 ];
 
