@@ -132,6 +132,8 @@ export interface StudentHomework {
   homework_id: null | number;
   student_id: null | string;
   studentObj: null | Pick<Student, "name" | "deleted_at">;
+  homeworkObj: null | Omit<Homework, "subjectObj" | "students" | "student_homeworks">;
+  subjectObj: null | Omit<Subject, "teacherObj" | "School">;
   remarks: null | string;
   submitted_at: null | string;
   created_at: null | string;

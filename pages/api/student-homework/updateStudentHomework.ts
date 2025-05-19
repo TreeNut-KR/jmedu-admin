@@ -41,9 +41,41 @@ export default async function updateStudentHomework(req: NextApiRequest, res: Ne
           student.student_pk IS NOT NULL, 
           JSON_OBJECT('name', student.name, 'deleted_at', student.deleted_at), 
           NULL
-        ) as studentObj
+        ) as studentObj,
+        IF(
+          homework.homework_pk IS NOT NULL, 
+          JSON_OBJECT(
+            'homework_pk', homework.homework_pk,
+            'subject_id', homework.subject_id,
+            'title', homework.title,
+            'description', homework.description,
+            'due_date', homework.due_date,
+            'created_at', homework.created_at,
+            'updated_at', homework.updated_at,
+            'deleted_at', homework.deleted_at
+          ), 
+          NULL
+        ) as homeworkObj,
+        IF(
+          subject.subject_pk IS NOT NULL, 
+          JSON_OBJECT(
+            'subject_pk', subject.subject_pk,
+            'name', subject.name,
+            'teacher', subject.teacher,
+            'school', subject.school,
+            'grade', subject.grade,
+            'is_personal', subject.is_personal,
+            'grade', subject.grade,
+            'created_at', subject.created_at,
+            'updated_at', subject.updated_at,
+            'deleted_at', subject.deleted_at
+          ), 
+          NULL
+        ) as subjectObj
       FROM student_homework
       LEFT JOIN student ON student_homework.student_id = student.student_pk
+      LEFT JOIN homework ON student_homework.homework_id = homework.homework_pk
+      LEFT JOIN subject ON homework.subject_id = subject.subject_pk
       WHERE student_homework.student_homework_pk = ?
     `;
 

@@ -1,3 +1,5 @@
+import { format } from "date-fns";
+import { ko } from "date-fns/locale";
 import { josa } from "es-hangul";
 import { ChangeEvent } from "react";
 import { z } from "zod";
@@ -55,9 +57,9 @@ export const formatPhoneNumber = <T = undefined | null | string>(value: T): T =>
   }
 };
 
-export const formatDate = <T = undefined | null | string>(value: T): T => {
+export const formatDate = <T = undefined | null | string>(value: T) => {
   if (typeof value !== "string") return value;
-  return new Date(value).toLocaleString() as T;
+  return format(new Date(value), "yyyy-MM-dd aaa hh:mm:ss", { locale: ko });
 };
 
 export const unformatPhoneNumber = <T = undefined | null | string>(value: T): T => {

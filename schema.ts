@@ -189,6 +189,11 @@ export const GetHomeworkSchema = z.object({
   includeDeleted: z.preprocess((val) => val === "true", z.boolean().optional()),
 });
 
+export const GetStudentHomeworkSchema = z.object({
+  year: z.coerce.number().gte(1),
+  month: z.coerce.number().gte(1).lte(12),
+});
+
 export const GetStudentAttendanceSchema = z.object({
   year: z.coerce.number().gte(1),
   month: z.coerce.number().gte(1).lte(12),
