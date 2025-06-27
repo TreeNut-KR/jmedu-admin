@@ -13,6 +13,7 @@ import { Input } from "@/components/shadcn/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableRow } from "@/components/tables/Table";
 import useUpdateTeacherMutation from "@/hooks/mutations/useUpdateTeacherMutation";
 import useGetTeacherQuery from "@/hooks/queries/useGetTeacherQuery";
+import usePreventLeave from "@/hooks/usePreventLeave";
 import { customErrorMap, formatPhoneNumber, unformatPhoneNumber } from "@/utils";
 import { TeacherSchema } from "@/schema";
 import { TEACHER_FORM } from "@/constants/forms";
@@ -40,6 +41,8 @@ export default function UpdateTeacherForm(props: { pk: API.Teacher["teacher_pk"]
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [teacher.data?.data]);
+
+  usePreventLeave(form.formState.isDirty);
 
   const { mutate, isPending } = useUpdateTeacherMutation(props.pk);
 

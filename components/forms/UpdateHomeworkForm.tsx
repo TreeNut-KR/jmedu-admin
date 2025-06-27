@@ -13,6 +13,7 @@ import { Input } from "@/components/shadcn/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableRow } from "@/components/tables/Table";
 import useUpdateHomeworkMutation from "@/hooks/mutations/useUpdateHomeworkMutation";
 import useGetHomeworkQuery from "@/hooks/queries/useGetHomeworkQuery";
+import usePreventLeave from "@/hooks/usePreventLeave";
 import { customErrorMap } from "@/utils";
 import { HomeworkSchema } from "@/schema";
 import { HOMEWORK_INFO_FORM } from "@/constants/forms";
@@ -38,6 +39,8 @@ export function UpdateHomeworkForm(props: { pk: API.Homework["homework_pk"] }) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [homework.data?.data]);
+
+  usePreventLeave(form.formState.isDirty);
 
   const { mutate, isPending } = useUpdateHomeworkMutation(props.pk);
 

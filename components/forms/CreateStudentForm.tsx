@@ -8,6 +8,7 @@ import { Button } from "@/components/shadcn/ui/button";
 import { Input } from "@/components/shadcn/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableRow } from "@/components/tables/Table";
 import useCreateStudentMutation from "@/hooks/mutations/useCreateStudentMutation";
+import usePreventLeave from "@/hooks/usePreventLeave";
 import { customErrorMap, unformatPhoneNumber } from "@/utils";
 import { StudentSchema } from "@/schema";
 import { STUDENT_FORM } from "@/constants/forms";
@@ -29,6 +30,8 @@ export default function CreateStudentForm() {
   });
 
   const { mutate, isPending } = useCreateStudentMutation();
+
+  usePreventLeave(form.formState.isDirty);
 
   function handleSubmit(values: z.infer<typeof StudentSchema>) {
     overlay.open(({ isOpen, close }) => {

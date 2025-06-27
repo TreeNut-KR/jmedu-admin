@@ -10,6 +10,7 @@ import { Button } from "@/components/shadcn/ui/button";
 import { Input } from "@/components/shadcn/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableRow } from "@/components/tables/Table";
 import useCreateHomeworkMutation from "@/hooks/mutations/useCreateHomeworkMutation";
+import usePreventLeave from "@/hooks/usePreventLeave";
 import { customErrorMap } from "@/utils";
 import { HomeworkSchema } from "@/schema";
 import { HOMEWORK_INFO_FORM } from "@/constants/forms";
@@ -27,6 +28,8 @@ export default function CreateHomeworkForm() {
   });
 
   const { mutate, isPending } = useCreateHomeworkMutation();
+
+  usePreventLeave(form.formState.isDirty);
 
   function handleSubmit(values: z.infer<typeof HomeworkSchema>) {
     overlay.open(({ isOpen, close }) => {

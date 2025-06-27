@@ -12,6 +12,7 @@ import { Input } from "@/components/shadcn/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableRow } from "@/components/tables/Table";
 import useUpdateSubjectMutation from "@/hooks/mutations/useUpdateSubjectMutation";
 import useGetSubjectQuery from "@/hooks/queries/useGetSubjectQuery";
+import usePreventLeave from "@/hooks/usePreventLeave";
 import { customErrorMap } from "@/utils";
 import { SubjectSchema } from "@/schema";
 import { SUBJECT_FORM } from "@/constants/forms";
@@ -37,6 +38,8 @@ export function UpdateSubjectForm(props: { pk: API.Subject["subject_pk"] }) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [subject.data?.data]);
+
+  usePreventLeave(form.formState.isDirty);
 
   const { mutate, isPending } = useUpdateSubjectMutation(props.pk);
 

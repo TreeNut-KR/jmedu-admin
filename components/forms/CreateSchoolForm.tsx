@@ -8,6 +8,7 @@ import { Button } from "@/components/shadcn/ui/button";
 import { Input } from "@/components/shadcn/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableRow } from "@/components/tables/Table";
 import useCreateSchoolMutation from "@/hooks/mutations/useCreateSchoolMutation";
+import usePreventLeave from "@/hooks/usePreventLeave";
 import { customErrorMap } from "@/utils";
 import { SchoolSchema } from "@/schema";
 import { SCHOOL_FORM } from "@/constants/forms";
@@ -23,6 +24,8 @@ export default function CreateSchoolForm() {
     },
   });
   const { mutate, isPending } = useCreateSchoolMutation();
+
+  usePreventLeave(form.formState.isDirty);
 
   function handleSubmit(values: z.infer<typeof SchoolSchema>) {
     overlay.open(({ isOpen, close }) => {

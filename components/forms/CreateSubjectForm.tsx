@@ -8,6 +8,7 @@ import { Button } from "@/components/shadcn/ui/button";
 import { Input } from "@/components/shadcn/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableRow } from "@/components/tables/Table";
 import useCreateSubjectMutation from "@/hooks/mutations/useCreateSubjectMutation";
+import usePreventLeave from "@/hooks/usePreventLeave";
 import { customErrorMap } from "@/utils";
 import { SubjectSchema } from "@/schema";
 import { SUBJECT_FORM } from "@/constants/forms";
@@ -25,6 +26,8 @@ export default function CreateSubjectForm() {
   });
 
   const { mutate, isPending } = useCreateSubjectMutation();
+
+  usePreventLeave(form.formState.isDirty);
 
   function handleSubmit(values: z.infer<typeof SubjectSchema>) {
     overlay.open(({ isOpen, close }) => {

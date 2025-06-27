@@ -13,6 +13,7 @@ import { Input } from "@/components/shadcn/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableRow } from "@/components/tables/Table";
 import useUpdateStudentMutation from "@/hooks/mutations/useUpdateStudentMutation";
 import useGetStudentQuery from "@/hooks/queries/useGetStudentQuery";
+import usePreventLeave from "@/hooks/usePreventLeave";
 import { customErrorMap, formatPhoneNumber, unformatPhoneNumber } from "@/utils";
 import { StudentSchema } from "@/schema";
 import { STUDENT_FORM } from "@/constants/forms";
@@ -42,6 +43,8 @@ export default function UpdateStudentForm(props: { pk: API.Student["student_pk"]
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [student.data?.data]);
+
+  usePreventLeave(form.formState.isDirty);
 
   const { mutate, isPending } = useUpdateStudentMutation(props.pk);
 

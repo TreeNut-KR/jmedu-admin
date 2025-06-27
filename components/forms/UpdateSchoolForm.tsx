@@ -12,6 +12,7 @@ import { Input } from "@/components/shadcn/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableRow } from "@/components/tables/Table";
 import useUpdateSchoolMutation from "@/hooks/mutations/useUpdateSchoolMutation";
 import useGetSchoolQuery from "@/hooks/queries/useGetSchoolQuery";
+import usePreventLeave from "@/hooks/usePreventLeave";
 import { customErrorMap } from "@/utils";
 import { SchoolSchema } from "@/schema";
 import { SCHOOL_FORM } from "@/constants/forms";
@@ -37,6 +38,8 @@ export default function UpdateSchoolForm(props: { pk: API.School["school_pk"] })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [school.data?.data]);
+
+  usePreventLeave(form.formState.isDirty);
 
   const { mutate, isPending } = useUpdateSchoolMutation(props.pk);
 
