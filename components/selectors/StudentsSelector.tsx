@@ -1,11 +1,10 @@
 import { isAxiosError } from "axios";
 import { Check, Loader2, Minus, Plus } from "lucide-react";
 import Image from "next/image";
+import { overlay } from "overlay-kit";
 import React, { useCallback, useMemo, useState } from "react";
 import { useFormContext } from "react-hook-form";
-import { useSetRecoilState } from "recoil";
 import { z } from "zod";
-import { alertAtom } from "@/recoil";
 import ActionAlert from "@/components/alerts/ActionAlert";
 import {
   ResponsiveDialog,
@@ -31,7 +30,6 @@ const StudentsSelector = React.forwardRef<HTMLInputElement, StudentsSelectorProp
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   (props, ref) => {
     const form = useFormContext<z.infer<typeof HomeworkSchema>>();
-    const setAlert = useSetRecoilState(alertAtom);
     const closeRef = React.useRef<HTMLButtonElement>(null);
 
     const [isOpen, setIsOpen] = useState(false);
@@ -73,10 +71,11 @@ const StudentsSelector = React.forwardRef<HTMLInputElement, StudentsSelectorProp
     }, []);
 
     const handleApply = useCallback(() => {
-      setAlert({
-        state: true,
-        content: (
+      overlay.open(({ isOpen, close }) => {
+        return (
           <ActionAlert
+            state={isOpen}
+            close={close}
             title={`선택한 학생을 추가할까요?`}
             action="추가하기"
             onAction={() => {
@@ -86,9 +85,9 @@ const StudentsSelector = React.forwardRef<HTMLInputElement, StudentsSelectorProp
               closeRef.current?.click();
             }}
           />
-        ),
+        );
       });
-    }, [form, selectedIds, setAlert, fields]);
+    }, [form, selectedIds, fields]);
 
     const handleCheckAllStudents = useCallback(() => {
       if (fields.length > 0 && checkedIds.length === fields.length) {
@@ -99,10 +98,11 @@ const StudentsSelector = React.forwardRef<HTMLInputElement, StudentsSelectorProp
     }, [checkedIds.length, fields]);
 
     const handleRemoveCheckedStudents = useCallback(() => {
-      setAlert({
-        state: true,
-        content: (
+      overlay.open(({ isOpen, close }) => {
+        return (
           <ActionAlert
+            state={isOpen}
+            close={close}
             title={`선택된 학생을 제외할까요?`}
             variant="destructive"
             action="제외하기"
@@ -114,9 +114,9 @@ const StudentsSelector = React.forwardRef<HTMLInputElement, StudentsSelectorProp
               setCheckedIds([]);
             }}
           />
-        ),
+        );
       });
-    }, [checkedIds, form, setAlert, fields]);
+    }, [checkedIds, form, fields]);
 
     const itemCn = useMemo(
       () =>

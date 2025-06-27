@@ -2,11 +2,10 @@ import { isAxiosError } from "axios";
 import { josa } from "es-hangul";
 import { Loader2, MinusSquare, PlusSquare } from "lucide-react";
 import Image from "next/image";
+import { overlay } from "overlay-kit";
 import React, { useCallback, useMemo, useState } from "react";
 import { useFormContext } from "react-hook-form";
-import { useSetRecoilState } from "recoil";
 import { z } from "zod";
-import { alertAtom } from "@/recoil";
 import ActionAlert from "@/components/alerts/ActionAlert";
 import {
   ResponsiveDialog,
@@ -31,7 +30,6 @@ const SubjectsSelector = React.forwardRef<HTMLInputElement, SubjectsSelectorProp
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   (props, ref) => {
     const form = useFormContext<z.infer<typeof StudentSchema>>();
-    const setAlert = useSetRecoilState(alertAtom);
     const closeRef = React.useRef<HTMLButtonElement>(null);
 
     const [isOpen, setIsOpen] = useState(false);
@@ -58,21 +56,22 @@ const SubjectsSelector = React.forwardRef<HTMLInputElement, SubjectsSelectorProp
         const name = e.currentTarget.getAttribute("data-name");
 
         if (typeof id === "string" && !Number.isNaN(Number(id))) {
-          setAlert({
-            state: true,
-            content: (
+          overlay.open(({ isOpen, close }) => {
+            return (
               <ActionAlert
+                state={isOpen}
+                close={close}
                 title={`과목 '${name ?? ""}'${josa.pick(name ?? "", "을/를")} 추가할까요?`}
                 action="추가하기"
                 onAction={() => {
                   setValue([...value, Number(id)]);
                 }}
               />
-            ),
+            );
           });
         }
       },
-      [value, setAlert],
+      [value],
     );
 
     const handleRemoveSubject = useCallback(
@@ -81,10 +80,11 @@ const SubjectsSelector = React.forwardRef<HTMLInputElement, SubjectsSelectorProp
         const name = e.currentTarget.getAttribute("data-name");
 
         if (typeof id === "string" && !Number.isNaN(Number(id))) {
-          setAlert({
-            state: true,
-            content: (
+          overlay.open(({ isOpen, close }) => {
+            return (
               <ActionAlert
+                state={isOpen}
+                close={close}
                 title={`과목 '${name ?? ""}'${josa.pick(name ?? "", "을/를")} 제거할까요?`}
                 variant="destructive"
                 action="제거하기"
@@ -92,11 +92,11 @@ const SubjectsSelector = React.forwardRef<HTMLInputElement, SubjectsSelectorProp
                   setValue([...value.filter((el) => el !== Number(id))]);
                 }}
               />
-            ),
+            );
           });
         }
       },
-      [value, setAlert],
+      [value],
     );
 
     const handleChangeOpen = useCallback(
@@ -105,10 +105,11 @@ const SubjectsSelector = React.forwardRef<HTMLInputElement, SubjectsSelectorProp
           setValue([...fields]);
           setIsOpen(open);
         } else {
-          setAlert({
-            state: true,
-            content: (
+          overlay.open(({ isOpen, close }) => {
+            return (
               <ActionAlert
+                state={isOpen}
+                close={close}
                 title={`과목 선택을 그만둘까요?`}
                 variant="destructive"
                 action="그만하기"
@@ -116,18 +117,19 @@ const SubjectsSelector = React.forwardRef<HTMLInputElement, SubjectsSelectorProp
                   setIsOpen(open);
                 }}
               />
-            ),
+            );
           });
         }
       },
-      [fields, setAlert],
+      [fields],
     );
 
     const handleApply = useCallback(() => {
-      setAlert({
-        state: true,
-        content: (
+      overlay.open(({ isOpen, close }) => {
+        return (
           <ActionAlert
+            state={isOpen}
+            close={close}
             title={`선택 사항을 적용할까요?`}
             action="적용하기"
             onAction={() => {
@@ -136,9 +138,9 @@ const SubjectsSelector = React.forwardRef<HTMLInputElement, SubjectsSelectorProp
               closeRef.current?.click();
             }}
           />
-        ),
+        );
       });
-    }, [form, setAlert, value]);
+    }, [form, value]);
 
     const itemCn = useMemo(
       () =>

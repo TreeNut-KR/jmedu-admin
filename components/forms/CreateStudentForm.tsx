@@ -1,8 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { overlay } from "overlay-kit";
 import { FormProvider, useForm } from "react-hook-form";
-import { useSetRecoilState } from "recoil";
 import { z } from "zod";
-import { alertAtom } from "@/recoil";
 import WithAuthorization from "@/components/WithAuthorization";
 import ActionAlert from "@/components/alerts/ActionAlert";
 import { Button } from "@/components/shadcn/ui/button";
@@ -29,15 +28,14 @@ export default function CreateStudentForm() {
     },
   });
 
-  const setAlert = useSetRecoilState(alertAtom);
-
   const { mutate, isPending } = useCreateStudentMutation();
 
   function handleSubmit(values: z.infer<typeof StudentSchema>) {
-    setAlert({
-      state: true,
-      content: (
+    overlay.open(({ isOpen, close }) => {
+      return (
         <ActionAlert
+          state={isOpen}
+          close={close}
           title={`${values.name} 학생을 등록할까요?`}
           description="등록 후에도 수정할 수 있어요."
           action="등록하기"
@@ -50,21 +48,22 @@ export default function CreateStudentForm() {
             });
           }}
         />
-      ),
+      );
     });
   }
 
   function handleReset() {
-    setAlert({
-      state: true,
-      content: (
+    overlay.open(({ isOpen, close }) => {
+      return (
         <ActionAlert
+          state={isOpen}
+          close={close}
           title="처음부터 다시 작성할까요?"
           description="초기화하게 되면 작성 중이던 내용이 사라져요."
           action="다시 작성하기"
           onAction={() => form.reset()}
         />
-      ),
+      );
     });
   }
 

@@ -2,11 +2,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { isAxiosError } from "axios";
 import { Loader2 } from "lucide-react";
 import Image from "next/image";
+import { overlay } from "overlay-kit";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { useSetRecoilState } from "recoil";
 import { z } from "zod";
-import { alertAtom } from "@/recoil";
 import WithAuthorization from "@/components/WithAuthorization";
 import ActionAlert from "@/components/alerts/ActionAlert";
 import { Button } from "@/components/shadcn/ui/button";
@@ -42,15 +41,14 @@ export default function UpdateTeacherForm(props: { pk: API.Teacher["teacher_pk"]
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [teacher.data?.data]);
 
-  const setAlert = useSetRecoilState(alertAtom);
-
   const { mutate, isPending } = useUpdateTeacherMutation(props.pk);
 
   function handleSubmit(values: z.infer<typeof TeacherSchema>) {
-    setAlert({
-      state: true,
-      content: (
+    overlay.open(({ isOpen, close }) => {
+      return (
         <ActionAlert
+          state={isOpen}
+          close={close}
           title={`교직원 ${values.name}의 정보를 수정할까요?`}
           description="수정한 내용은 즉시 반영돼요."
           action="수정하기"
@@ -62,21 +60,22 @@ export default function UpdateTeacherForm(props: { pk: API.Teacher["teacher_pk"]
             })
           }
         />
-      ),
+      );
     });
   }
 
   function handleReset() {
-    setAlert({
-      state: true,
-      content: (
+    overlay.open(({ isOpen, close }) => {
+      return (
         <ActionAlert
+          state={isOpen}
+          close={close}
           title="처음부터 다시 작성할까요?"
           description="초기화하게 되면 작성 중이던 내용이 사라져요."
           action="다시 작성하기"
           onAction={() => form.reset()}
         />
-      ),
+      );
     });
   }
 

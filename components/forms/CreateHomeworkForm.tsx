@@ -1,10 +1,9 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import { josa } from "es-hangul";
+import { overlay } from "overlay-kit";
 import { FormProvider, useForm } from "react-hook-form";
-import { useSetRecoilState } from "recoil";
 import { z } from "zod";
-import { alertAtom } from "@/recoil";
 import ActionAlert from "@/components/alerts/ActionAlert";
 import StudentsSelector from "@/components/selectors/StudentsSelector";
 import { Button } from "@/components/shadcn/ui/button";
@@ -27,35 +26,35 @@ export default function CreateHomeworkForm() {
     },
   });
 
-  const setAlert = useSetRecoilState(alertAtom);
-
   const { mutate, isPending } = useCreateHomeworkMutation();
 
   function handleSubmit(values: z.infer<typeof HomeworkSchema>) {
-    setAlert({
-      state: true,
-      content: (
+    overlay.open(({ isOpen, close }) => {
+      return (
         <ActionAlert
+          state={isOpen}
+          close={close}
           title={`과제 '${values.title}'${josa.pick(values.title ?? "", "을/를")} 등록할까요?`}
           action="등록하기"
           loading="등록하는 중"
           onAction={() => mutate(values)}
         />
-      ),
+      );
     });
   }
 
   function handleReset() {
-    setAlert({
-      state: true,
-      content: (
+    overlay.open(({ isOpen, close }) => {
+      return (
         <ActionAlert
+          state={isOpen}
+          close={close}
           title="처음부터 다시 작성할까요?"
           description="초기화하게 되면 작성 중이던 내용이 사라져요."
           action="다시 작성하기"
           onAction={() => form.reset()}
         />
-      ),
+      );
     });
   }
 

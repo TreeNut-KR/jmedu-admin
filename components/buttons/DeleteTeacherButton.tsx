@@ -1,21 +1,17 @@
 import { Trash } from "lucide-react";
-import { useSetRecoilState } from "recoil";
-import { alertAtom } from "@/recoil";
+import { overlay } from "overlay-kit";
 import WithAuthorization from "@/components/WithAuthorization";
 import DeleteTeacherAlert from "@/components/alerts/DeleteTeacherAlert";
 import { Button } from "@/components/shadcn/ui/button";
 import type * as API from "@/types/api";
 
 export default function DeleteTeacherButton(props: { pk: API.Teacher["teacher_pk"] }) {
-  const setAlert = useSetRecoilState(alertAtom);
-
   function handleDelete(e: React.MouseEvent) {
     const id = e.currentTarget.getAttribute("data-id");
 
     if (typeof id === "string") {
-      setAlert({
-        state: true,
-        content: <DeleteTeacherAlert pk={id} />,
+      overlay.open(({ isOpen, close }) => {
+        return <DeleteTeacherAlert state={isOpen} close={close} pk={id} />;
       });
     }
   }

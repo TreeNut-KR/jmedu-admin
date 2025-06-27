@@ -2,9 +2,8 @@ import { isAxiosError } from "axios";
 import { parse } from "date-fns";
 import { Loader2, Pencil } from "lucide-react";
 import Image from "next/image";
+import { overlay } from "overlay-kit";
 import { useCallback, useMemo, useState } from "react";
-import { useSetRecoilState } from "recoil";
-import { dialogAtom } from "@/recoil";
 import WithAuthorization from "@/components/WithAuthorization";
 import UpdateStudentHomeworkDialog from "@/components/dialogs/UpdateStudentHomeworkDialog";
 import UpdateStudentHomeworksDialog from "@/components/dialogs/UpdateStudentHomeworksDialog";
@@ -28,7 +27,6 @@ interface ViewHomeworkTemplateProps {
 }
 
 export default function ViewHomeworkForm(props: ViewHomeworkTemplateProps) {
-  const setDialog = useSetRecoilState(dialogAtom);
   const [checkedIds, setCheckedIds] = useState<number[]>([]);
 
   const homework = useGetHomeworkQuery(props.pk);
@@ -67,11 +65,16 @@ export default function ViewHomeworkForm(props: ViewHomeworkTemplateProps) {
   }, [checkedIds.length, homework]);
 
   const handleClickStateChangeCheckedStudent = useCallback(() => {
-    setDialog({
-      state: true,
-      content: <UpdateStudentHomeworksDialog studentHomeworks={checkedStudentHomeworks} />,
+    overlay.open(({ isOpen, close }) => {
+      return (
+        <UpdateStudentHomeworksDialog
+          state={isOpen}
+          close={close}
+          studentHomeworks={checkedStudentHomeworks}
+        />
+      );
     });
-  }, [checkedStudentHomeworks, setDialog]);
+  }, [checkedStudentHomeworks]);
 
   const handleClickStateChange = useCallback(
     (e: React.MouseEvent) => {
@@ -82,13 +85,18 @@ export default function ViewHomeworkForm(props: ViewHomeworkTemplateProps) {
         homework.data?.data?.student_homeworks.find((el) => el.student_homework_pk === Number(id));
 
       if (studentHomework) {
-        setDialog({
-          state: true,
-          content: <UpdateStudentHomeworkDialog studentHomework={studentHomework} />,
+        overlay.open(({ isOpen, close }) => {
+          return (
+            <UpdateStudentHomeworkDialog
+              state={isOpen}
+              close={close}
+              studentHomework={studentHomework}
+            />
+          );
         });
       }
     },
-    [homework.data?.data?.student_homeworks, setDialog],
+    [homework.data?.data?.student_homeworks],
   );
 
   if (homework.error) {

@@ -1,9 +1,8 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { josa } from "es-hangul";
+import { overlay } from "overlay-kit";
 import { useForm } from "react-hook-form";
-import { useSetRecoilState } from "recoil";
 import { z } from "zod";
-import { alertAtom } from "@/recoil";
 import ActionAlert from "@/components/alerts/ActionAlert";
 import { Button } from "@/components/shadcn/ui/button";
 import { Input } from "@/components/shadcn/ui/input";
@@ -26,15 +25,14 @@ export default function RegistrationForm() {
     },
   });
 
-  const setAlert = useSetRecoilState(alertAtom);
-
   const { mutate, isPending } = useRegistrationMutation();
 
   function handleSubmit(values: z.infer<typeof RegistrationSchema>) {
-    setAlert({
-      state: true,
-      content: (
+    overlay.open(({ isOpen, close }) => {
+      return (
         <ActionAlert
+          state={isOpen}
+          close={close}
           title={`교직원 ${values.name}${josa.pick(values.name, "을/를")} 등록할까요?`}
           description="등록 후에도 수정할 수 있어요."
           action="등록하기"
@@ -46,21 +44,22 @@ export default function RegistrationForm() {
             });
           }}
         />
-      ),
+      );
     });
   }
 
   function handleReset() {
-    setAlert({
-      state: true,
-      content: (
+    overlay.open(({ isOpen, close }) => {
+      return (
         <ActionAlert
+          state={isOpen}
+          close={close}
           title="처음부터 다시 작성할까요?"
           description="초기화하게 되면 작성 중이던 내용이 사라져요."
           action="다시 작성하기"
           onAction={() => form.reset()}
         />
-      ),
+      );
     });
   }
 
