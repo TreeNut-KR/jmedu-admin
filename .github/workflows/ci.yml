@@ -26,45 +26,12 @@ jobs:
 
       # 의존성 설치
       - name: Install dependencies
-        run: |
-          if npm ci; then
-            echo "✅ Install succeeded" >> result.log
-          else
-            echo "❌ Install failed" >> result.log
-            exit 1
-          fi
+        run: npm ci
 
       # Next.js 빌드
       - name: Build Next.js app
-        run: |
-          if npm run build; then
-            echo "✅ Build succeeded" >> result.log
-          else
-            echo "❌ Build failed" >> result.log
-            exit 1
-          fi
+        run: npm run build
 
       # Lint 검사
       - name: Run lint
-        run: |
-          if npm run lint; then
-            echo "✅ Lint passed" >> result.log
-          else
-            echo "❌ Lint failed" >> result.log
-            exit 1
-          fi
-
-      # 로그 링크 추가
-      - name: Append GitHub Actions run link
-        if: always()
-        run: |
-          echo "" >> result.log
-          echo "🔗 [View full logs](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID})" >> result.log
-
-      # 단계별 결과 요약 코멘트 (덮어쓰기 모드)
-      - name: Post result comment
-        if: always() && github.event_name == 'pull_request'
-        uses: marocchino/sticky-pull-request-comment@v2
-        with:
-          path: result.log
-          header: "### 📝 CI Result Summary"
+        run: npm run lint
