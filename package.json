@@ -7,7 +7,7 @@
     "build": "next build",
     "prestart": "tsx migration.ts",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "eslint ."
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
@@ -48,6 +48,7 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@eslint/compat": "^2.0.0",
     "@eslint/js": "^9.17.0",
     "@tanstack/eslint-plugin-query": "^5.59.7",
     "@types/bcrypt": "^5.0.2",
