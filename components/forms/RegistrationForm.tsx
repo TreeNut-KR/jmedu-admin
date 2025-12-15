@@ -20,7 +20,7 @@ export default function RegistrationForm() {
       id: "",
       password: "",
       sex: 0,
-      birthday: new Date(Date.now()).toISOString().split("T")[0],
+      birthday: new Date().toISOString().split("T")[0],
       contact: "",
     },
   });

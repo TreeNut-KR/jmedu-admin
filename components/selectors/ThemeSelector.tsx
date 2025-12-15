@@ -1,13 +1,14 @@
 import { CircleHelp, MonitorCog, Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import Select from "@/components/selectors/Select";
+import useIsClient from "@/hooks/useIsClient";
 import { THEME_OPTIONS } from "@/constants/options";
 
 export default function ThemeSelector() {
   const { theme, setTheme } = useTheme();
 
-  const [isClient, setIsClient] = useState(false);
+  const isClient = useIsClient();
 
   const IconComponent = useMemo(() => {
     if (theme === "light") {
@@ -19,10 +20,6 @@ export default function ThemeSelector() {
     }
     return CircleHelp;
   }, [theme]);
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
 
   return (
     <Select

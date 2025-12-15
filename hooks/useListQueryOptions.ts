@@ -72,6 +72,7 @@ export default function useListQueryOptions<T>(option: API.InitListQueryOptions<
   });
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setQuery({
       page: queryParams?.page ?? option.initPage ?? 1,
       limit:
