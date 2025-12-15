@@ -1,12 +1,19 @@
+import pluginQuery from "@tanstack/eslint-plugin-query";
 import typescriptEslint from "@typescript-eslint/eslint-plugin";
-import { defineConfig } from "eslint/config";
-import eslintConfigNext from "eslint-config-next";
+import { defineConfig, globalIgnores } from "eslint/config";
+import nextVitals from "eslint-config-next/core-web-vitals";
+import nextTs from "eslint-config-next/typescript";
+import importPlugin from "eslint-plugin-import";
 import noRelativeImportPaths from "eslint-plugin-no-relative-import-paths";
 
 export default defineConfig([
-  eslintConfigNext,
+  ...nextVitals,
+  ...nextTs,
+  ...pluginQuery.configs["flat/recommended"],
+  globalIgnores([".next/**", "out/**", "build/**", "next-env.d.ts"]),
   {
     plugins: {
+      import: importPlugin,
       "@typescript-eslint": typescriptEslint,
       "no-relative-import-paths": noRelativeImportPaths,
     },
