@@ -37,7 +37,7 @@ export default function App({ Component, pageProps }: AppProps) {
         <title>제이엠에듀</title>
       </Head>
       <QueryClientProvider>
-        <ThemeProvider>
+        <ThemeProvider attribute="class">
           <NextTopLoader color="var(--adaptiveBlue500)" showSpinner={false} />
           <OverlayProvider>
             {/* APP */}

@@ -48,6 +48,7 @@ export default function useCalendarQueryOptions<T>(option: {
   });
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setQuery({
       year: queryParams?.year ?? localQueryOption?.year ?? option.initYear,
       month: queryParams?.month ?? localQueryOption?.month ?? option.initMonth,
