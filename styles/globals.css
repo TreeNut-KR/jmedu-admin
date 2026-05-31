@@ -1,8 +1,8 @@
+@import "pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css";
+@import "./color.css";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@use "pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css";
-@use "./color.css";
 
 @layer utilities {
   .text-balance {
